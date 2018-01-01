@@ -10,6 +10,7 @@ namespace Fitch
         GameWindow window;
         Texture2D texture;
         World world;
+        Player player;
 
         public Game(GameWindow window)
         {
@@ -34,8 +35,9 @@ namespace Fitch
 
             GL.Enable(EnableCap.Texture2D);
 
-            world = new World(50);
+            world = new World(50, new Vector2(10, 10));
             texture = ContentPipe.LoadTexture("penguin.png");
+            player = new Player(new Vector2(0, 0), 50, 70);
 
         }
 
@@ -59,7 +61,7 @@ namespace Fitch
             GL.ClearColor(Color.Aqua);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            SpriteBatch.DrawSquare(texture, new Vector2(0, 0), world.blockSize);
+            SpriteBatch.DrawBlock(BlockType.Solid, new Vector2(0, 0), world.blockSize);
 
             window.SwapBuffers();
 
