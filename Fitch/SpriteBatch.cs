@@ -39,12 +39,12 @@ namespace Fitch
         public static void DrawBlock(BlockType type, Vector2 position, float size)
 		{
 
-			Vector3[] vertices = new Vector3[4]
+			Vector2[] vertices = new Vector2[4]
 			{
-                new Vector3(0, 0, 0.5f),
-                new Vector3(1, 0, 0.5f),
-                new Vector3(0, 1, 0.5f),
-                new Vector3(1, 1, 0.5f)
+                new Vector2(0, 0),
+                new Vector2(1, 0),
+                new Vector2(0, 1),
+                new Vector2(1, 1)
 			};
 
 			int[] indices = new int[6]
@@ -76,7 +76,7 @@ namespace Fitch
 			{
 
 				GL.TexCoord2(vertices[i].X, vertices[i].Y);
-                GL.Vertex3(vertices[i].X * size, vertices[i].Y * size, vertices[i].Z);
+                GL.Vertex2((vertices[i].X + position.X) * size, (vertices[i].Y + position.Y) * size);
 
 			}
 			GL.End();
