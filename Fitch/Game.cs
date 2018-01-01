@@ -9,7 +9,6 @@ namespace Fitch
     public class Game
     {
         GameWindow window;
-        Texture2D texture;
         World world;
         Player player;
         List<Block> blocks;
