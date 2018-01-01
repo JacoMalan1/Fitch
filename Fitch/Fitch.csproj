@@ -47,6 +47,9 @@
     <Compile Include="Block.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\level1.fl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
     <None Include="Content\penguin.png">

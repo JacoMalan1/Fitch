@@ -2,6 +2,7 @@
 using OpenTK;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
+using System.Collections.Generic;
 
 namespace Fitch
 {
@@ -11,6 +12,8 @@ namespace Fitch
         Texture2D texture;
         World world;
         Player player;
+        List<Block> blocks;
+        Vector2 removePos = new Vector2(int.MaxValue, int.MaxValue);
 
         public Game(GameWindow window)
         {
@@ -39,6 +42,8 @@ namespace Fitch
             texture = ContentPipe.LoadTexture("penguin.png");
             player = new Player(new Vector2(0, 0), 50, 70);
 
+            blocks = World.LoadFromFile(world, "level1.fl");
+
         }
 
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -61,9 +66,29 @@ namespace Fitch
             GL.ClearColor(Color.Aqua);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            SpriteBatch.DrawSquare(texture, new Vector2(window.Width / 2, window.Height / 2), world.blockSize);
+            foreach (Block block in blocks)
+            {
+                SpriteBatch.DrawBlock(block.Type, block.Position, block.Size);
+            }
+
+            blocks.RemoveAll(new Predicate<Block>(blockSearch));
 
             window.SwapBuffers();
+
+        }
+
+        bool blockSearch(Block block)
+        {
+
+            if (block.Position == removePos)
+            {
+                removePos = new Vector2(int.MaxValue, int.MaxValue);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 
         }
     }
