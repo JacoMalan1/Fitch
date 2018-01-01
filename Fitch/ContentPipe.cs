@@ -12,7 +12,6 @@ namespace Fitch
         public static Texture2D LoadTexture(string filePath)
         {
             filePath = "Content/" + filePath;
-
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException();
@@ -31,7 +30,11 @@ namespace Fitch
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Nearest);
 
-            return new Texture2D(id, bmp.Width, bmp.Height);
+            int width = bmp.Width;
+            int height = bmp.Height;
+            bmp.Dispose();
+
+            return new Texture2D(id, width, height);
         }
     }
 }

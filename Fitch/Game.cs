@@ -40,7 +40,7 @@ namespace Fitch
 
             world = new World(50, new Vector2(10, 10));
             texture = ContentPipe.LoadTexture("penguin.png");
-            player = new Player(new Vector2(0, 0), 50, 70);
+            player = new Player(new Vector2(30, 40), 50, 70);
 
             blocks = World.LoadFromFile(world, "level1.fl");
 
@@ -53,7 +53,7 @@ namespace Fitch
 
         void Window_UpdateFrame(object sender, FrameEventArgs e)
         {
-
+            player.Position += new Vector2(1, 1);
         }
 
         void Window_RenderFrame(object sender, FrameEventArgs e)
@@ -70,6 +70,8 @@ namespace Fitch
             {
                 SpriteBatch.DrawBlock(block.Type, block.Position, block.Size);
             }
+
+            SpriteBatch.DrawPlayer(player);
 
             blocks.RemoveAll(new Predicate<Block>(blockSearch));
 
