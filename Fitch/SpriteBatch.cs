@@ -7,7 +7,7 @@ namespace Fitch
 {
     public class SpriteBatch
     {
-        public static Texture2D textureSolid = ContentPipe.LoadTexture("solid.png");
+        public static Texture2D textureSolid = ContentPipe.LoadTexture("solid.jpg");
         public static Texture2D textureAir;
         public static Texture2D missing;
         public static void DrawSquare(Texture2D texture, Vector2 position, float size)
