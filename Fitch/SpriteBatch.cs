@@ -30,7 +30,7 @@ namespace Fitch
             {
 
                 GL.TexCoord2(vertices[i].X, vertices[i].Y);
-                GL.Vertex2(vertices[i].X * size, vertices[i].Y * size);
+                GL.Vertex2(vertices[i].X * size + position.X, vertices[i].Y * size + position.Y);
 
             }
             GL.End();

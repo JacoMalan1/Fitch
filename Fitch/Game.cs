@@ -61,7 +61,7 @@ namespace Fitch
             GL.ClearColor(Color.Aqua);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            SpriteBatch.DrawBlock(BlockType.Solid, new Vector2(0, 0), world.blockSize);
+            SpriteBatch.DrawSquare(texture, new Vector2(window.Width / 2, window.Height / 2), world.blockSize);
 
             window.SwapBuffers();
 
