@@ -43,6 +43,8 @@
     <Compile Include="Texture2D.cs" />
     <Compile Include="World.cs" />
     <Compile Include="ContentPipe.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="Block.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenTK.dll.config" />
