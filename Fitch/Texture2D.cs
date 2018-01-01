@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Fitch
 {
-    public class Texture2D
+    public struct Texture2D
     {
 
         private int id;
