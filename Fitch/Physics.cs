@@ -5,79 +5,44 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 using System.Drawing;
+using FarseerPhysics;
 
 namespace Fitch
 {
     class Physics
     {
         public static bool collide = false;
-        public static int i = 0;
+        public static Collision col = null;
+        public static Vector2 VelPrev = Vector2.Zero;
 
         public static void updatePhysics(ref Player player, List<Block> blocks, World world)
         {
-            
-            RectangleF Rect = new RectangleF(player.Position.X, player.Position.Y, player.Width, player.Height);
-            int minX = (int)Math.Floor(player.Position.X);
-            int maxX = (int)Math.Floor(player.Position.X + player.Width);
-            int minY = (int)Math.Floor(player.Position.Y);
-            int maxY = (int)Math.Floor(player.Position.Y + player.Height);
 
-            List<Block> checkBlocks = new List<Block>();
+            float minX = player.Position.X;
+            float maxX = player.Position.X + player.Width;
+            float minY = player.Position.Y;
+            float maxY = player.Position.Y + player.Height;
+
+            RectangleF pCol = new RectangleF(minX, minY, player.Width, player.Height);
+
+            col = null;
+
             foreach (Block block in blocks)
             {
 
-                if ((block.Position.X * block.Size >= minX && block.Position.X * block.Size <= maxX) && (block.Position.Y * block.Size >= minY && block.Position.Y * block.Size <= maxY))
+                if (block.ScreenPos.X >= minX && block.ScreenPos.X <= maxX && block.ScreenPos.Y >= minY && block.ScreenPos.Y <= maxY)
                 {
-                    checkBlocks.Add(block);
-                }
-
-            }
-
-            Vector2[] directions = new Vector2[3]
-            {
-                new Vector2(0, -1),
-                new Vector2(0, 1),
-                new Vector2(-1, 0)
-
-            };
-
-            foreach (Block block in checkBlocks)
-            {
-                float min = float.MaxValue;
-
-                RectangleF intersect = RectangleF.Intersect(Rect, new RectangleF(block.Position.X * block.Size, block.Position.Y * block.Size, block.Size, block.Size));
-                Vector2 minDirection = Vector2.Zero;
-
-                for (int i = 0; i < 3; i++)
-                {
-                    bool occupied = false;
-                    foreach (Block oBlock in blocks)
-                    {
-                        if (oBlock.Position == block.Position + directions[i])
-                        {
-                            occupied = true;
-                        }
-                    }
-
-                    if (!occupied && (intersect.X + intersect.Width) * directions[i].X - block.Position.X * block.Size <= intersect.Width && (intersect.Y + intersect.Height) * directions[i].Y - block.Position.Y * block.Size <= intersect.Height)
-                    {
-                        min = intersect.Width + intersect.Height;
-                        minDirection = new Vector2(directions[i].X, directions[i].Y);
-                    }
-
-                    if (min == float.MaxValue)
-                    {
-                        continue;
-                    }
-
-                    player.Position += minDirection * min / world.blockSize;
+                    RectangleF bCol = new RectangleF(block.ScreenPos.X, block.ScreenPos.Y, block.Size, block.Size);
+                    RectangleF colRect = RectangleF.Intersect(bCol, pCol);
+                    Rectangle rect = new Rectangle((int)colRect.X, (int)colRect.Y, (int)colRect.Width, (int)colRect.Height);
+                    SpriteBatch.DrawRect(rect, Color.Red);
+                    player.Position = VelPrev;
                     player.Velocity = Vector2.Zero;
-                    collide = true;
-                    player.Position = new Vector2((float)Math.Round(player.Position.X / world.blockSize) * world.blockSize, (float)Math.Round(player.Position.Y / world.blockSize) * world.blockSize);
-                    break;
                 }
 
             }
+
+            VelPrev = player.Position;
 
             player.Position += player.Velocity;
 

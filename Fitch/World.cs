@@ -5,11 +5,6 @@ using System.Collections.Generic;
 
 namespace Fitch
 {
-	public enum BlockType
-	{
-		Air,
-		Solid
-	}
 
     public class World
     {
@@ -43,6 +38,11 @@ namespace Fitch
 
             foreach (string line in lines)
             {
+                if (line[0] == '#')
+                {
+                    continue;
+                }
+                
                 if (line.Substring(0, 5) == "solid")
                 {
 
