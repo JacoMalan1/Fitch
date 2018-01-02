@@ -27,4 +27,27 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7D36211-FC55-4E41-9099-D5298CBEFA7E}
 	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$0.TextStylePolicy = $2
+		$2.inheritsSet = null
+		$2.scope = application/xml
+		$0.XmlFormattingPolicy = $3
+		$3.scope = application/xml
+		$0.TextStylePolicy = $4
+		$4.inheritsSet = null
+		$4.scope = application/manifest+xml
+		$0.XmlFormattingPolicy = $5
+		$5.inheritsSet = null
+		$5.scope = application/manifest+xml
+		$0.TextStylePolicy = $6
+		$6.inheritsSet = null
+		$6.scope = text/microsoft-resx
+		$0.XmlFormattingPolicy = $7
+		$7.inheritsSet = null
+		$7.scope = text/microsoft-resx
+		$0.StandardHeader = $8
+	EndGlobalSection
 EndGlobal
