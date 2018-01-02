@@ -116,5 +116,37 @@ namespace Fitch
 			}
 			GL.End();
 		}
+
+        public static void DrawRect(Rectangle rect, Color color)
+        {
+
+            Vector2[] vertices = new Vector2[4]
+            {
+
+                new Vector2(rect.X, rect.Y),
+                new Vector2(rect.X + rect.Width, rect.Y),
+                new Vector2(rect.X, rect.Y + rect.Height),
+                new Vector2(rect.X + rect.Width, rect.Y + rect.Height),
+
+            };
+
+            int[] indices = new int[4]
+            {
+                0, 1, 2, 3
+            };
+
+            GL.Begin(PrimitiveType.Quads);
+
+            GL.Color3(color);
+            foreach (int i in indices)
+            {
+
+                GL.Vertex2(vertices[i].X, vertices[i].Y);
+
+            }
+
+            GL.End();
+
+        }
     }
 }

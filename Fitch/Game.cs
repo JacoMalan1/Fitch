@@ -11,6 +11,7 @@ namespace Fitch
         GameWindow window;
         World world;
         Player player;
+        public static int i;
         List<Block> blocks;
         Vector2 removePos = new Vector2(int.MaxValue, int.MaxValue);
 
@@ -38,9 +39,10 @@ namespace Fitch
             GL.Enable(EnableCap.Texture2D);
 
             world = new World(50, new Vector2(10, 10));
-            player = new Player(new Vector2(60, 0), 50, 70, new Vector2(10, -5));
+            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(10, -5));
 
             blocks = World.LoadFromFile(world, "level1.fl");
+            i = 0;
 
         }
 
@@ -51,7 +53,9 @@ namespace Fitch
 
         void Window_UpdateFrame(object sender, FrameEventArgs e)
         {
-           
+
+			Physics.updatePhysics(ref player, blocks, world);
+
         }
 
         void Window_RenderFrame(object sender, FrameEventArgs e)
@@ -71,12 +75,13 @@ namespace Fitch
                 SpriteBatch.DrawBlock(block.Type, block.Position, block.Size);
             }
 
-            Physics.updatePhysics(ref player, blocks, world);
             SpriteBatch.DrawPlayer(player);
 
             blocks.RemoveAll(new Predicate<Block>(blockSearch));
 
             window.SwapBuffers();
+
+            GC.Collect();
 
         }
 
