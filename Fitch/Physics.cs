@@ -32,6 +32,11 @@ namespace Fitch
             foreach (Block block in blocks)
             {
 
+                if ((int)block.ScreenPos.Y -1 == (int)player.Position.Y + (int)player.Height)
+                {
+                    player.isStanding = true;
+                }
+
                 if (block.ScreenPos.X >= minX && block.ScreenPos.X <= maxX && block.ScreenPos.Y >= minY && block.ScreenPos.Y <= maxY)
                 {
                     RectangleF bCol = new RectangleF(block.ScreenPos.X, block.ScreenPos.Y, block.Size, block.Size);
@@ -41,16 +46,18 @@ namespace Fitch
 
                     if (colRect.Width > colRect.Height && (!Block.isCollision(blocks, new RectangleF(minX, minY + colRect.Height, colRect.Width, colRect.Height)) || !Block.isCollision(blocks, new RectangleF(minX, minY - colRect.Height, colRect.Width, colRect.Height))))
                     {
-                        if (player.Velocity.Y > 0)
+                        if (player.Velocity.Y > 0 && !Block.isCollision(blocks, new RectangleF(minX, minY - colRect.Height, colRect.Width, colRect.Height)))
                         {
                             player.Position -= new Vector2(0, colRect.Height);
                         }
-                        else
+                        else if (!Block.isCollision(blocks, new RectangleF(minX, minY + colRect.Height, colRect.Width, colRect.Height)))
                         {
                             player.Position += new Vector2(0, colRect.Height);
                         }
-
-                        player.Velocity = new Vector2(player.Velocity.X, 0);
+                        if (!player.isStanding)
+                        {
+                            player.Velocity = new Vector2(player.Velocity.X, 0);
+                        }
                     }
                     else if (!Block.isCollision(blocks, new RectangleF(minX + colRect.Width, minY, colRect.Width, colRect.Height)) || !Block.isCollision(blocks, new RectangleF(minX - colRect.Width, minY, colRect.Width, colRect.Height)))
                     {
@@ -87,7 +94,10 @@ namespace Fitch
             }
 
             //Gravity
-            player.Velocity += new Vector2(0, 0.44f);
+            if (!player.isStanding)
+            {
+                player.Velocity += new Vector2(0, 0.44f);
+            }   
         }
     }
 }
