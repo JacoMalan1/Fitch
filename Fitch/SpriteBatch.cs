@@ -39,11 +39,10 @@ namespace Fitch
             GL.End();
         }
 
-        public static void DrawPlayer(Player player)
+        public static void DrawPlayer(Texture2D texture, Player player)
         {
 
             GL.Color3(Color.White);
-            Texture2D texture = ContentPipe.LoadTexture("player.png");
             GL.BindTexture(TextureTarget.Texture2D, texture.ID);
 
             Vector2[] vertices = new Vector2[4]

@@ -34,6 +34,8 @@ namespace Fitch
             int height = bmp.Height;
             bmp.Dispose();
 
+            GC.Collect();
+
             return new Texture2D(id, width, height);
         }
     }

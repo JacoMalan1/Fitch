@@ -14,6 +14,7 @@ namespace Fitch
         public static int i;
         List<Block> blocks;
         Vector2 removePos = new Vector2(int.MaxValue, int.MaxValue);
+        Texture2D playerTexture;
 
         public Game(GameWindow window)
         {
@@ -43,6 +44,8 @@ namespace Fitch
 
             blocks = World.LoadFromFile(world, "level1.fl");
             Input.Initialize(this.window);
+
+            playerTexture = ContentPipe.LoadTexture("player.png");
 
         }
 
@@ -83,9 +86,7 @@ namespace Fitch
                 SpriteBatch.DrawBlock(block.Type, block.Position, block.Size);
             }
 
-            SpriteBatch.DrawPlayer(player);
-
-            blocks.RemoveAll(new Predicate<Block>(blockSearch));
+            SpriteBatch.DrawPlayer(playerTexture, player);
 
             window.SwapBuffers();
 
