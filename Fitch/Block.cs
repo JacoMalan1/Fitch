@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using OpenTK;
 
 namespace Fitch
@@ -74,5 +75,40 @@ namespace Fitch
             this.size = size;
 
         }
+
+        public static bool isCollision(List<Block> blocks, RectangleF rect)
+        {
+
+            bool collision = false;
+
+            foreach (Block block in blocks)
+            {
+                float minX = rect.X;
+                float maxX = rect.X + rect.Width;
+                float minY = rect.Y;
+                float maxY = rect.Y + rect.Height;
+
+                Vector2[] vertices = new Vector2[4]
+                {
+                    new Vector2(block.ScreenPos.X, block.ScreenPos.Y),
+                    new Vector2(block.ScreenPos.X + block.Size, block.ScreenPos.Y),
+                    new Vector2(block.ScreenPos.X, block.ScreenPos.Y + block.Size),
+                    new Vector2(block.ScreenPos.X + block.Size, block.ScreenPos.Y + block.Size)
+                };
+
+                foreach (Vector2 v in vertices)
+                {
+
+                    if ((v.X >= minX && v.X <= maxX) && (v.Y >= minY && v.Y <= maxY))
+                    {
+                        collision = true;
+                    }
+
+                }
+            }
+
+            return collision;
+        }
+
     }
 }
