@@ -3,6 +3,7 @@ using OpenTK;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Fitch
 {
@@ -46,7 +47,7 @@ namespace Fitch
             GL.Enable(EnableCap.Texture2D);
 
             world = new World(50, new Vector2(10, 10));
-            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(15, -5), false);
+            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(10, -5), false);
 
             blocks = World.LoadFromFile(world, "level1.fl");
 
@@ -77,7 +78,7 @@ namespace Fitch
             }
 			Input.Update();
 
-            //Calculate physics
+			//Calculate physics
 			Physics.updatePhysics(ref player, blocks, world);
 
         }
