@@ -102,6 +102,7 @@ namespace Fitch
                     if ((v.X >= minX && v.X <= maxX) && (v.Y >= minY && v.Y <= maxY))
                     {
                         collision = true;
+                        break;
                     }
 
                 }
