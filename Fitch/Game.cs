@@ -39,10 +39,10 @@ namespace Fitch
             GL.Enable(EnableCap.Texture2D);
 
             world = new World(50, new Vector2(10, 10));
-            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(10, -5));
+            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(4, -1.2f));
 
             blocks = World.LoadFromFile(world, "level1.fl");
-            i = 0;
+            Input.Initialize(this.window);
 
         }
 
@@ -54,6 +54,14 @@ namespace Fitch
         void Window_UpdateFrame(object sender, FrameEventArgs e)
         {
 
+            //Input handling
+            Input.Update();
+            if (Input.KeyPress(OpenTK.Input.Key.Space))
+            {
+                player.Velocity += new Vector2(0, -5);
+            }
+
+            //Calculate physics
 			Physics.updatePhysics(ref player, blocks, world);
 
         }

@@ -67,6 +67,7 @@
     <Compile Include="SpriteBatch.cs" />
     <Compile Include="Texture2D.cs" />
     <Compile Include="World.cs" />
+    <Compile Include="Input.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenTK.dll.config" />
