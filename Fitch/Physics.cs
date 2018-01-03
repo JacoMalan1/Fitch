@@ -32,9 +32,13 @@ namespace Fitch
             foreach (Block block in blocks)
             {
 
-                if ((int)block.ScreenPos.Y -1 == (int)player.Position.Y + (int)player.Height)
+                if (Math.Floor(block.ScreenPos.Y) == Math.Floor(player.Position.Y + player.Height) && (block.ScreenPos.X >= minX && block.ScreenPos.X <= maxX))
                 {
                     player.isStanding = true;
+                }
+                else
+                {
+                    player.isStanding = false;
                 }
 
                 if (block.ScreenPos.X >= minX && block.ScreenPos.X <= maxX && block.ScreenPos.Y >= minY && block.ScreenPos.Y <= maxY)
@@ -44,7 +48,7 @@ namespace Fitch
                     Rectangle rect = new Rectangle((int)colRect.X, (int)colRect.Y, (int)colRect.Width, (int)colRect.Height);
                     SpriteBatch.DrawRect(rect, Color.Red);
 
-                    if (colRect.Width > colRect.Height && (!Block.isCollision(blocks, new RectangleF(minX, minY + colRect.Height, colRect.Width, colRect.Height)) || !Block.isCollision(blocks, new RectangleF(minX, minY - colRect.Height, colRect.Width, colRect.Height))))
+                    if ((colRect.Width > colRect.Height || player.Velocity.X == 0) && (!Block.isCollision(blocks, new RectangleF(minX, minY + colRect.Height, colRect.Width, colRect.Height)) || !Block.isCollision(blocks, new RectangleF(minX, minY - colRect.Height, colRect.Width, colRect.Height))))
                     {
                         if (player.Velocity.Y > 0 && !Block.isCollision(blocks, new RectangleF(minX, minY - colRect.Height, colRect.Width, colRect.Height)))
                         {
@@ -59,7 +63,7 @@ namespace Fitch
                             player.Velocity = new Vector2(player.Velocity.X, 0);
                         }
                     }
-                    else if (!Block.isCollision(blocks, new RectangleF(minX + colRect.Width, minY, colRect.Width, colRect.Height)) || !Block.isCollision(blocks, new RectangleF(minX - colRect.Width, minY, colRect.Width, colRect.Height)))
+                    else if (!player.isStanding && !Block.isCollision(blocks, new RectangleF(minX + colRect.Width, minY, colRect.Width, colRect.Height)) || !Block.isCollision(blocks, new RectangleF(minX - colRect.Width, minY, colRect.Width, colRect.Height)))
                     {
                         if (player.Velocity.X > 0 && !Block.isCollision(blocks, new RectangleF(minX - colRect.Width, minY, colRect.Width, colRect.Height)))
                         {
@@ -75,7 +79,10 @@ namespace Fitch
                             player.Position -= new Vector2(block.Position.X, player.Position.Y);
                         }
 
-                        player.Velocity = new Vector2(0, player.Velocity.Y);
+                        if (!player.isStanding)
+                        {
+                            player.Velocity = new Vector2(0, player.Velocity.Y);
+                        }
                     }
                     break;
                 }
@@ -83,14 +90,20 @@ namespace Fitch
             }
 
             VelPrev = player.Position;
-
+            
             player.Position += player.Velocity;
 
-            if (!(Math.Abs(player.Velocity.X) <= 0) && !player.isRunning)
+            if (player.isRunning && Math.Abs(player.Velocity.X) > Game.TVELOCITY)
             {
 
-                player.Velocity = new Vector2(player.Velocity.X / 1.0000001f, player.Velocity.Y);
-
+                if (player.Velocity.X > 0)
+                {
+                    player.Velocity = new Vector2((float)Game.TVELOCITY, player.Velocity.Y);
+                }
+                else
+                {
+                    player.Velocity = new Vector2((float)-Game.TVELOCITY, player.Velocity.Y);
+                }
             }
 
             //Gravity

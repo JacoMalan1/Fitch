@@ -16,7 +16,8 @@ namespace Fitch
         List<Block> blocks;
         Vector2 removePos = new Vector2(int.MaxValue, int.MaxValue);
         Texture2D playerTexture;
-        public static double TVELOCITY = 5;
+        Texture2D font;
+        public static double TVELOCITY = 8;
         public static bool running = false;
 
         public Game(ref GameWindow window)
@@ -47,11 +48,12 @@ namespace Fitch
             GL.Enable(EnableCap.Texture2D);
 
             world = new World(50, new Vector2(10, 10));
-            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(10, -5), false);
+            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(0, -5), false);
 
             blocks = World.LoadFromFile(world, "level1.fl");
 
             playerTexture = ContentPipe.LoadTexture("player.png");
+            font = ContentPipe.LoadTexture("text.jpg");
 
         }
 
@@ -65,9 +67,10 @@ namespace Fitch
             player.isRunning = false;
 
             //Input handling
-            if (Input.KeyPress(OpenTK.Input.Key.Space))
+            if (Input.KeyPress(OpenTK.Input.Key.Space) && player.isStanding)
             {
-                player.Velocity += new Vector2(0, -5);
+                player.Velocity += new Vector2(0, -10);
+                player.isStanding = false;
 			}
             if (Input.KeyDown(OpenTK.Input.Key.D) && !(player.Velocity.X >= TVELOCITY))
             {
@@ -76,7 +79,16 @@ namespace Fitch
                 player.isRunning = true;
 
             }
-			Input.Update();
+            if (Input.KeyDown(OpenTK.Input.Key.A) && !(player.Velocity.X >= TVELOCITY))
+            {
+
+                player.Velocity += new Vector2(-0.4f, 0);
+                player.isRunning = true;
+
+            }
+            Input.Update();
+
+            
 
 			//Calculate physics
 			Physics.updatePhysics(ref player, blocks, world);
@@ -89,18 +101,22 @@ namespace Fitch
             Matrix4 projMat = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadMatrix(ref projMat);
-
+            
             Camera.ApplyTransform(ref player, window);
 
             GL.ClearColor(Color.Aqua);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            
 
             foreach (Block block in blocks)
             {
                 SpriteBatch.DrawBlock(block.Type, block.Position, block.Size);
             }
 
+            string fps = ((int)window.RenderFrequency).ToString();
+
             SpriteBatch.DrawPlayer(playerTexture, player);
+            SpriteBatch.DrawText(fps, new Vector2(0, 0), 30, font);
 
             window.SwapBuffers();
 
