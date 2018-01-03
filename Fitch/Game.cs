@@ -15,8 +15,10 @@ namespace Fitch
         List<Block> blocks;
         Vector2 removePos = new Vector2(int.MaxValue, int.MaxValue);
         Texture2D playerTexture;
+        public static double TVELOCITY = 5;
+        public static bool running = false;
 
-        public Game(GameWindow window)
+        public Game(ref GameWindow window)
         {
 
             window.Load += Window_Load;
@@ -25,6 +27,10 @@ namespace Fitch
             window.RenderFrame += Window_RenderFrame;
 
             this.window = window;
+
+            Input.Initialize(ref window);
+            window.KeyUp += Input.Game_KeyUp;
+            window.KeyDown += Input.Game_KeyDown;
 
         }
 
@@ -40,10 +46,9 @@ namespace Fitch
             GL.Enable(EnableCap.Texture2D);
 
             world = new World(50, new Vector2(10, 10));
-            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(4, -1.2f));
+            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(0), false);
 
             blocks = World.LoadFromFile(world, "level1.fl");
-            Input.Initialize(this.window);
 
             playerTexture = ContentPipe.LoadTexture("player.png");
 
@@ -56,13 +61,21 @@ namespace Fitch
 
         void Window_UpdateFrame(object sender, FrameEventArgs e)
         {
+            player.isRunning = false;
 
             //Input handling
-            Input.Update();
             if (Input.KeyPress(OpenTK.Input.Key.Space))
             {
                 player.Velocity += new Vector2(0, -5);
+			}
+            if (Input.KeyDown(OpenTK.Input.Key.D) && !(player.Velocity.X >= TVELOCITY))
+            {
+
+                player.Velocity += new Vector2(0.4f, 0);
+                player.isRunning = true;
+
             }
+			Input.Update();
 
             //Calculate physics
 			Physics.updatePhysics(ref player, blocks, world);
@@ -89,8 +102,6 @@ namespace Fitch
             SpriteBatch.DrawPlayer(playerTexture, player);
 
             window.SwapBuffers();
-
-            GC.Collect();
 
         }
 

@@ -9,7 +9,7 @@ namespace Fitch
         {
             GameWindow window = new GameWindow(800, 600, new OpenTK.Graphics.GraphicsMode(32, 8, 0, 0));
 
-            Game game = new Game(window);
+            Game game = new Game(ref window);
             window.Run(1.0f / 60.0f);
         }
     }

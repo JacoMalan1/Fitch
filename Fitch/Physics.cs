@@ -38,8 +38,10 @@ namespace Fitch
                     RectangleF colRect = RectangleF.Intersect(bCol, pCol);
                     Rectangle rect = new Rectangle((int)colRect.X, (int)colRect.Y, (int)colRect.Width, (int)colRect.Height);
                     SpriteBatch.DrawRect(rect, Color.Red);
+
                     player.Position = VelPrev;
-                    player.Velocity = Vector2.Zero;
+
+                    player.Velocity = new Vector2(player.Velocity.X, 0);
                 }
 
             }
@@ -48,7 +50,7 @@ namespace Fitch
 
             player.Position += player.Velocity;
 
-            if (!(Math.Abs(player.Velocity.X) <= 0))
+            if (!(Math.Abs(player.Velocity.X) <= 0) && !player.isRunning)
             {
 
                 player.Velocity = new Vector2(player.Velocity.X / 1.0000001f, player.Velocity.Y);

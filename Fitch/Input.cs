@@ -11,7 +11,7 @@ namespace Fitch
         private static List<Key> keysDown;
         private static List<Key> keysDownLast;
 
-        public static void Initialize(GameWindow game)
+        public static void Initialize(ref GameWindow game)
         {
 
             keysDown = new List<Key>();
@@ -22,12 +22,12 @@ namespace Fitch
             
         }
 
-        private static void Game_KeyDown(object sender, KeyboardKeyEventArgs e)
+        public static void Game_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
             keysDown.Add(e.Key);
         }
 
-        private static void Game_KeyUp(object sender, KeyboardKeyEventArgs e)
+        public static void Game_KeyUp(object sender, KeyboardKeyEventArgs e)
 		{
 			while (keysDown.Contains(e.Key))
 			{
@@ -39,6 +39,11 @@ namespace Fitch
         {
 
             keysDownLast = new List<Key>(keysDown);
+
+            if (keysDownLast.Contains(Key.Space))
+            {
+                Console.WriteLine("input");
+            }
 
         }
 
