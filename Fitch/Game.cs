@@ -46,7 +46,7 @@ namespace Fitch
             GL.Enable(EnableCap.Texture2D);
 
             world = new World(50, new Vector2(10, 10));
-            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(0), false);
+            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(15, -5), false);
 
             blocks = World.LoadFromFile(world, "level1.fl");
 
