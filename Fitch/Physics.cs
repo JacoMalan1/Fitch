@@ -46,14 +46,10 @@ namespace Fitch
 
             player.Position += player.Velocity;
 
-            if (!(player.Velocity.X == 0) && !(player.Velocity.Y == 0))
+            if (!(Math.Abs(player.Velocity.X) <= 0))
             {
-                if (player.Velocity.X <= 0.0000000000000001)
-                {
-                    player.Velocity = new Vector2(0, player.Velocity.Y);
-                }
 
-                player.Velocity = new Vector2(player.Velocity.X / 1.02f, player.Velocity.Y);
+                player.Velocity = new Vector2(player.Velocity.X / 1.0000001f, player.Velocity.Y);
 
             }
 
