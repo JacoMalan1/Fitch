@@ -8,8 +8,7 @@ namespace Fitch
     public class SpriteBatch
     {
         public static Texture2D textureSolid = ContentPipe.LoadTexture("solid.jpg");
-        public static Texture2D textureAir;
-        public static Texture2D missing;
+
         public static void DrawSquare(Texture2D texture, Vector2 position, float size)
         {
             GL.Color3(Color.White);
@@ -90,17 +89,13 @@ namespace Fitch
             switch (type)
             {
                 
-                case BlockType.Air:
-                    texture = textureAir;
-                    break;
-
                 case BlockType.Solid:
-                    texture = textureSolid ;
+                    texture = textureSolid;
+                    break;
+                default:
+                    texture = textureSolid;
                     break;
 
-                default:
-                    texture = textureAir;
-                    break;
             }
 
             GL.BindTexture(TextureTarget.Texture2D, texture.ID);
@@ -145,6 +140,79 @@ namespace Fitch
             }
 
             GL.End();
+
+        }
+
+        public static void DrawText(string text, Vector2 position, float size, Texture2D texture)
+        {
+
+            Texture2D font = texture;
+
+            float offset = 0;
+            int j = 0;
+            
+            GL.BindTexture(TextureTarget.Texture2D, font.ID);
+
+            foreach (char c in text)
+            {
+                Vector2[] coords;
+
+                if (Int32.Parse(c.ToString()) < 5)
+                {
+
+                    int num = Int32.Parse(c.ToString());
+
+                    coords = new Vector2[4]
+                    {
+                        new Vector2(num * (font.Width / 5), 0),
+                        new Vector2((num + 1) * (font.Width / 5), 0),
+                        new Vector2(num * (font.Width / 5), font.Height / 2),
+                        new Vector2((num + 1) * (font.Width / 5),  font.Height / 2)
+                    };
+
+                }
+                else
+                {
+                    int num = Int32.Parse(c.ToString());
+                    num = num % 5;
+
+                    coords = new Vector2[4]
+                    {
+                        new Vector2(num * (font.Width / 5), font.Height / 2),
+                        new Vector2((num + 1) * (font.Width / 5), font.Height / 2),
+                        new Vector2(num * (font.Width / 5), font.Height),
+                        new Vector2((num + 1) * (font.Width / 5),  font.Height)
+                    };
+                }
+
+                Vector2[] vertices = new Vector2[4]
+                {
+                new Vector2(0, 0),
+                new Vector2(1, 0),
+                new Vector2(0, 1),
+                new Vector2(1, 1)
+                };
+
+                int[] indices = new int[6]
+                {
+                0, 1, 3, 0, 2, 3
+                };
+
+                GL.Begin(PrimitiveType.Triangles);
+
+                foreach (int i in indices)
+                {
+
+                    GL.TexCoord2(coords[i].X / font.Width, coords[i].Y / font.Height);
+                    GL.Vertex2((vertices[i].X * size + position.X + offset), (vertices[i].Y  * size + position.Y));
+
+                }
+
+                j++;
+                offset = j * size;
+
+                GL.End();
+            }
 
         }
     }
