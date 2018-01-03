@@ -18,6 +18,8 @@ namespace Fitch
         public static void updatePhysics(ref Player player, List<Block> blocks, World world)
         {
 
+            GC.Collect();
+
             float minX = player.Position.X;
             float maxX = player.Position.X + player.Width;
             float minY = player.Position.Y;
