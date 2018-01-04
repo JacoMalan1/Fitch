@@ -14,6 +14,7 @@ namespace Fitch
         Player player;
         public static int i;
         List<Block> blocks;
+        Block[,] level;
         Vector2 removePos = new Vector2(int.MaxValue, int.MaxValue);
         Texture2D playerTexture;
         Texture2D font;
@@ -47,10 +48,12 @@ namespace Fitch
 
             GL.Enable(EnableCap.Texture2D);
 
-            world = new World(50, new Vector2(10, 10));
+            world = new World(50, new Vector2(50, 50));
             player = new Player(new Vector2(60, 10), 50, 70, new Vector2(0, -5), false);
 
-            blocks = World.LoadFromFile(world, "level1.fl");
+            blocks = World.LoadFromFile(world.blockSize, "level1.fl");
+
+            level = World.LoadFromFile(world, "level1.fl");
 
             playerTexture = ContentPipe.LoadTexture("player.png");
             font = ContentPipe.LoadTexture("text.jpg");
@@ -70,7 +73,7 @@ namespace Fitch
             if (Input.KeyPress(OpenTK.Input.Key.Space) && player.isStanding)
             {
                 player.Velocity += new Vector2(0, -10);
-                player.isStanding = false;
+                player.isJumping = true;
 			}
             if (Input.KeyDown(OpenTK.Input.Key.D) && !(player.Velocity.X >= TVELOCITY))
             {
