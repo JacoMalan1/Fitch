@@ -94,7 +94,7 @@ namespace Fitch
             
 
 			//Calculate physics
-			Physics.updatePhysics(ref player, blocks, world);
+			Physics.updatePhysics(ref player, blocks, world, level);
 
         }
 
