@@ -13,7 +13,7 @@ namespace Fitch
         public static bool collide = false;
         public static Collision col = null;
 
-        public static void updatePhysics(ref Player player, List<Block> blocks, World world)
+        public static void updatePhysics(ref Player player, List<Block> blocks, World world, Block[,] level)
         {
 
             GC.Collect();
@@ -30,14 +30,28 @@ namespace Fitch
             foreach (Block block in blocks)
             {
 
-                if (Math.Floor(block.ScreenPos.Y) == Math.Floor(player.Position.Y + player.Height) && (block.ScreenPos.X >= minX && block.ScreenPos.X <= maxX))
+                int lY = (int)Math.Floor((player.Position.Y + player.Height) / world.blockSize);
+                int lX = (int)Math.Floor(player.Position.X / world.blockSize);
+
+                lY *= 2;
+                lX *= 2;
+
+                try
                 {
-                    player.isStanding = true;
-                    player.isJumping = false;
+                    if (!(level[lX, lY] == null))
+                    {
+                        player.isStanding = true;
+                        player.isJumping = false;
+                    }
+                    else
+                    {
+                        player.isStanding = false;
+                    }
                 }
-                else
+                catch (IndexOutOfRangeException e)
                 {
-                    player.isStanding = false;
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
                 }
 
                 RectangleF bCol = new RectangleF(block.ScreenPos.X, block.ScreenPos.Y, block.Size, block.Size);
@@ -47,7 +61,7 @@ namespace Fitch
                     Rectangle rect = new Rectangle((int)colRect.X, (int)colRect.Y, (int)colRect.Width, (int)colRect.Height);
                     SpriteBatch.DrawRect(rect, Color.Red);
 
-                    if (!player.isStanding && colRect.Width >= colRect.Height && (!Block.isCollision(blocks, new RectangleF(minX, minY + colRect.Height, colRect.Width, colRect.Height)) || !Block.isCollision(blocks, new RectangleF(minX, minY - colRect.Height, colRect.Width, colRect.Height))))
+                    if (colRect.Width >= colRect.Height && (!Block.isCollision(blocks, new RectangleF(minX, minY + colRect.Height, colRect.Width, colRect.Height)) || !Block.isCollision(blocks, new RectangleF(minX, minY - colRect.Height, colRect.Width, colRect.Height))))
                     {
                         if (player.Velocity.Y > 0 && !Block.isCollision(blocks, new RectangleF(minX, minY - colRect.Height, colRect.Width, colRect.Height)))
                         {
@@ -57,11 +71,8 @@ namespace Fitch
                         {
                             player.Position += new Vector2(0, colRect.Height);
                         }
-
-                        if (!player.isStanding)
-                        {
-                            player.Velocity = new Vector2(player.Velocity.X, 0);
-                        }
+ 
+                        player.Velocity = new Vector2(player.Velocity.X, 0);
                     }
                     else if (!Block.isCollision(blocks, new RectangleF(minX + colRect.Width, minY, colRect.Width, colRect.Height)) || !Block.isCollision(blocks, new RectangleF(minX - colRect.Width, minY, colRect.Width, colRect.Height)))
                     {
@@ -78,13 +89,29 @@ namespace Fitch
                         {
                             player.Position -= new Vector2(block.Position.X, player.Position.Y);
                         }
-                        
+
                         player.Velocity = new Vector2(0, player.Velocity.Y);
                     }
+
+					RectangleF newCol = new RectangleF(player.Position.X, player.Position.Y, player.Position.X + player.Width, player.Position.Y + player.Height);
+
+					if (Block.isCollision(blocks, newCol))
+					{
+						player.Position = new Vector2(block.Position.X + block.Size, player.Position.Y);
+					}
 
                     break;
                 }
 
+            }
+
+            if (player.Position.X < 0)
+            {
+                player.Position = new Vector2(0, player.Position.Y);
+            }
+            if (player.Position.Y < 0)
+            {
+                player.Position = new Vector2(player.Position.X, 0);
             }
 
             player.Position += player.Velocity;

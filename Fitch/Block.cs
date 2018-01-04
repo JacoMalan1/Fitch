@@ -83,32 +83,18 @@ namespace Fitch
 
             foreach (Block block in blocks)
             {
-                float minX = rect.X;
-                float maxX = rect.X + rect.Width;
-                float minY = rect.Y;
-                float maxY = rect.Y + rect.Height;
+                RectangleF bCol = new RectangleF(block.ScreenPos.X, block.ScreenPos.Y, block.ScreenPos.X + block.Size, block.ScreenPos.Y + block.Size);
 
-                Vector2[] vertices = new Vector2[4]
+                if (bCol.IntersectsWith(rect)) 
                 {
-                    new Vector2(block.ScreenPos.X, block.ScreenPos.Y),
-                    new Vector2(block.ScreenPos.X + block.Size, block.ScreenPos.Y),
-                    new Vector2(block.ScreenPos.X, block.ScreenPos.Y + block.Size),
-                    new Vector2(block.ScreenPos.X + block.Size, block.ScreenPos.Y + block.Size)
-                };
-
-                foreach (Vector2 v in vertices)
-                {
-
-                    if ((v.X >= minX && v.X <= maxX) && (v.Y >= minY && v.Y <= maxY))
-                    {
-                        collision = true;
-                        break;
-                    }
-
+                    collision = true;
+                    break;
                 }
+
             }
 
             return collision;
+                
         }
 
     }
