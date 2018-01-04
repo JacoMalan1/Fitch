@@ -23,7 +23,7 @@ namespace Fitch
 
         }
 
-        public static List<Block> LoadFromFile(World world, string filePath)
+        public static List<Block> LoadFromFile(float blockSize, string filePath)
         {
 
             filePath = "Content/" + filePath;
@@ -49,11 +49,45 @@ namespace Fitch
                     int x = Int32.Parse(line.Substring(6, 3));
                     int y = Int32.Parse(line.Substring(10, 3));
 
-                    blocks.Add(new Block(BlockType.Solid, new Vector2(x, y), world.blockSize));
+                    blocks.Add(new Block(BlockType.Solid, new Vector2(x, y), blockSize));
                 }
             }
 
             return blocks;
         }
+
+        public static Block[,] LoadFromFile(World world, string filePath)
+        {
+
+            filePath = "Content/" + filePath;
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException();
+
+            string[] lines = File.ReadAllLines(filePath);
+
+            Block[,] blocks = new Block[(int)world.WorldSize.X, (int)world.WorldSize.Y];
+
+            foreach (string line in lines)
+            {
+
+                if (line[0] == '#')
+                    continue;
+
+                if (line.Substring(0, 5) == "solid")
+                {
+
+                    int x = Int32.Parse(line.Substring(6, 3));
+                    int y = Int32.Parse(line.Substring(10, 3));
+
+                    blocks[x, y] = new Block(BlockType.Solid, new Vector2(x, y), world.blockSize);
+
+                }
+
+            }
+
+            return blocks;
+
+        }
+
     }
 }

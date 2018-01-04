@@ -8,13 +8,6 @@ solid,000,004
 solid,001,008
 solid,002,008
 solid,003,008
-solid,008,004
-solid,008,003
-solid,008,002
-solid,008,001
-solid,008,000
-solid,008,-01
-solid,008,-02
 solid,004,008
 solid,005,008
 solid,006,008
@@ -49,8 +42,3 @@ solid,034,008
 solid,035,008
 solid,036,008
 solid,037,008
-#solid,000,-02
-#solid,001,-02
-#solid,002,-02
-#solid,003,-02
-#solid,004,-02
