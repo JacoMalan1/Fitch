@@ -1,8 +1,6 @@
-﻿using System;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.Drawing.Imaging;
-using OpenTK;
 using System.IO;
 
 namespace Fitch
