@@ -3,7 +3,6 @@ using OpenTK;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Fitch
 {
