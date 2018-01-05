@@ -81,11 +81,13 @@ namespace Fitch
                 player.isRunning = true;
 
             }
-            if (Input.KeyDown(OpenTK.Input.Key.A) && !(Math.Abs(player.Velocity.X) >= TVELOCITY))
+            if (Input.KeyDown(OpenTK.Input.Key.A))
             {
-
-                player.Velocity += new Vector2(-0.4f, 0);
-                player.isRunning = true;
+                if (!(Math.Abs(player.Velocity.X) >= TVELOCITY) || Input.KeyDown(OpenTK.Input.Key.D))
+                {
+                    player.Velocity += new Vector2(-0.4f, 0);
+                    player.isRunning = true;
+                }
 
             }
             Input.Update();
