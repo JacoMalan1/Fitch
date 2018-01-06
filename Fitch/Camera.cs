@@ -11,13 +11,15 @@ namespace Fitch
     class Camera
     {
 
-        public static void ApplyTransform(ref Player player, GameWindow window)
+        public static Matrix4 ApplyTransform(ref Player player, GameWindow window)
         {
 
             Matrix4 transform = Matrix4.Identity;
             transform = Matrix4.Mult(transform, Matrix4.CreateTranslation((-player.Position.X + window.Width / 2) - player.Width, (-player.Position.Y + window.Height / 2) - player.Height, 0));
 
             GL.MultMatrix(ref transform);
+
+            return transform;
 
         }
 

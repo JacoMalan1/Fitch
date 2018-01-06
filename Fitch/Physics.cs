@@ -60,9 +60,10 @@ namespace Fitch
                             else
                             {
                                 player.Position += new Vector2(0, colRect.Height);
+                                player.Velocity = new Vector2(player.Velocity.X, 0);
                             }
 
-                            if (player.isStanding)
+                            if (player.isStanding || player.isJumping)
                                 player.Velocity = new Vector2(player.Velocity.X, 0);
                             else
                                 player.Velocity = new Vector2(0, player.Velocity.Y);
@@ -80,7 +81,7 @@ namespace Fitch
                                 player.Position += new Vector2(colRect.Width, 0);
                             }
 
-                            player.Velocity = new Vector2(0, 0);
+                            player.Velocity = new Vector2(0, player.Velocity.Y);
 
                         }
 

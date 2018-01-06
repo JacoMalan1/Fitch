@@ -143,6 +143,48 @@ namespace Fitch
 
         }
 
+        public static void DrawRect(Texture2D texture, RectangleF rect, float alpha = 255)
+        {
+
+            Vector2[] coords = new Vector2[4]
+            {
+                new Vector2(0, 0),
+                new Vector2(1, 0),
+                new Vector2(0, 1),
+                new Vector2(1, 1)
+            };
+
+            Vector2[] vertices = new Vector2[4]
+            {
+
+                new Vector2(rect.X, rect.Y),
+                new Vector2(rect.X + rect.Width, rect.Y),
+                new Vector2(rect.X, rect.Y + rect.Height),
+                new Vector2(rect.X + rect.Width, rect.Y + rect.Height),
+
+            };
+
+            int[] indices = new int[6]
+            {
+                0, 1, 3, 0, 2, 3
+            };
+
+            GL.BindTexture(TextureTarget.Texture2D, texture.ID);
+
+            GL.Color4(255, 255, 255, alpha);
+
+            GL.Begin(PrimitiveType.Triangles);
+            foreach (int i in indices)
+            {
+
+                GL.TexCoord2(coords[i].X, coords[i].Y);
+                GL.Vertex2(vertices[i].X, vertices[i].Y);
+
+            }
+            GL.End();
+
+        }
+
         public static void DrawText(string text, Vector2 position, float size, Texture2D texture)
         {
 

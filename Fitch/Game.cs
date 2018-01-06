@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
 using OpenTK;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
+using IniParser;
+using IniParser.Model;
 
 namespace Fitch
 {
@@ -16,9 +19,12 @@ namespace Fitch
         Block[,] level;
         Vector2 removePos = new Vector2(int.MaxValue, int.MaxValue);
         Texture2D playerTexture;
+        Texture2D logoTex;
+        public static string fps;
         Texture2D font;
         public static double TVELOCITY = 8;
         public static bool running = false;
+        public static bool titlescreen;
 
         public Game(ref GameWindow window)
         {
@@ -57,6 +63,20 @@ namespace Fitch
             playerTexture = ContentPipe.LoadTexture("player.png");
             font = ContentPipe.LoadTexture("text.jpg");
 
+            logoTex = ContentPipe.LoadTexture("logo.png");
+
+            titlescreen = true;
+
+            if (MainClass.data.GetKey("Fullscreen") == "true")
+            {
+                window.WindowState = WindowState.Fullscreen;
+            }
+            window.CursorVisible = false;
+
+            fps = ((int)window.RenderFrequency).ToString();
+
+            i = 0;
+
         }
 
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -71,7 +91,7 @@ namespace Fitch
             //Input handling
             if (Input.KeyPress(OpenTK.Input.Key.Space) && player.isStanding)
             {
-                player.Velocity += new Vector2(0, -10);
+                player.Velocity += new Vector2(0, -15);
                 player.isJumping = true;
 			}
             if (Input.KeyDown(OpenTK.Input.Key.D) && !(player.Velocity.X >= TVELOCITY))
@@ -90,40 +110,65 @@ namespace Fitch
                 }
 
             }
+            if (Input.KeyDown(OpenTK.Input.Key.Escape))
+            {
+                window.Close();
+            }
             Input.Update();
 
-            
-
-			//Calculate physics
-			Physics.updatePhysics(ref player, blocks, world, level);
-
+            //Calculate physics
+            Physics.updatePhysics(ref player, blocks, world, level);
         }
 
         void Window_RenderFrame(object sender, FrameEventArgs e)
         {
 
-            Matrix4 projMat = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref projMat);
-            
-            Camera.ApplyTransform(ref player, window);
-
-            GL.ClearColor(Color.Aqua);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            
-
-            foreach (Block block in blocks)
+            if (titlescreen)
             {
-                SpriteBatch.DrawBlock(block.Type, block.Position, block.Size);
+                Matrix4 projMat = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
+                GL.MatrixMode(MatrixMode.Projection);
+                GL.LoadMatrix(ref projMat);
+
+                GL.ClearColor(Color.Black);
+                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+                for (int alpha = 0; alpha <= 255; alpha++)
+                {
+                    SpriteBatch.DrawRect(logoTex, new RectangleF(0, 0, window.Width, window.Height), alpha);
+                    window.SwapBuffers();
+                }
+
+                titlescreen = false;
             }
+            else
+            {
 
-            string fps = ((int)window.RenderFrequency).ToString();
 
-            SpriteBatch.DrawPlayer(playerTexture, player);
-            SpriteBatch.DrawText(fps, new Vector2(0, 0), 30, font);
+                Matrix4 projMat = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
+                GL.MatrixMode(MatrixMode.Projection);
+                GL.LoadMatrix(ref projMat);
 
+                GL.ClearColor(Color.Aqua);
+                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+                Matrix4 transform = Camera.ApplyTransform(ref player, window);
+
+                foreach (Block block in blocks)
+                {
+                    SpriteBatch.DrawBlock(block.Type, block.Position, block.Size);
+                }
+
+                if (i % 30 == 0)
+                    fps = ((int)window.RenderFrequency).ToString();
+
+                SpriteBatch.DrawPlayer(playerTexture, player);
+                
+                GL.LoadMatrix(ref projMat);
+                SpriteBatch.DrawText(fps, new Vector2(0, 0), 30, font);
+                i++;
+                
+            }
             window.SwapBuffers();
-
         }
 
         bool blockSearch(Block block)
