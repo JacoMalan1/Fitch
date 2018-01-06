@@ -165,7 +165,6 @@ namespace Fitch
                 Matrix4 projMat = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadMatrix(ref projMat);
-
                 GL.ClearColor(Color.Aqua);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 

@@ -14,11 +14,12 @@ namespace Fitch
         {
 
             int lX = (int)Math.Floor(player.Position.X / world.blockSize);
+            int xX = (int)Math.Floor((player.Position.X + player.Width) / world.blockSize);
             int lY = (int)Math.Floor((player.Position.Y + player.Height) / world.blockSize);
 
             try
             {
-                if (!(level[lX, lY] == null))
+                if (!(level[lX, lY] == null) || !(level[xX, lY] == null))
                 {
                     player.isStanding = true;
                     player.isJumping = false;
@@ -53,7 +54,7 @@ namespace Fitch
                         if (level[bX, bY + 1] == null || level[bX, bY - 1] == null)
                         {
 
-                            if (player.Velocity.Y > 0)
+                            if (player.Velocity.Y > 0 || player.isStanding)
                             {
                                 player.Position -= new Vector2(0, colRect.Height);
                             }
