@@ -10,6 +10,13 @@ namespace Fitch
         public static bool collide = false;
         public static Collision col = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="player">Needed to change the players coords.</param>
+        /// <param name="blocks">Needed to itterate through all the blocks to check collision.</param>
+        /// <param name="world">Needed to check the block size.</param>
+        /// <param name="level">Used cuz i'm lazy JK xD.</param>
         public static void updatePhysics(ref Player player, List<Block> blocks, World world, Block[,] level)
         {
 
@@ -19,6 +26,8 @@ namespace Fitch
 
             try
             {
+
+                //Check if the player is staning
                 if (!(level[lX, lY] == null) || !(level[xX, lY] == null))
                 {
                     player.isStanding = true;
@@ -50,7 +59,7 @@ namespace Fitch
 
                     if (pCol.IntersectsWith(bCol))
                     {
-
+                        //Resolve Y
                         if (level[bX, bY + 1] == null || level[bX, bY - 1] == null)
                         {
 
@@ -70,6 +79,7 @@ namespace Fitch
                                 player.Velocity = new Vector2(0, player.Velocity.Y);
 
                         }
+                        //Resolve X
                         else if (level[bX + 1, bY] == null || level[bX - 1, bY] == null)
                         {
 

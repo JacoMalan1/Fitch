@@ -71,7 +71,6 @@ namespace Fitch
             if (MainClass.data.GetKey("Fullscreen") == "true")
             {
                 window.WindowState = WindowState.Fullscreen;
-
                 window.CursorVisible = false;
             }
 
