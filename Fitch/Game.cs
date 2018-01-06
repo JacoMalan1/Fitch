@@ -33,6 +33,7 @@ namespace Fitch
             window.Closing += Window_Closing;
             window.UpdateFrame += Window_UpdateFrame;
             window.RenderFrame += Window_RenderFrame;
+            window.Resize += Window_Resize;
 
             this.window = window;
 
@@ -70,8 +71,9 @@ namespace Fitch
             if (MainClass.data.GetKey("Fullscreen") == "true")
             {
                 window.WindowState = WindowState.Fullscreen;
+
+                window.CursorVisible = false;
             }
-            window.CursorVisible = false;
 
             fps = ((int)window.RenderFrequency).ToString();
 
@@ -81,7 +83,7 @@ namespace Fitch
 
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
+            window.Dispose();
         }
 
         void Window_UpdateFrame(object sender, FrameEventArgs e)
@@ -89,6 +91,22 @@ namespace Fitch
             player.isRunning = false;
 
             //Input handling
+            if (Input.KeyPress(OpenTK.Input.Key.F11))
+            {
+                if (window.WindowState == WindowState.Normal)
+                {
+                    window.WindowState = WindowState.Fullscreen;
+                }
+                else if (window.WindowState == WindowState.Fullscreen)
+                {
+                    window.WindowState = WindowState.Normal;
+                }
+                else
+                {
+                    window.WindowState = WindowState.Fullscreen;
+                }
+            }
+
             if (Input.KeyPress(OpenTK.Input.Key.Space) && player.isStanding)
             {
                 player.Velocity += new Vector2(0, -15);
@@ -169,6 +187,16 @@ namespace Fitch
                 
             }
             window.SwapBuffers();
+        }
+
+        void Window_Resize(object sender, EventArgs e)
+        {
+			Matrix4 projMat = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
+			GL.MatrixMode(MatrixMode.Projection);
+			GL.LoadMatrix(ref projMat);
+
+            Camera.ApplyTransform(ref player, window);
+
         }
 
         bool blockSearch(Block block)
