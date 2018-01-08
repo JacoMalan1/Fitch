@@ -22,7 +22,7 @@ namespace Fitch
         Texture2D logoTex;
         public static string fps;
         Texture2D font;
-        public static double TVELOCITY = 8;
+        public const double TVELOCITY = 8;
         public static bool running = false;
         public static bool titlescreen;
 
@@ -55,9 +55,8 @@ namespace Fitch
             GL.Enable(EnableCap.Texture2D);
 
             world = new World(50, new Vector2(50, 50));
-            player = new Player(new Vector2(60, 10), 50, 70, new Vector2(0, -5), false);
-
             blocks = World.LoadFromFile(world.blockSize, "level1.fl");
+            player = new Player(new Vector2(blocks[0].ScreenPos.X + player.Width, blocks[0].ScreenPos.Y - player.Height - 70), 50, 70, new Vector2(0, -5), false);
 
             level = World.LoadFromFile(world, "level1.fl");
 
@@ -125,7 +124,6 @@ namespace Fitch
                     player.Velocity += new Vector2(-0.4f, 0);
                     player.isRunning = true;
                 }
-
             }
             if (Input.KeyDown(OpenTK.Input.Key.Escape))
             {

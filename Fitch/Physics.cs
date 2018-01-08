@@ -129,6 +129,12 @@ namespace Fitch
             {
                 player.Velocity += new Vector2(0, 0.44f);
             }
+
+            if (player.Position.Y >= world.worldSize.Y * world.blockSize)
+            {
+                player.Position = new Vector2(blocks[0].ScreenPos.X + player.Width, blocks[0].ScreenPos.Y - player.Height - 70);
+            }
+
         }
     }
 }
