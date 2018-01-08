@@ -243,7 +243,7 @@ namespace Fitch
 
                 int[] indices = new int[6]
                 {
-                0, 1, 3, 0, 2, 3
+                    0, 1, 3, 0, 2, 3
                 };
 
                 GL.Begin(PrimitiveType.Triangles);

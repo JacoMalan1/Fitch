@@ -204,6 +204,8 @@ namespace Fitch
 
         void Window_Resize(object sender, EventArgs e)
         {
+
+            GL.Viewport(window.ClientRectangle);
 			Matrix4 projMat = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadMatrix(ref projMat);
