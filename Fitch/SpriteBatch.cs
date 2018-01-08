@@ -8,6 +8,7 @@ namespace Fitch
     public class SpriteBatch
     {
         public static Texture2D textureSolid = ContentPipe.LoadTexture("solid.jpg");
+        public static Texture2D textureSpike = ContentPipe.LoadTexture("spike.png");
 
         public static void DrawSquare(Texture2D texture, Vector2 position, float size)
         {
@@ -92,10 +93,12 @@ namespace Fitch
                 case BlockType.Solid:
                     texture = textureSolid;
                     break;
+                case BlockType.Spike:
+                    texture = textureSpike;
+                    break;
                 default:
                     texture = textureSolid;
                     break;
-
             }
 
             GL.BindTexture(TextureTarget.Texture2D, texture.ID);
@@ -126,18 +129,21 @@ namespace Fitch
 
             int[] indices = new int[4]
             {
-                0, 1, 2, 3
+                0, 1, 3, 2
             };
 
             GL.Begin(PrimitiveType.Quads);
+            
+            GL.Color4(color);
 
-            GL.Color3(color);
             foreach (int i in indices)
             {
-
+                
                 GL.Vertex2(vertices[i].X, vertices[i].Y);
 
             }
+
+            GL.Color4(255, 255, 255, 255);
 
             GL.End();
 

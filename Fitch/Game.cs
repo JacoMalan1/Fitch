@@ -4,6 +4,7 @@ using OpenTK;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
+using System.Timers;
 using IniParser;
 using IniParser.Model;
 
@@ -11,7 +12,7 @@ namespace Fitch
 {
     public class Game
     {
-        GameWindow window;
+        public static GameWindow window;
         World world;
         Player player;
         public static int i;
@@ -25,6 +26,8 @@ namespace Fitch
         public const double TVELOCITY = 8;
         public static bool running = false;
         public static bool titlescreen;
+        public static Block playerStart;
+        public static Timer deathTimer;
 
         public Game(ref GameWindow window)
         {
@@ -35,7 +38,7 @@ namespace Fitch
             window.RenderFrame += Window_RenderFrame;
             window.Resize += Window_Resize;
 
-            this.window = window;
+            Game.window = window;
 
             Input.Initialize(ref window);
             window.KeyUp += Input.Game_KeyUp;
@@ -76,6 +79,9 @@ namespace Fitch
             fps = ((int)window.RenderFrequency).ToString();
 
             i = 0;
+            deathTimer = new Timer();
+            deathTimer.Interval = 1000;
+            deathTimer.Elapsed += DeathTimer_Elapsed;
 
         }
 
@@ -132,7 +138,8 @@ namespace Fitch
             Input.Update();
 
             //Calculate physics
-            Physics.updatePhysics(ref player, blocks, world, level);
+            if (!player.isDead)
+                Physics.updatePhysics(ref player, blocks, world, level);
         }
 
         void Window_RenderFrame(object sender, FrameEventArgs e)
@@ -169,16 +176,26 @@ namespace Fitch
 
                 foreach (Block block in blocks)
                 {
+                    if (block.Type == BlockType.PlayerStart)
+                    {
+                        player.Position = new Vector2(block.ScreenPos.X + player.Width, block.ScreenPos.Y - player.Height);
+                        continue;
+                    }
+
                     SpriteBatch.DrawBlock(block.Type, block.Position, block.Size);
                 }
 
+                //Stuff that is frame-counter dependent
                 if (i % 30 == 0)
                     fps = ((int)window.RenderFrequency).ToString();
 
                 SpriteBatch.DrawPlayer(playerTexture, player);
-                
+
+                //Non-moving elements
                 GL.LoadMatrix(ref projMat);
                 SpriteBatch.DrawText(fps, new Vector2(0, 0), 30, font);
+                if (player.isDead)
+                    SpriteBatch.DrawRect(new Rectangle(0, 0, window.Width, window.Height), Color.FromArgb(128, 255, 0, 0));
                 i++;
                 
             }
@@ -207,6 +224,27 @@ namespace Fitch
             {
                 return false;
             }
+
+        }
+
+        public static void playerDeath(ref Player player, Block playerStart)
+        {
+
+            deathTimer.Start();
+            player.isDead = true;
+
+        }
+
+        void DeathTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+
+			player.isDead = false;
+			player.Position = new Vector2(playerStart.ScreenPos.X + player.Width, playerStart.ScreenPos.Y - player.Height);
+			player.isJumping = false;
+			player.isRunning = false;
+			player.isStanding = false;
+			player.Velocity = Vector2.Zero;
+            deathTimer.Stop();
 
         }
     }

@@ -12,6 +12,7 @@ namespace Fitch
         private bool running;
         private bool standing;
         private bool jumping;
+        private bool dead;
 
         public Vector2 Position { get { return position; } set { position = value; } }
         public float Width { get { return width; }}
@@ -21,10 +22,11 @@ namespace Fitch
         public bool isRunning { get { return running; } set { running = value; }}
         public bool isStanding { get { return standing; } set { standing = value; }}
         public bool isJumping { get { return jumping; } set { jumping = value; } }
+        public bool isDead { get { return dead; } set { dead = value; }}
 
-        public Player(Vector2 position, float width, float height, Vector2 velocity, bool running = false, bool standing = false, bool jumping = false)
+        public Player(Vector2 position, float width, float height, Vector2 velocity, bool running = false, bool standing = false, bool jumping = false, bool dead = false)
         {
-
+            
             this.position = position;
             this.height = height;
             this.width = width;
@@ -33,6 +35,7 @@ namespace Fitch
             this.standing = standing;
             this.size = new Vector2(this.width, this.height);
             this.jumping = jumping;
+            this.dead = dead;
 
         }
     }

@@ -1,8 +1,10 @@
 solid,000,040
 solid,001,040
+start,000,040
 solid,002,040
 solid,003,040
 solid,004,040
+spike,004,039
 solid,005,040
 solid,010,040
 solid,011,040

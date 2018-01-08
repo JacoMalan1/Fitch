@@ -50,7 +50,14 @@ namespace Fitch
                     int y = Int32.Parse(line.Substring(10, 3));
 
                     blocks.Add(new Block(BlockType.Solid, new Vector2(x, y), blockSize));
-                }
+				}
+				else if (line.Substring(0, 5) == "spike")
+				{
+					int x = Int32.Parse(line.Substring(6, 3));
+					int y = Int32.Parse(line.Substring(10, 3));
+
+                    blocks.Add(new Block(BlockType.Spike, new Vector2(x, y), blockSize));
+				}
             }
 
             return blocks;
@@ -80,6 +87,18 @@ namespace Fitch
                     int y = Int32.Parse(line.Substring(10, 3));
 
                     blocks[x, y] = new Block(BlockType.Solid, new Vector2(x, y), world.blockSize);
+
+                }
+
+                else if (line.Substring(0, 5) == "start")
+                {
+
+					int x = Int32.Parse(line.Substring(6, 3));
+					int y = Int32.Parse(line.Substring(10, 3));
+
+                    blocks[x, y] = new Block(BlockType.PlayerStart, new Vector2(x, y), world.blockSize);
+
+                    Game.playerStart = new Block(BlockType.PlayerStart, new Vector2(x, y), world.blockSize);
 
                 }
 

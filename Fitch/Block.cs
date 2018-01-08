@@ -8,7 +8,9 @@ namespace Fitch
     public enum BlockType
     {
         Air,
-        Solid
+        Solid,
+        Spike,
+        PlayerStart
     }
     public class Collision
     {

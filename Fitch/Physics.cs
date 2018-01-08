@@ -59,6 +59,12 @@ namespace Fitch
 
                     if (pCol.IntersectsWith(bCol))
                     {
+                        if (block.Type == BlockType.Spike)
+                        {
+                            Game.playerDeath(ref player, Game.playerStart);
+                            break;
+                        }
+
                         //Resolve Y
                         if (level[bX, bY + 1] == null || level[bX, bY - 1] == null)
                         {
@@ -132,7 +138,7 @@ namespace Fitch
 
             if (player.Position.Y >= world.worldSize.Y * world.blockSize)
             {
-                player.Position = new Vector2(blocks[0].ScreenPos.X + player.Width, blocks[0].ScreenPos.Y - player.Height - 70);
+                Game.playerDeath(ref player, Game.playerStart);
             }
 
         }
