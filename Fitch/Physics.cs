@@ -27,8 +27,8 @@ namespace Fitch
             try
             {
 
-                //Check if the player is staning
-                if (!(level[lX, lY] == null) || !(level[xX, lY] == null))
+                //Check if the player is standing
+                if (!(level[lX, lY] == null) || !(level[xX, lY] == null) && player.Velocity.Y >= 0)
                 {
                     player.isStanding = true;
                     player.isJumping = false;

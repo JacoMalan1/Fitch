@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
 using OpenTK;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using System.Timers;
-using IniParser;
-using IniParser.Model;
 
 namespace Fitch
 {
@@ -165,7 +162,6 @@ namespace Fitch
             else
             {
 
-
                 Matrix4 projMat = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadMatrix(ref projMat);
@@ -176,6 +172,7 @@ namespace Fitch
 
                 foreach (Block block in blocks)
                 {
+
                     if (block.Type == BlockType.PlayerStart)
                     {
                         player.Position = new Vector2(block.ScreenPos.X + player.Width, block.ScreenPos.Y - player.Height);
@@ -200,6 +197,7 @@ namespace Fitch
                 
             }
             window.SwapBuffers();
+
         }
 
         void Window_Resize(object sender, EventArgs e)
