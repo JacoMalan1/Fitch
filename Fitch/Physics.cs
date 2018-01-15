@@ -8,7 +8,6 @@ namespace Fitch
     class Physics
     {
         public static bool collide = false;
-        public static Collision col = null;
 
         /// <summary>
         /// 
@@ -20,6 +19,7 @@ namespace Fitch
         public static void updatePhysics(ref Player player, List<Block> blocks, World world, Block[,] level)
         {
 
+            //Get player coords for checking if player is standing.
             int lX = (int)Math.Floor(player.Position.X / world.blockSize);
             int xX = (int)Math.Floor((player.Position.X + player.Width) / world.blockSize);
             int lY = (int)Math.Floor((player.Position.Y + player.Height) / world.blockSize);
@@ -45,10 +45,36 @@ namespace Fitch
 
             try
             {
+                List<Block> checkBlocks = new List<Block>();
+
+                int minX = (int)Math.Floor(player.Position.X / world.blockSize);
+                int maxX = (int)Math.Floor((player.Position.X + player.Width) / world.blockSize);
+                int minY = (int)Math.Floor(player.Position.Y / world.blockSize);
+                int maxY = (int)Math.Floor((player.Position.Y + player.Height) / world.blockSize);
+
+                //Only check blocks in the player radius rather than checking every single block.
+                if (!(level[minX, minY] == null))
+                {
+                    checkBlocks.Add(level[minX, minY]);
+                }
+                if (!(level[minX, maxY] == null))
+                {
+                    checkBlocks.Add(level[minX, maxY]);
+                }
+                if (!(level[maxX, maxY] == null))
+                {
+                    checkBlocks.Add(level[maxX, maxY]);
+                }
+                if (!(level[maxX, minY] == null))
+                {
+                    checkBlocks.Add(level[maxX, minY]);
+                }
+
                 //Collision
-                foreach (Block block in blocks)
+                foreach (Block block in checkBlocks)
                 {
 
+                    //Setup bounding boxes
                     RectangleF bCol = new RectangleF(block.ScreenPos.X, block.ScreenPos.Y, block.Size, block.Size);
                     RectangleF pCol = new RectangleF(player.Position.X, player.Position.Y, player.Width, player.Height);
 
@@ -57,18 +83,27 @@ namespace Fitch
 
                     RectangleF colRect = RectangleF.Intersect(bCol, pCol);
 
+                    //Check wether the player is intersecting with a block.
                     if (pCol.IntersectsWith(bCol))
                     {
+
+                        //BURN BABY, BURN!
                         if (block.Type == BlockType.Spike)
                         {
-                            Game.playerDeath(ref player, Game.playerStart);
+                            Game.playerDeath(ref player);
                             break;
                         }
+
+                        if (block.Type == BlockType.Goal)
+                            continue;
+
+                        #region Resolve
 
                         //Resolve Y
                         if (level[bX, bY + 1] == null || level[bX, bY - 1] == null)
                         {
 
+                            //If player is moving downwards or standing then we always move up.
                             if (player.Velocity.Y > 0 || player.isStanding)
                             {
                                 player.Position -= new Vector2(0, colRect.Height);
@@ -79,16 +114,19 @@ namespace Fitch
                                 player.Velocity = new Vector2(player.Velocity.X, 0);
                             }
 
+                            //Retain X-velocity if player is standing or jumping.
                             if (player.isStanding || player.isJumping)
                                 player.Velocity = new Vector2(player.Velocity.X, 0);
                             else
                                 player.Velocity = new Vector2(0, player.Velocity.Y);
 
                         }
+
                         //Resolve X
                         else if (level[bX + 1, bY] == null || level[bX - 1, bY] == null)
                         {
 
+                            //Almost same as for Y resolution.
                             if (player.Velocity.X > 0)
                             {
                                 player.Position -= new Vector2(colRect.Width, 0);
@@ -102,6 +140,8 @@ namespace Fitch
 
                         }
 
+                        #endregion
+
                         break;
 
                     }
@@ -110,10 +150,14 @@ namespace Fitch
             }
             catch (IndexOutOfRangeException e)
             {
+
+                //Write error to command line.
                 Console.WriteLine("Error in update physics.X or Y");
                 Console.WriteLine(e.StackTrace);
+            
             }
 
+            //Prevent player from breaking physics :)
             if (player.Position.X < 0)
             {
                 player.Position = new Vector2(0, player.Position.Y);
@@ -123,11 +167,11 @@ namespace Fitch
                 player.Position = new Vector2(player.Position.X, 0);
             }
 
+            //Velocity
             player.Position += player.Velocity;
-
             if (!Input.KeyDown(OpenTK.Input.Key.D) && !Input.KeyDown(OpenTK.Input.Key.A))
             {
-                player.Velocity = new Vector2(player.Velocity.X / 1.2f, player.Velocity.Y);
+                player.Velocity = new Vector2(player.Velocity.X / 1.5f, player.Velocity.Y);
             }
 
             //Gravity
@@ -136,9 +180,10 @@ namespace Fitch
                 player.Velocity += new Vector2(0, 0.44f);
             }
 
+            //Setup killplane
             if (player.Position.Y >= world.worldSize.Y * world.blockSize)
             {
-                Game.playerDeath(ref player, Game.playerStart);
+                Game.playerDeath(ref player);
             }
 
         }

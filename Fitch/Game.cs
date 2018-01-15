@@ -25,10 +25,15 @@ namespace Fitch
         public static bool titlescreen;
         public static Block playerStart;
         public static Timer deathTimer;
+        public static Block GoalBlock;
+        public bool goal = false;
+        public static Timer goalTimer;
+        public int levelCounter = 1;
 
         public Game(ref GameWindow window)
         {
 
+            //Do I really need to explain this?
             window.Load += Window_Load;
             window.Closing += Window_Closing;
             window.UpdateFrame += Window_UpdateFrame;
@@ -46,6 +51,7 @@ namespace Fitch
         void Window_Load(object sender, EventArgs e)
         {
 
+            //Enable all the tings (skrrrrrrrrrra)
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
@@ -54,15 +60,21 @@ namespace Fitch
 
             GL.Enable(EnableCap.Texture2D);
 
-            world = new World(50, new Vector2(50, 50));
-            blocks = World.LoadFromFile(world.blockSize, "level1.fl");
-            player = new Player(new Vector2(blocks[0].ScreenPos.X + player.Width, blocks[0].ScreenPos.Y - player.Height - 70), 50, 70, new Vector2(0, -5), false);
+            //Load level
+            string levelName = "level" + levelCounter.ToString() + ".fl";
+            world = new World(50, new Vector2(200, 50));
+            blocks = World.LoadFromFile(world.blockSize, levelName);
+            level = World.LoadFromFile(world, levelName);
 
-            level = World.LoadFromFile(world, "level1.fl");
-
+            //Initialize player
+            player = new Player(new Vector2(0, 0), 50, 70, Vector2.Zero);
+            player.Position = playerStart.ScreenPos - new Vector2(-player.Width, player.Height);
             playerTexture = ContentPipe.LoadTexture("player.png");
+
+            //Load font
             font = ContentPipe.LoadTexture("text.jpg");
 
+            //Load logo
             logoTex = ContentPipe.LoadTexture("logo.png");
 
             titlescreen = true;
@@ -75,10 +87,19 @@ namespace Fitch
 
             fps = ((int)window.RenderFrequency).ToString();
 
+            //Initialize timers
             i = 0;
             deathTimer = new Timer();
             deathTimer.Interval = 1000;
             deathTimer.Elapsed += DeathTimer_Elapsed;
+            goalTimer = new Timer();
+            goalTimer.Interval = 2000;
+            goalTimer.Elapsed += GoalTimer_Elapsed;
+
+            goal = false;
+
+            //DEBUG
+            //titlescreen = false;
 
         }
 
@@ -89,23 +110,38 @@ namespace Fitch
 
         void Window_UpdateFrame(object sender, FrameEventArgs e)
         {
+
+            //Check if player is at the goal
+            if (player.Position.X >= GoalBlock.ScreenPos.X && player.Position.X <= GoalBlock.ScreenPos.X + GoalBlock.Size && !goalTimer.Enabled)
+            {
+                goal = true;
+                goalTimer.Start();
+            }
+
             player.isRunning = false;
 
             //Input handling
             if (Input.KeyPress(OpenTK.Input.Key.F11))
             {
+                
                 if (window.WindowState == WindowState.Normal)
                 {
                     window.WindowState = WindowState.Fullscreen;
+                    window.CursorVisible = !window.CursorVisible;
                 }
+
                 else if (window.WindowState == WindowState.Fullscreen)
                 {
                     window.WindowState = WindowState.Normal;
+                    window.CursorVisible = !window.CursorVisible;
                 }
+
                 else
                 {
                     window.WindowState = WindowState.Fullscreen;
+                    window.CursorVisible = false;
                 }
+
             }
 
             if (Input.KeyPress(OpenTK.Input.Key.Space) && player.isStanding)
@@ -116,26 +152,29 @@ namespace Fitch
             if (Input.KeyDown(OpenTK.Input.Key.D) && !(player.Velocity.X >= TVELOCITY))
             {
 
-                player.Velocity += new Vector2(0.4f, 0);
+                player.Velocity += new Vector2(0.3f, 0);
                 player.isRunning = true;
 
             }
+
             if (Input.KeyDown(OpenTK.Input.Key.A))
             {
                 if (!(Math.Abs(player.Velocity.X) >= TVELOCITY) || Input.KeyDown(OpenTK.Input.Key.D))
                 {
-                    player.Velocity += new Vector2(-0.4f, 0);
+                    player.Velocity += new Vector2(-0.3f, 0);
                     player.isRunning = true;
                 }
             }
+
             if (Input.KeyDown(OpenTK.Input.Key.Escape))
             {
                 window.Close();
             }
+
             Input.Update();
 
             //Calculate physics
-            if (!player.isDead)
+            if (!player.isDead && !goal)
                 Physics.updatePhysics(ref player, blocks, world, level);
         }
 
@@ -178,6 +217,11 @@ namespace Fitch
                         player.Position = new Vector2(block.ScreenPos.X + player.Width, block.ScreenPos.Y - player.Height);
                         continue;
                     }
+                    if (block.Type == BlockType.Goal)
+                    {
+                        SpriteBatch.DrawGoal(block);
+                        continue;
+                    }
 
                     SpriteBatch.DrawBlock(block.Type, block.Position, block.Size);
                 }
@@ -193,6 +237,8 @@ namespace Fitch
                 SpriteBatch.DrawText(fps, new Vector2(0, 0), 30, font);
                 if (player.isDead)
                     SpriteBatch.DrawRect(new Rectangle(0, 0, window.Width, window.Height), Color.FromArgb(128, 255, 0, 0));
+                if (goal)
+                    SpriteBatch.DrawRect(new Rectangle(0, 0, window.Width, window.Height), Color.FromArgb(128, 0, 255, 0));
                 i++;
                 
             }
@@ -227,7 +273,7 @@ namespace Fitch
 
         }
 
-        public static void playerDeath(ref Player player, Block playerStart)
+        public static void playerDeath(ref Player player)
         {
 
             deathTimer.Start();
@@ -245,6 +291,19 @@ namespace Fitch
 			player.isStanding = false;
 			player.Velocity = Vector2.Zero;
             deathTimer.Stop();
+
+        }
+
+        void GoalTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+
+            levelCounter++;
+            string levelName = "level" + levelCounter.ToString() + ".fl";
+            blocks = World.LoadFromFile(world.blockSize, levelName);
+            level = World.LoadFromFile(world, levelName);
+            player = Player.Reset(player, playerStart);
+            goal = false;
+            goalTimer.Stop();
 
         }
     }

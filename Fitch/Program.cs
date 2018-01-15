@@ -10,7 +10,7 @@ namespace Fitch
     {
         
         public static IniData data;
-        public static void Main(string[] args)
+        public static void Main()
         {
             string screenWwidth = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width.ToString();
             string screenHeight = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height.ToString();

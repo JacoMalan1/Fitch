@@ -9,6 +9,7 @@ namespace Fitch
     {
         public static Texture2D textureSolid = ContentPipe.LoadTexture("solid.jpg");
         public static Texture2D textureSpike = ContentPipe.LoadTexture("spike.png");
+        public static Texture2D textureGoal = ContentPipe.LoadTexture("goal.png");
 
         public static void DrawSquare(Texture2D texture, Vector2 position, float size)
         {
@@ -67,6 +68,14 @@ namespace Fitch
 
             }
             GL.End();
+
+        }
+
+        public static void DrawGoal(Block goal)
+        {
+
+            Texture2D texture = textureGoal;
+            DrawRect(texture, new Rectangle((int)goal.ScreenPos.X, (int)goal.ScreenPos.Y - (int)goal.Size * 3, (int)goal.Size * 4, (int)goal.Size * 4));
 
         }
 

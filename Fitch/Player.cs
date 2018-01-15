@@ -2,7 +2,7 @@
 
 namespace Fitch
 {
-    public struct Player
+    public class Player
     {
         private Vector2 position;
         private float width;
@@ -36,6 +36,25 @@ namespace Fitch
             this.size = new Vector2(this.width, this.height);
             this.jumping = jumping;
             this.dead = dead;
+
+        }
+
+        public static Player Reset(Player player, Block startBlock)
+        {
+
+            if (player == null)
+            {
+                player = new Player(new Vector2(0, 0), 50, 70, Vector2.Zero);
+            }
+
+            player.Position = startBlock.ScreenPos - new Vector2(-player.Width, player.Height);
+            player.isDead = false;
+            player.isJumping = false;
+            player.isRunning = false;
+            player.isStanding = false;
+            player.Velocity = Vector2.Zero;
+
+            return player;
 
         }
     }

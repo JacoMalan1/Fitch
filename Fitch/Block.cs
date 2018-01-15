@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using OpenTK;
 
@@ -7,54 +6,11 @@ namespace Fitch
 {
     public enum BlockType
     {
-        Air,
         Solid,
         Spike,
-        PlayerStart
+        PlayerStart,
+        Goal
     }
-    public class Collision
-    {
-
-        private Block block;
-        private Player player;
-        private static Vector2 searchPos;
-
-        public Block Block { get { return block; } }
-        public Player Player { get { return player; } }
-
-        public Collision(Block block, ref Player player)
-        {
-
-            this.block = block;
-            this.player = player;
-
-        }
-
-        private static bool blockSearch(Block block)
-        {
-
-            if (block.Position == searchPos)
-            {
-                searchPos = new Vector2(int.MaxValue, int.MaxValue);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-        }
-
-        public static void CorrectPlayer(List<Block> blocks, Block block, ref Player player)
-        {
-
-
-
-        }
-
-    }
-
-
 
     public class Block
     {
@@ -87,7 +43,7 @@ namespace Fitch
             {
                 RectangleF bCol = new RectangleF(block.ScreenPos.X, block.ScreenPos.Y, block.ScreenPos.X + block.Size, block.ScreenPos.Y + block.Size);
 
-                if (bCol.IntersectsWith(rect)) 
+                if (bCol.IntersectsWith(rect))
                 {
                     collision = true;
                     break;
@@ -96,7 +52,7 @@ namespace Fitch
             }
 
             return collision;
-                
+
         }
 
     }
