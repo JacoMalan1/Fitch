@@ -17,11 +17,12 @@ namespace Fitch
 
             if (!File.Exists("config.ini"))
             {
-                string[] lines = new string[3]
+                string[] lines = new string[4]
                 {
                     "Resolution=" + screenWwidth + "x" + screenHeight,
                     "Fullscreen=true",
-                    "FSAA_Samples=8"
+                    "FSAA_Samples=8",
+                    "VSync=true"
                 };
                 File.WriteAllLines("config.ini", lines);
             }

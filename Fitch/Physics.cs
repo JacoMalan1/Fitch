@@ -70,6 +70,12 @@ namespace Fitch
                     checkBlocks.Add(level[maxX, minY]);
                 }
 
+                foreach (Block block in blocks)
+                {
+                    if (block.Type == BlockType.Spike)
+                        checkBlocks.Add(block);
+                }
+
                 //Collision
                 foreach (Block block in checkBlocks)
                 {

@@ -29,6 +29,7 @@ namespace Fitch
         public bool goal = false;
         public static Timer goalTimer;
         public int levelCounter = 1;
+        public static Timer tickTimer;
 
         public Game(ref GameWindow window)
         {
@@ -85,6 +86,11 @@ namespace Fitch
                 window.CursorVisible = false;
             }
 
+            if (MainClass.data.GetKey("VSync") == "false")
+            {
+                window.VSync = VSyncMode.Off;
+            }
+
             fps = ((int)window.RenderFrequency).ToString();
 
             //Initialize timers
@@ -95,21 +101,22 @@ namespace Fitch
             goalTimer = new Timer();
             goalTimer.Interval = 2000;
             goalTimer.Elapsed += GoalTimer_Elapsed;
+            tickTimer = new Timer();
+            tickTimer.Interval = 1000 / 65;
+            tickTimer.Elapsed += TickTimer_Elapsed;
 
             goal = false;
+            tickTimer.Start();
 
             //DEBUG
             //titlescreen = false;
 
         }
 
-        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void TickTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            window.Dispose();
-        }
-
-        void Window_UpdateFrame(object sender, FrameEventArgs e)
-        {
+            //Increment tick counter
+            i++;
 
             //Check if player is at the goal
             if (player.Position.X >= GoalBlock.ScreenPos.X && player.Position.X <= GoalBlock.ScreenPos.X + GoalBlock.Size && !goalTimer.Enabled)
@@ -123,7 +130,7 @@ namespace Fitch
             //Input handling
             if (Input.KeyPress(OpenTK.Input.Key.F11))
             {
-                
+
                 if (window.WindowState == WindowState.Normal)
                 {
                     window.WindowState = WindowState.Fullscreen;
@@ -148,7 +155,7 @@ namespace Fitch
             {
                 player.Velocity += new Vector2(0, -15);
                 player.isJumping = true;
-			}
+            }
             if (Input.KeyDown(OpenTK.Input.Key.D) && !(player.Velocity.X >= TVELOCITY))
             {
 
@@ -176,6 +183,17 @@ namespace Fitch
             //Calculate physics
             if (!player.isDead && !goal)
                 Physics.updatePhysics(ref player, blocks, world, level);
+        }
+
+        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            window.Dispose();
+        }
+
+        void Window_UpdateFrame(object sender, FrameEventArgs e)
+        {
+
+            
         }
 
         void Window_RenderFrame(object sender, FrameEventArgs e)
@@ -239,7 +257,6 @@ namespace Fitch
                     SpriteBatch.DrawRect(new Rectangle(0, 0, window.Width, window.Height), Color.FromArgb(128, 255, 0, 0));
                 if (goal)
                     SpriteBatch.DrawRect(new Rectangle(0, 0, window.Width, window.Height), Color.FromArgb(128, 0, 255, 0));
-                i++;
                 
             }
             window.SwapBuffers();
