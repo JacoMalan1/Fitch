@@ -62,8 +62,12 @@ namespace Fitch
             GL.Begin(PrimitiveType.Triangles);
             foreach (int i in indices)
             {
+                //Check if player should be flipped
+                if (player.Facing == Direction.Left)
+                    GL.TexCoord2(1 - vertices[i].X, vertices[i].Y);
+                else
+                    GL.TexCoord2(vertices[i].X, vertices[i].Y);
 
-                GL.TexCoord2(vertices[i].X, vertices[i].Y);
                 GL.Vertex2(vertices[i].X * player.Width + player.Position.X, vertices[i].Y * player.Height  + player.Position.Y);
 
             }

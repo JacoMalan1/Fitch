@@ -16,7 +16,7 @@ namespace Fitch
         List<Block> blocks;
         Block[,] level;
         Vector2 removePos = new Vector2(int.MaxValue, int.MaxValue);
-        Texture2D playerTexture;
+        public static Texture2D playerTexture;
         Texture2D logoTex;
         public static string fps;
         Texture2D font;
@@ -52,6 +52,7 @@ namespace Fitch
         void Window_Load(object sender, EventArgs e)
         {
 
+            Animation.Initialize();
             //Enable all the tings (skrrrrrrrrrra)
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
@@ -68,9 +69,9 @@ namespace Fitch
             level = World.LoadFromFile(world, levelName);
 
             //Initialize player
-            player = new Player(new Vector2(0, 0), 50, 70, Vector2.Zero);
-            player.Position = playerStart.ScreenPos - new Vector2(-player.Width, player.Height);
             playerTexture = ContentPipe.LoadTexture("player.png");
+            player = new Player(new Vector2(0, 0), playerTexture.Width, playerTexture.Height, Vector2.Zero);
+            player.Position = playerStart.ScreenPos - new Vector2(-player.Width, player.Height);
 
             //Load font
             font = ContentPipe.LoadTexture("text.jpg");
@@ -109,7 +110,7 @@ namespace Fitch
             tickTimer.Start();
 
             //DEBUG
-            //titlescreen = false;
+            titlescreen = false;
 
         }
 
@@ -151,6 +152,11 @@ namespace Fitch
 
             }
 
+            if (Input.KeyDown(OpenTK.Input.Key.Space) && !player.isRunning)
+            {
+                player.isJumping = true;
+            }
+
             if (Input.KeyPress(OpenTK.Input.Key.Space) && player.isStanding)
             {
                 player.Velocity += new Vector2(0, -15);
@@ -159,6 +165,7 @@ namespace Fitch
             if (Input.KeyDown(OpenTK.Input.Key.D) && !(player.Velocity.X >= TVELOCITY))
             {
 
+                player.Facing = Direction.Right;
                 player.Velocity += new Vector2(0.3f, 0);
                 player.isRunning = true;
 
@@ -166,6 +173,7 @@ namespace Fitch
 
             if (Input.KeyDown(OpenTK.Input.Key.A))
             {
+                player.Facing = Direction.Left;
                 if (!(Math.Abs(player.Velocity.X) >= TVELOCITY) || Input.KeyDown(OpenTK.Input.Key.D))
                 {
                     player.Velocity += new Vector2(-0.3f, 0);
@@ -193,6 +201,7 @@ namespace Fitch
         void Window_UpdateFrame(object sender, FrameEventArgs e)
         {
 
+            Animation.Update(ref player);
             
         }
 
@@ -294,6 +303,7 @@ namespace Fitch
         {
 
             deathTimer.Start();
+            Animation.animCounter = 0;
             player.isDead = true;
 
         }
