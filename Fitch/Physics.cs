@@ -22,24 +22,29 @@ namespace Fitch
             //Get player coords for checking if player is standing.
             int lX = (int)Math.Floor(player.Position.X / world.blockSize);
             int xX = (int)Math.Floor((player.Position.X + player.Width) / world.blockSize);
+            int mX = (int)Math.Floor((player.Position.X + (player.Width / 2)) / world.blockSize);
             int lY = (int)Math.Floor((player.Position.Y + player.Height) / world.blockSize);
 
             try
             {
 
                 //Check if the player is standing
-                if (!(level[lX, lY] == null) || !(level[xX, lY] == null) && player.Velocity.Y >= 0)
+                if (!(level[lX, lY] == null) || !(level[mX, lY] == null) || !(level[xX, lY] == null) && player.Velocity.Y >= 0)
                 {
                     player.isStanding = true;
                     player.isJumping = false;
+                    Console.WriteLine("Standing");
                 }
                 else
                 {
                     player.isStanding = false;
+                    Console.WriteLine("Not Standing");
                 }
+
             }
             catch (IndexOutOfRangeException e)
             {
+                Game.playerDeath(ref player);
                 Console.WriteLine(e.StackTrace);
             }
 

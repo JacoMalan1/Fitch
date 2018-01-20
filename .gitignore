@@ -8,8 +8,10 @@ packages/
 TestResults/
 
 #Copyrighted files
-penguin*
-player.png
+goal.png
+spike.png
+solid.png
+*.png
 
 .vs/
 # globs

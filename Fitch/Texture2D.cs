@@ -1,5 +1,4 @@
-﻿using System;
-namespace Fitch
+﻿namespace Fitch
 {
     public struct Texture2D
     {
@@ -9,8 +8,8 @@ namespace Fitch
         private int height;
 
         public int ID { get { return id; }}
-        public int Width { get { return width; }}
-        public int Height { get { return height; }}
+        public int Width { get { return width; } set { width = value; } }
+        public int Height { get { return height; } set { height = value; } }
 
         public Texture2D(int id, int width, int height)
         {

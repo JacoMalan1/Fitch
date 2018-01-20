@@ -22,8 +22,8 @@ namespace Fitch
         private Direction facing;
 
         public Vector2 Position { get { return position; } set { position = value; } }
-        public float Width { get { return width; }}
-        public float Height { get { return height; }}
+        public float Width { get { return width; } set { width = value; } }
+        public float Height { get { return height; } set { height = value; } }
         public Vector2 Velocity { get { return velocity; } set { velocity = value; } }
         public Vector2 Size { get { return size; } }
         public bool isRunning { get { return running; } set { running = value; }}
