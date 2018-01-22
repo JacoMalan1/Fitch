@@ -42,7 +42,6 @@ namespace Fitch
 
         public static Timer deathTimer;
         public static Timer goalTimer;
-        public static Timer tickTimer;
         public static Timer titleScreenTimer;
 
 #endregion
@@ -119,15 +118,11 @@ namespace Fitch
             goalTimer = new Timer();
             goalTimer.Interval = 2000;
             goalTimer.Elapsed += GoalTimer_Elapsed;
-            tickTimer = new Timer();
-            tickTimer.Interval = 1000 / 65;
-            tickTimer.Elapsed += TickTimer_Elapsed;
             titleScreenTimer = new Timer();
             titleScreenTimer.Interval = 2000;
             titleScreenTimer.Elapsed += TitleScreenTimer_Elapsed;
 
             goal = false;
-            tickTimer.Start();
 
             //DEBUG
             //titlescreen = false;
@@ -138,12 +133,6 @@ namespace Fitch
         {
             titlescreen = false;
             titleScreenTimer.Stop();
-        }
-
-        private void TickTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            
-
         }
 
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -238,6 +227,7 @@ namespace Fitch
                 Physics.updatePhysics(ref player, blocks, world, level);
 
             Animation.Update(ref player);
+
         }
 
         void Window_RenderFrame(object sender, FrameEventArgs e)
