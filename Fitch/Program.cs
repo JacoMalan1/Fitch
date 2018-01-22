@@ -53,7 +53,7 @@ namespace Fitch
             window.Title = "Fitch";
 
             Game game = new Game(ref window);
-            window.Run(1.0f / 60.0f);
+            window.Run(60, 200);
         }
     }
 }

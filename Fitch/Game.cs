@@ -142,6 +142,17 @@ namespace Fitch
 
         private void TickTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            
+
+        }
+
+        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            window.Dispose();
+        }
+
+        void Window_UpdateFrame(object sender, FrameEventArgs e)
+        {
             //Increment tick counter
             i++;
 
@@ -205,7 +216,7 @@ namespace Fitch
 
             if (Input.KeyDown(OpenTK.Input.Key.A))
             {
-                
+
                 if (!(Math.Abs(player.Velocity.X) >= TVELOCITY) || Input.KeyDown(OpenTK.Input.Key.D))
                 {
                     player.Velocity += new Vector2(-0.3f, 0);
@@ -227,17 +238,6 @@ namespace Fitch
                 Physics.updatePhysics(ref player, blocks, world, level);
 
             Animation.Update(ref player);
-
-        }
-
-        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            window.Dispose();
-        }
-
-        void Window_UpdateFrame(object sender, FrameEventArgs e)
-        {
-            
         }
 
         void Window_RenderFrame(object sender, FrameEventArgs e)
