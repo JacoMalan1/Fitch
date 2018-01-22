@@ -29,7 +29,7 @@ namespace Fitch
 
         public static bool running = false;
         public static bool titlescreen;
-        public bool goal = false;
+        public static bool goal = false;
 
         public int levelCounter = 1;
         public static int i;

@@ -111,7 +111,7 @@ namespace Fitch
                         #region Resolve
 
                         //Resolve Y
-                        if (level[bX, bY + 1] == null || level[bX, bY - 1] == null)
+                        if ((level[bX, bY + 1] == null || level[bX, bY - 1] == null) && !(colRect.Height > player.Height / 3))
                         {
 
                             //If player is moving downwards or standing then we always move up.

@@ -38,7 +38,7 @@ namespace Fitch
         public static void Update(ref Player player)
         {
             frameCounter++;
-            if (player.isRunning && !player.isJumping && !player.isDead)
+            if ((player.isRunning || Math.Abs(player.Velocity.X) > 0.1) && !player.isJumping && !player.isDead && player.isStanding && !Game.goal)
             {
 
                 if (frameCounter % 4 == 0)
@@ -71,6 +71,13 @@ namespace Fitch
                     animCounter = 3;
 
                 Game.playerTexture = deathAnimFrames[animCounter];
+
+            }
+
+            else if (!player.isStanding && !player.isJumping && player.Velocity.Y > 0)
+            {
+
+                Game.playerTexture = jumpingAnimFrames[2];
 
             }
 
