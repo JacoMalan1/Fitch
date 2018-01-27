@@ -9,7 +9,8 @@ namespace Fitch
         Solid,
         Spike,
         PlayerStart,
-        Goal
+        Goal,
+        Air
     }
 
     public class Block
@@ -23,6 +24,7 @@ namespace Fitch
         public Vector2 Position { get { return position; } }
         public Vector2 ScreenPos { get { return screenPos; } }
         public float Size { get { return size; } }
+        public bool isSolid { get { if (type == BlockType.Solid) { return true; } else { return false; }}}
 
         public Block(BlockType type, Vector2 position, float size)
         {

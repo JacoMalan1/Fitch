@@ -94,6 +94,17 @@ namespace Fitch
             string[] lines = File.ReadAllLines(filePath);
 
             Block[,] blocks = new Block[(int)world.WorldSize.X, (int)world.WorldSize.Y];
+
+            for (int j = 0; j < (int)world.worldSize.X;j++)
+            {
+				for (int k = 0; k < (int)world.worldSize.Y; k++)
+				{
+
+                    blocks[j, k] = new Block(BlockType.Air, new Vector2(j, k), world.blockSize);
+
+				}
+            }
+
             string type;
             string xCoord;
             string yCoord;

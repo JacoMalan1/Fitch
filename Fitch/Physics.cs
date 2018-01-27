@@ -7,7 +7,6 @@ namespace Fitch
 {
     class Physics
     {
-        public static bool collide = false;
 
         /// <summary>
         /// 
@@ -27,9 +26,20 @@ namespace Fitch
 
             try
             {
-
                 //Check if the player is standing
-                if (!(level[lX, lY] == null) || !(level[mX, lY] == null) || !(level[xX, lY] == null) && player.Velocity.Y >= 0)
+                if ((level[lX, lY].isSolid) && player.Velocity.Y >= 0)
+                {
+                    player.isStanding = true;
+                    player.isJumping = false;
+                    Console.WriteLine("Standing");
+                }
+                else if (level[mX, lY].isSolid && player.Velocity.Y >= 0)
+                {
+                    player.isStanding = true;
+                    player.isJumping = false;
+                    Console.WriteLine("Standing");
+                }
+                else if (level[xX, lY].isSolid && player.Velocity.Y >= 0)
                 {
                     player.isStanding = true;
                     player.isJumping = false;
@@ -40,7 +50,6 @@ namespace Fitch
                     player.isStanding = false;
                     Console.WriteLine("Not Standing");
                 }
-
             }
             catch (IndexOutOfRangeException e)
             {
@@ -53,27 +62,36 @@ namespace Fitch
                 List<Block> checkBlocks = new List<Block>();
 
                 int minX = (int)Math.Floor(player.Position.X / world.blockSize);
+                int midX = (int)Math.Floor((player.Position.X + (player.Width / 2)) / world.blockSize);
                 int maxX = (int)Math.Floor((player.Position.X + player.Width) / world.blockSize);
                 int minY = (int)Math.Floor(player.Position.Y / world.blockSize);
                 int maxY = (int)Math.Floor((player.Position.Y + player.Height) / world.blockSize);
 
                 //Only check blocks in the player radius rather than checking every single block.
-                if (!(level[minX, minY] == null))
+                if (level[minX, minY].isSolid)
                 {
                     checkBlocks.Add(level[minX, minY]);
                 }
-                if (!(level[minX, maxY] == null))
+                if (level[minX, maxY].isSolid)
                 {
                     checkBlocks.Add(level[minX, maxY]);
                 }
-                if (!(level[maxX, maxY] == null))
+                if (level[maxX, maxY].isSolid)
                 {
                     checkBlocks.Add(level[maxX, maxY]);
                 }
-                if (!(level[maxX, minY] == null))
+                if (level[maxX, minY].isSolid)
                 {
                     checkBlocks.Add(level[maxX, minY]);
                 }
+				if (level[midX, minY].isSolid)
+				{
+					checkBlocks.Add(level[midX, minY]);
+				}
+                if (level[midX, maxY].isSolid)
+				{
+                    checkBlocks.Add(level[midX, maxY]);
+				}
 
                 foreach (Block block in blocks)
                 {
@@ -108,10 +126,19 @@ namespace Fitch
                         if (block.Type == BlockType.Goal)
                             continue;
 
+                        double colArea = colRect.Width * colRect.Height;
+                        double pArea = player.Width * player.Height;
+
+                        if (((colArea / pArea) * 100) > 60)
+                        {
+                            Game.playerDeath(ref player);
+                            break;
+                        }
+
                         #region Resolve
 
                         //Resolve Y
-                        if ((level[bX, bY + 1] == null || level[bX, bY - 1] == null) && (!(colRect.Height > player.Height / 2) || player.isStanding))
+                        if ((!level[bX, bY + 1].isSolid || !level[bX, bY - 1].isSolid) && (!(colRect.Height > player.Height / 4) || player.isStanding) && block.isSolid)
                         {
 
                             //If player is moving downwards or standing then we always move up.
@@ -134,7 +161,7 @@ namespace Fitch
                         }
 
                         //Resolve X
-                        else if (level[bX + 1, bY] == null || level[bX - 1, bY] == null)
+                        else if ((!level[bX + 1, bY].isSolid || !level[bX - 1, bY].isSolid))
                         {
 
                             //Almost same as for Y resolution.
@@ -153,13 +180,11 @@ namespace Fitch
 
                         #endregion
 
-                        break;
-
                     }
 
                 }
             }
-            catch (IndexOutOfRangeException e)
+            catch (Exception e)
             {
 
                 //Write error to command line.
