@@ -13,6 +13,9 @@ spike.png
 solid.png
 *.png
 
+#Unneeded files
+LICENCE_*.txt
+
 .vs/
 # globs
 Makefile.in

@@ -50,6 +50,24 @@ namespace Fitch
 
             GameWindow window = new GameWindow(Int32.Parse(width), Int32.Parse(height), new OpenTK.Graphics.GraphicsMode(32, 8, 0, Int32.Parse(data.GetKey("FSAA_Samples"))));
 
+            try
+            {
+                string[] liness = File.ReadAllLines("LICENCE_short.txt");
+
+                //Display licence
+                foreach (string l in liness)
+                {
+                    Console.WriteLine(l);
+                }
+
+                System.Threading.Thread.Sleep(2000);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
             window.Title = "Fitch";
 
             Game game = new Game(ref window);
