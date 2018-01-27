@@ -20,6 +20,7 @@ namespace Fitch
         private bool jumping;
         private bool dead;
         private Direction facing;
+        private int lives;
 
         public Vector2 Position { get { return position; } set { position = value; } }
         public float Width { get { return width; } set { width = value; } }
@@ -31,8 +32,10 @@ namespace Fitch
         public bool isJumping { get { return jumping; } set { jumping = value; } }
         public bool isDead { get { return dead; } set { dead = value; }}
         public Direction Facing { get { return facing; } set { facing = value; } }
+        public int Lives { get { return lives; } set { lives = value; } }
 
-        public Player(Vector2 position, float width, float height, Vector2 velocity, Direction facing = Direction.Right, bool running = false, bool standing = false, bool jumping = false, bool dead = false)
+        public Player(Vector2 position, float width, float height, Vector2 velocity, Direction facing = Direction.Right,
+            bool running = false, bool standing = false, bool jumping = false, bool dead = false, int lives = 4)
         {
             
             this.position = position;
@@ -45,6 +48,7 @@ namespace Fitch
             this.jumping = jumping;
             this.dead = dead;
             this.facing = facing;
+            this.lives = lives;
 
         }
 

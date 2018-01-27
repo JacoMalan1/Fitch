@@ -21,8 +21,10 @@ namespace Fitch
 
         Texture2D logoTex;
         Texture2D font;
+        Texture2D gameOverTex;
 
         public static Texture2D playerTexture;
+        public static Texture2D playerIdleTex;
         public static Texture2D background;
 
         public const double TVELOCITY = 8;
@@ -30,19 +32,22 @@ namespace Fitch
         public static bool running = false;
         public static bool titlescreen;
         public static bool goal = false;
+        public static bool gameOver = false;
 
         public int levelCounter = 1;
         public static int i;
         public static string fps;
+        public static string levelName;
 
         List<Block> blocks;
         Block[,] level;
         public static Block playerStart;
         public static Block GoalBlock;
 
-        public static Timer deathTimer;
-        public static Timer goalTimer;
-        public static Timer titleScreenTimer;
+        public static Timer deathTimer = new Timer();
+        public static Timer goalTimer = new Timer();
+        public static Timer titleScreenTimer = new Timer();
+        public static Timer gameOverTimer = new Timer();
 
 #endregion
 
@@ -67,6 +72,8 @@ namespace Fitch
         void Window_Load(object sender, EventArgs e)
         {
 
+            #region Load
+
             Animation.Initialize();
             //Enable all the tings (skrrrrrrrrrra)
             GL.Enable(EnableCap.Blend);
@@ -78,7 +85,7 @@ namespace Fitch
             GL.Enable(EnableCap.Texture2D);
 
             //Load level
-            string levelName = "level" + levelCounter.ToString() + ".fl";
+            levelName = "level" + levelCounter.ToString() + ".fl";
             world = new World(50, new Vector2(200, 50));
             blocks = World.LoadFromFile(world.blockSize, levelName);
             level = World.LoadFromFile(world, levelName);
@@ -86,6 +93,7 @@ namespace Fitch
 
             //Initialize player
             playerTexture = ContentPipe.LoadTexture("player.png");
+            playerIdleTex = playerTexture;
             player = new Player(new Vector2(0, 0), playerTexture.Width, playerTexture.Height, Vector2.Zero);
             player.Position = playerStart.ScreenPos - new Vector2(-player.Width, player.Height);
 
@@ -94,6 +102,9 @@ namespace Fitch
 
             //Load logo
             logoTex = ContentPipe.LoadTexture("logo.png");
+
+            //Load gameOver texture
+            gameOverTex = ContentPipe.LoadTexture("gameOver.png");
 
             titlescreen = true;
 
@@ -112,20 +123,21 @@ namespace Fitch
 
             //Initialize timers
             i = 0;
-            deathTimer = new Timer();
             deathTimer.Interval = 1000;
             deathTimer.Elapsed += DeathTimer_Elapsed;
-            goalTimer = new Timer();
             goalTimer.Interval = 2000;
             goalTimer.Elapsed += GoalTimer_Elapsed;
-            titleScreenTimer = new Timer();
             titleScreenTimer.Interval = 2000;
             titleScreenTimer.Elapsed += TitleScreenTimer_Elapsed;
+            gameOverTimer.Interval = 5000;
+            gameOverTimer.Elapsed += GameOverTimer_Elapsed;
 
             goal = false;
 
             //DEBUG
             //titlescreen = false;
+
+            #endregion
 
         }
 
@@ -154,6 +166,8 @@ namespace Fitch
 
             player.isRunning = false;
 
+            #region InputHandling
+
             //Input handling
             if (Input.KeyPress(OpenTK.Input.Key.F11))
             {
@@ -180,6 +194,19 @@ namespace Fitch
 
             if (Input.KeyDown(OpenTK.Input.Key.F) && titlescreen)
                 titlescreen = false;
+
+            if (Input.KeyDown(OpenTK.Input.Key.F) && gameOver)
+            {
+
+                player.isDead = false;
+                deathTimer.Stop();
+                DeathTimer_Elapsed(null, null);
+
+                gameOver = false;
+                gameOverTimer.Stop();
+                GameOverTimer_Elapsed(null, null);
+
+            }
 
             if (Input.KeyDown(OpenTK.Input.Key.Space) && !player.isRunning)
             {
@@ -222,6 +249,8 @@ namespace Fitch
 
             Input.Update();
 
+            #endregion
+
             //Calculate physics
             if (!player.isDead && !goal)
                 Physics.updatePhysics(ref player, blocks, world, level);
@@ -246,6 +275,21 @@ namespace Fitch
                 window.SwapBuffers();
 
                 titleScreenTimer.Start();
+            }
+            else if (gameOver)
+            {
+
+                Matrix4 projMat = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
+                GL.MatrixMode(MatrixMode.Projection);
+                GL.LoadMatrix(ref projMat);
+
+                GL.ClearColor(Color.Black);
+                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+                SpriteBatch.DrawRect(gameOverTex, new RectangleF(0, 0, window.Width, window.Height));
+
+                window.SwapBuffers();
+
             }
             else
             {
@@ -294,6 +338,13 @@ namespace Fitch
                 if (goal)
                     SpriteBatch.DrawRect(new Rectangle(0, 0, window.Width, window.Height), Color.FromArgb(128, 0, 255, 0));
                 
+                for (int k = 0;k < player.Lives;k++)
+                {
+
+                    SpriteBatch.DrawRect(playerIdleTex, new Rectangle(window.Width - playerIdleTex.Width * k, 0, playerIdleTex.Width, playerIdleTex.Height));
+
+                }
+                                
             }
             window.SwapBuffers();
 
@@ -337,14 +388,25 @@ namespace Fitch
 
         void DeathTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            
+            player.Lives--;
 
-			player.isDead = false;
-			player.Position = new Vector2(playerStart.ScreenPos.X + player.Width, playerStart.ScreenPos.Y - player.Height);
-			player.isJumping = false;
-			player.isRunning = false;
-			player.isStanding = false;
-			player.Velocity = Vector2.Zero;
-            deathTimer.Stop();
+            if (player.Lives < 1)
+            {
+                gameOver = true;
+                gameOverTimer.Start();
+            }
+
+            if (!(player.Lives < 1))
+            {
+                player.isDead = false;
+                player.Position = new Vector2(playerStart.ScreenPos.X + player.Width, playerStart.ScreenPos.Y - player.Height);
+                player.isJumping = false;
+                player.isRunning = false;
+                player.isStanding = false;
+                player.Velocity = Vector2.Zero;
+                deathTimer.Stop();
+            }
 
         }
 
@@ -358,6 +420,21 @@ namespace Fitch
             player = Player.Reset(player, playerStart);
             goal = false;
             goalTimer.Stop();
+
+        }
+
+        private void GameOverTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+
+            gameOver = false;
+            levelCounter = 1;
+            player.Lives = 5;
+
+            //Reload level
+            levelName = "level" + levelCounter.ToString() + ".fl";
+            world = new World(50, new Vector2(200, 50));
+            blocks = World.LoadFromFile(world.blockSize, levelName);
+            level = World.LoadFromFile(world, levelName);
 
         }
     }

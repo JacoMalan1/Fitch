@@ -22,7 +22,7 @@ namespace Fitch
             //Get player coords for checking if player is standing.
             int lX = (int)Math.Floor(player.Position.X / world.blockSize);
             int xX = (int)Math.Floor((player.Position.X + player.Width) / world.blockSize);
-            int mX = (int)Math.Floor((player.Position.X + (player.Width / 2)) / world.blockSize);
+            int mX = (int)Math.Ceiling((decimal)((lX + xX) / 2));
             int lY = (int)Math.Floor((player.Position.Y + player.Height) / world.blockSize);
 
             try
@@ -111,7 +111,7 @@ namespace Fitch
                         #region Resolve
 
                         //Resolve Y
-                        if ((level[bX, bY + 1] == null || level[bX, bY - 1] == null) && !(colRect.Height > player.Height / 3))
+                        if ((level[bX, bY + 1] == null || level[bX, bY - 1] == null) && (!(colRect.Height > player.Height / 2) || player.isStanding))
                         {
 
                             //If player is moving downwards or standing then we always move up.
