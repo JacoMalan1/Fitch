@@ -78,12 +78,6 @@
     <Compile Include="Input.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="LICENCE_full.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="LICENCE_short.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Content\background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

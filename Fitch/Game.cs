@@ -272,7 +272,6 @@ namespace Fitch
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                 SpriteBatch.DrawRect(logoTex, new RectangleF(0, 0, window.Width, window.Height));
-                window.SwapBuffers();
 
                 titleScreenTimer.Start();
             }
@@ -287,8 +286,6 @@ namespace Fitch
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                 SpriteBatch.DrawRect(gameOverTex, new RectangleF(0, 0, window.Width, window.Height));
-
-                window.SwapBuffers();
 
             }
             else
@@ -435,6 +432,8 @@ namespace Fitch
             world = new World(50, new Vector2(200, 50));
             blocks = World.LoadFromFile(world.blockSize, levelName);
             level = World.LoadFromFile(world, levelName);
+
+            gameOverTimer.Stop();
 
         }
     }
