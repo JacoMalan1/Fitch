@@ -28,6 +28,8 @@ namespace Fitch
         public static Texture2D background;
         public static Texture2D textureLife;
 
+        public static Save save = new Save("fitch", new SaveData(1, 3));
+
         public const double TVELOCITY = 8;
 
         public static bool running = false;
@@ -46,6 +48,7 @@ namespace Fitch
         public static Block GoalBlock;
 
         public static List<Powerup> powerups = new List<Powerup>();
+        public static List<Powerup> collectedPowerups = new List<Powerup>();
 
         public static Timer deathTimer = new Timer();
         public static Timer goalTimer = new Timer();
@@ -88,6 +91,7 @@ namespace Fitch
             GL.Enable(EnableCap.Texture2D);
 
             //Load level
+            levelCounter = save.Data.LevelNum;
             levelName = "level" + levelCounter.ToString() + ".fl";
             world = new World(50, new Vector2(200, 50));
             blocks = World.LoadFromFile(world.blockSize, levelName);
@@ -99,6 +103,7 @@ namespace Fitch
             playerIdleTex = playerTexture;
             player = new Player(new Vector2(0, 0), playerTexture.Width, playerTexture.Height, Vector2.Zero);
             player.Position = playerStart.ScreenPos - new Vector2(-player.Width, player.Height);
+            player.Lives = save.Data.Lives;
 
             //Load font
             font = ContentPipe.LoadTexture("text.jpg");
@@ -175,6 +180,53 @@ namespace Fitch
             #region InputHandling
 
             //Input handling
+
+            //Save
+            if (Input.KeyPress(OpenTK.Input.Key.F5))
+            {
+                Save.Write(new Save(save.FileName, new SaveData(levelCounter, player.Lives)));
+            }
+
+            //Load
+            if (Input.KeyPress(OpenTK.Input.Key.F6))
+            {
+                save = Save.Load(save.FileName);
+                levelCounter = save.Data.LevelNum;
+                player.Lives = save.Data.Lives;
+
+                //Reload level
+                levelName = "level" + levelCounter.ToString() + ".fl";
+                world = new World(50, new Vector2(200, 50));
+                blocks = World.LoadFromFile(world.blockSize, levelName);
+                level = World.LoadFromFile(world, levelName);
+
+                player = Player.Reset(player, playerStart);
+
+                List<Powerup> checkP = powerups;
+
+                System.Threading.Thread.Sleep(1000);
+
+                try
+                {
+
+                    foreach (Powerup p in checkP)
+                    {
+                        foreach (Powerup q in collectedPowerups)
+                        {
+                            if (q.Position == p.Position)
+                            {
+                                powerups.Remove(p);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred: " + ex.Message);
+                }
+
+            }
+
             if (Input.KeyPress(OpenTK.Input.Key.F11))
             {
 
@@ -260,6 +312,11 @@ namespace Fitch
             //Calculate physics
             if (!player.isDead && !goal)
                 Physics.updatePhysics(ref player, blocks, world, level);
+
+            if (player.Lives >= 5)
+            {
+                player.Lives = 5;
+            }
 
             Animation.Update(ref player);
 

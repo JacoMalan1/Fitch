@@ -41,6 +41,8 @@ namespace Fitch
             int pos;
             string temp;
 
+            Game.powerups.Clear();
+
             foreach (string line in lines)
             {
                 pos = line.IndexOf(',');

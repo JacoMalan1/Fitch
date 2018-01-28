@@ -72,6 +72,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="Physics.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="Save.cs" />
     <Compile Include="SpriteBatch.cs" />
     <Compile Include="Texture2D.cs" />
     <Compile Include="World.cs" />

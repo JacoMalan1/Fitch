@@ -45,6 +45,12 @@ namespace Fitch
 
             }
 
+            if (File.Exists(Game.save.FileName))
+                Game.save = Save.Load(Game.save.FileName);
+            else
+                Save.Write(Game.save);
+                
+
             string width = resolution.Substring(0, pos);
             string height = resolution.Substring(pos + 1, resolution.Length - pos - 1);
 
