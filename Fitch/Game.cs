@@ -26,6 +26,7 @@ namespace Fitch
         public static Texture2D playerTexture;
         public static Texture2D playerIdleTex;
         public static Texture2D background;
+        public static Texture2D textureLife;
 
         public const double TVELOCITY = 8;
 
@@ -107,6 +108,9 @@ namespace Fitch
 
             //Load gameOver texture
             gameOverTex = ContentPipe.LoadTexture("gameOver.png");
+
+            //Load misc textures
+            textureLife = ContentPipe.LoadTexture("lives.png");
 
             titlescreen = true;
 
@@ -355,7 +359,7 @@ namespace Fitch
                 for (int k = 0;k < player.Lives;k++)
                 {
 
-                    SpriteBatch.DrawRect(playerIdleTex, new Rectangle(window.Width - playerIdleTex.Width * k, 0, playerIdleTex.Width, playerIdleTex.Height));
+                    SpriteBatch.DrawRect(textureLife, new Rectangle(window.Width - playerIdleTex.Width * k, 0, playerIdleTex.Width, playerIdleTex.Height));
 
                 }
                                 
@@ -427,6 +431,7 @@ namespace Fitch
         void GoalTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
 
+            blocks.Clear();
             levelCounter++;
             levelName = "level" + levelCounter.ToString() + ".fl";
             blocks = World.LoadFromFile(world.blockSize, levelName);

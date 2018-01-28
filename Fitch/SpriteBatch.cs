@@ -10,6 +10,7 @@ namespace Fitch
         public static Texture2D textureSolid = ContentPipe.LoadTexture("solid.png");
         public static Texture2D textureSpike = ContentPipe.LoadTexture("spike.png");
         public static Texture2D textureGoal = ContentPipe.LoadTexture("goal.png");
+        public static Texture2D textureOU = ContentPipe.LoadTexture("oneUp.png");
 
         public static void DrawSquare(Texture2D texture, Vector2 position, float size)
         {
@@ -85,32 +86,19 @@ namespace Fitch
 
         public static void DrawPowerup(Powerup powerup)
         {
-            GL.Color3(Color.White);
 
-            Vector2[] vertices = new Vector2[4]
+            Texture2D texture;
+            switch (powerup.Type)
             {
-                new Vector2(0, 0),
-                new Vector2(1, 0),
-                new Vector2(1, 1),
-                new Vector2(0, 1)
-            };
-
-            int[] indices = new int[4]
-            {
-                0, 1, 2, 3
-            };
-
-            GL.Begin(PrimitiveType.Quads);
-            GL.Color3(Color.Green);
-
-            foreach (int i in indices)
-            {
-              
-                GL.Vertex2((vertices[i].X + powerup.Position.X) * powerup.Size.X, (vertices[i].Y + powerup.Position.Y) * powerup.Size.Y);
-
+                case PowerupType.UPOne:
+                    texture = textureOU;
+                    break;
+                default:
+                    texture = textureOU;
+                    break;
             }
+            DrawRect(texture, new Rectangle((int)powerup.ScreenPos.X, (int)powerup.ScreenPos.Y, (int)powerup.Size.X, (int)powerup.Size.Y));
 
-            GL.End();
         }
 
         public static void DrawBlock(BlockType type, Vector2 position, float size)
