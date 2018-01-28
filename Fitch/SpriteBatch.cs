@@ -83,6 +83,36 @@ namespace Fitch
 
         }
 
+        public static void DrawPowerup(Powerup powerup)
+        {
+            GL.Color3(Color.White);
+
+            Vector2[] vertices = new Vector2[4]
+            {
+                new Vector2(0, 0),
+                new Vector2(1, 0),
+                new Vector2(1, 1),
+                new Vector2(0, 1)
+            };
+
+            int[] indices = new int[4]
+            {
+                0, 1, 2, 3
+            };
+
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color3(Color.Green);
+
+            foreach (int i in indices)
+            {
+              
+                GL.Vertex2((vertices[i].X + powerup.Position.X) * powerup.Size.X, (vertices[i].Y + powerup.Position.Y) * powerup.Size.Y);
+
+            }
+
+            GL.End();
+        }
+
         public static void DrawBlock(BlockType type, Vector2 position, float size)
 		{
             GL.Color3(Color.White);

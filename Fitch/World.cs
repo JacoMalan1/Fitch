@@ -79,6 +79,13 @@ namespace Fitch
                     Game.GoalBlock = new Block(BlockType.Goal, new Vector2(x, y), blockSize);
 
                 }
+                else if (type == "oneup")
+                {
+                    int x = Int32.Parse(xCoord);
+                    int y = Int32.Parse(yCoord);
+
+                    Game.powerups.Add(new Powerup(PowerupType.UPOne, new Vector2(blockSize, blockSize), new Vector2(x, y)));
+                }
             }
 
             return blocks;

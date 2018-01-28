@@ -99,6 +99,16 @@ namespace Fitch
                         checkBlocks.Add(block);
                 }
 
+                foreach (Powerup block in Game.powerups)
+                {
+
+					RectangleF bCol = new RectangleF(block.ScreenPos.X, block.ScreenPos.Y, block.Size.X, block.Size.X);
+					RectangleF pCol = new RectangleF(player.Position.X, player.Position.Y, player.Width, player.Height);
+
+                    if (pCol.IntersectsWith(bCol))
+                        Powerup.raiseCollected(block);
+				}
+
                 //Collision
                 foreach (Block block in checkBlocks)
                 {

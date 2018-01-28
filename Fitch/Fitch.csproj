@@ -76,6 +76,7 @@
     <Compile Include="Texture2D.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Input.cs" />
+    <Compile Include="Powerup.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\background.png">

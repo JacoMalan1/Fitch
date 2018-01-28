@@ -15,7 +15,7 @@ namespace Fitch
         public static GameWindow window;
 
         World world;
-        Player player;
+        public static Player player;
 
         Vector2 removePos = new Vector2(int.MaxValue, int.MaxValue);
 
@@ -43,6 +43,8 @@ namespace Fitch
         Block[,] level;
         public static Block playerStart;
         public static Block GoalBlock;
+
+        public static List<Powerup> powerups = new List<Powerup>();
 
         public static Timer deathTimer = new Timer();
         public static Timer goalTimer = new Timer();
@@ -319,6 +321,21 @@ namespace Fitch
                     SpriteBatch.DrawBlock(block.Type, block.Position, block.Size);
                 }
 
+                try
+                {
+                    foreach (Powerup p in powerups)
+                    {
+
+                        SpriteBatch.DrawPowerup(p);
+
+                    }
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+
                 //Stuff that is frame-counter dependent
                 if (i % 30 == 0)
                     fps = ((int)window.RenderFrequency).ToString();
@@ -411,7 +428,7 @@ namespace Fitch
         {
 
             levelCounter++;
-            string levelName = "level" + levelCounter.ToString() + ".fl";
+            levelName = "level" + levelCounter.ToString() + ".fl";
             blocks = World.LoadFromFile(world.blockSize, levelName);
             level = World.LoadFromFile(world, levelName);
             player = Player.Reset(player, playerStart);
