@@ -1,6 +1,4 @@
-﻿using System;
-using OpenTK;
-using System.Drawing;
+﻿using OpenTK;
 
 namespace Fitch
 {
@@ -49,6 +47,10 @@ namespace Fitch
 
         }
 
+        /// <summary>
+        /// [ Deprecated v2.2.0 ]
+        /// </summary>
+        /// <param name="powerup"></param>
         public static void raiseCollected(Powerup powerup)
         {
             powerup.collected(powerup);

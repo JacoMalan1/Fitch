@@ -10,6 +10,7 @@ namespace Fitch
     public class Game
     {
 
+        //All public and local things are declared here to make programming easier
 #region Declare
 
         public static GameWindow window;
@@ -421,6 +422,7 @@ namespace Fitch
                 }
                                 
             }
+
             window.SwapBuffers();
 
         }
@@ -437,6 +439,11 @@ namespace Fitch
 
         }
 
+        /// <summary>
+        /// [ Deprecated v1.2.0 ]: Use the Block[,] override of load instead. <see cref="World.LoadFromFile(World, string))"/>
+        /// </summary>
+        /// <param name="block"></param>
+        /// <returns></returns>
         bool blockSearch(Block block)
         {
 
@@ -452,6 +459,10 @@ namespace Fitch
 
         }
 
+        /// <summary>
+        /// Executed when the player dies.
+        /// </summary>
+        /// <param name="player">The player that died.</param>
         public static void playerDeath(ref Player player)
         {
 

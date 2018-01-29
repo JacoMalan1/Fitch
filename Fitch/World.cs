@@ -23,6 +23,12 @@ namespace Fitch
 
         }
 
+        /// <summary>
+        /// Loads a level file.
+        /// </summary>
+        /// <param name="blockSize"></param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public static List<Block> LoadFromFile(float blockSize, string filePath)
         {
 
@@ -93,6 +99,12 @@ namespace Fitch
             return blocks;
         }
 
+        /// <summary>
+        /// Loads a level file.
+        /// </summary>
+        /// <param name="world"></param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public static Block[,] LoadFromFile(World world, string filePath)
         {
 

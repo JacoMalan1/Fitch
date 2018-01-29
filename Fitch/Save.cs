@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace Fitch
@@ -43,6 +39,10 @@ namespace Fitch
 
         }
 
+        /// <summary>
+        /// Writes a save to disk.
+        /// </summary>
+        /// <param name="save"></param>
         public static void Write(Save save)
         {
 
@@ -57,6 +57,11 @@ namespace Fitch
 
         }
 
+        /// <summary>
+        /// Loads a file to a save.
+        /// </summary>
+        /// <param name="fileName">The file for the save to be loaded.</param>
+        /// <returns></returns>
         public static Save Load(string fileName)
         {
             

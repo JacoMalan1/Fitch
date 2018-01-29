@@ -12,6 +12,12 @@ namespace Fitch
         public static Texture2D textureGoal = ContentPipe.LoadTexture("goal.png");
         public static Texture2D textureOU = ContentPipe.LoadTexture("oneUp.png");
 
+        /// <summary>
+        /// Draws a square to the screen.
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="position"></param>
+        /// <param name="size"></param>
         public static void DrawSquare(Texture2D texture, Vector2 position, float size)
         {
             GL.Color3(Color.White);
@@ -41,6 +47,11 @@ namespace Fitch
             GL.End();
         }
 
+        /// <summary>
+        /// Draws a player to the screen.
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="player"></param>
         public static void DrawPlayer(Texture2D texture, Player player)
         {
 
@@ -76,6 +87,10 @@ namespace Fitch
 
         }
 
+        /// <summary>
+        /// Draws the goal igloo to the screen.
+        /// </summary>
+        /// <param name="goal"></param>
         public static void DrawGoal(Block goal)
         {
 
@@ -84,6 +99,10 @@ namespace Fitch
 
         }
 
+        /// <summary>
+        /// Draws a powerup to the screen (Same as DrawGoal).
+        /// </summary>
+        /// <param name="powerup"></param>
         public static void DrawPowerup(Powerup powerup)
         {
 
@@ -101,6 +120,12 @@ namespace Fitch
 
         }
 
+        /// <summary>
+        /// Draws a block to the screen.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="position"></param>
+        /// <param name="size"></param>
         public static void DrawBlock(BlockType type, Vector2 position, float size)
 		{
             GL.Color3(Color.White);
@@ -145,6 +170,11 @@ namespace Fitch
 			GL.End();
 		}
 
+        /// <summary>
+        /// Draws a rectangle to the screen.
+        /// </summary>
+        /// <param name="rect">The rectangle to be drawn. <see cref="Rectangle"/></param>
+        /// <param name="color"></param>
         public static void DrawRect(Rectangle rect, Color color)
         {
 
@@ -180,6 +210,12 @@ namespace Fitch
 
         }
 
+        /// <summary>
+        /// Draws a rectangle with a texture to the screen.
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="rect"></param>
+        /// <param name="alpha"></param>
         public static void DrawRect(Texture2D texture, RectangleF rect, float alpha = 255)
         {
 
@@ -222,6 +258,13 @@ namespace Fitch
 
         }
 
+        /// <summary>
+        /// Draws text to the screen using the font in "Content/font.png".
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="position"></param>
+        /// <param name="size"></param>
+        /// <param name="texture"></param>
         public static void DrawText(string text, Vector2 position, float size, Texture2D texture)
         {
 

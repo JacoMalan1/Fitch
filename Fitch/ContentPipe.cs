@@ -7,6 +7,12 @@ namespace Fitch
 {
     public class ContentPipe
     {
+
+        /// <summary>
+        /// Loads an image file into memory.
+        /// </summary>
+        /// <param name="filePath">"Content/" automatically appended.</param>
+        /// <returns></returns>
         public static Texture2D LoadTexture(string filePath)
         {
             filePath = "Content/" + filePath;

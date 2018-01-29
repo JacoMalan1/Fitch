@@ -8,6 +8,7 @@ namespace Fitch
         public static int frameCounter;
         public static int animCounter;
         public static Texture2D playerStanding = ContentPipe.LoadTexture("player.png");
+
         public static Texture2D[] runningAnimFrames = new Texture2D[4]
         {
             ContentPipe.LoadTexture("penguin_walk01.png"),
@@ -29,12 +30,19 @@ namespace Fitch
             ContentPipe.LoadTexture("penguin_die04.png")
         };
         
+        /// <summary>
+        /// Initialize everything for animating the player.
+        /// </summary>
         public static void Initialize()
         {
             frameCounter = 1;
             animCounter = 0;
         }
 
+        /// <summary>
+        /// Check the state of the player and apply an animation frame as needed.
+        /// </summary>
+        /// <param name="player"></param>
         public static void Update(ref Player player)
         {
             frameCounter++;

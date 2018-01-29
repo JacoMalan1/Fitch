@@ -51,7 +51,13 @@ namespace Fitch
             this.lives = lives;
 
         }
-
+        
+        /// <summary>
+        /// Resets a player to the defaul stats.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="startBlock"></param>
+        /// <returns></returns>
         public static Player Reset(Player player, Block startBlock)
         {
 
