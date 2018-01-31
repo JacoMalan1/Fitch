@@ -156,6 +156,7 @@ namespace Fitch
         private void TitleScreenTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             titlescreen = false;
+            Sound.Play(SoundEffect.LevelMusic);
             titleScreenTimer.Stop();
         }
 
@@ -252,7 +253,7 @@ namespace Fitch
             }
 
             if (Input.KeyDown(OpenTK.Input.Key.F) && titlescreen)
-                titlescreen = false;
+                TitleScreenTimer_Elapsed(null, null);
 
             if (Input.KeyDown(OpenTK.Input.Key.F) && gameOver)
             {

@@ -73,6 +73,7 @@
     <Compile Include="Physics.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Save.cs" />
+    <Compile Include="Sound.cs" />
     <Compile Include="SpriteBatch.cs" />
     <Compile Include="Texture2D.cs" />
     <Compile Include="World.cs" />
@@ -96,6 +97,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Content\lives.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\levelMusic.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="Content\logo.png">

@@ -12,6 +12,7 @@ goal.png
 spike.png
 solid.png
 *.png
+*.wav
 
 #Unneeded files
 LICENCE_*.txt

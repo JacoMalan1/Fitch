@@ -148,7 +148,7 @@ namespace Fitch
                         #region Resolve
 
                         //Resolve Y
-                        if ((!level[bX, bY + 1].isSolid || !level[bX, bY - 1].isSolid) && (!(colRect.Height > player.Height / 4) || player.isStanding) && block.isSolid)
+                        if ((!level[bX, bY + 1].isSolid || !level[bX, bY - 1].isSolid) && (!(colRect.Height > player.Height / 3)) && block.isSolid)
                         {
 
                             //If player is moving downwards or standing then we always move up.
