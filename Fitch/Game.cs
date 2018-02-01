@@ -4,6 +4,7 @@ using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using System.Timers;
+using OpenTK.Audio.OpenAL;
 
 namespace Fitch
 {
@@ -23,6 +24,7 @@ namespace Fitch
         Texture2D logoTex;
         Texture2D font;
         Texture2D gameOverTex;
+        SoundSource levelMusic;
 
         public static Texture2D playerTexture;
         public static Texture2D playerIdleTex;
@@ -91,6 +93,9 @@ namespace Fitch
 
             GL.Enable(EnableCap.Texture2D);
 
+            //Initialize sound
+            Sound.Init();
+
             //Load level
             levelCounter = save.Data.LevelNum;
             levelName = "level" + levelCounter.ToString() + ".fl";
@@ -105,6 +110,9 @@ namespace Fitch
             player = new Player(new Vector2(0, 0), playerTexture.Width, playerTexture.Height, Vector2.Zero);
             player.Position = playerStart.ScreenPos - new Vector2(-player.Width, player.Height);
             player.Lives = save.Data.Lives;
+
+            //Load sound effects
+            levelMusic = ContentPipe.LoadSound("levelMusic.wav", true);
 
             //Load font
             font = ContentPipe.LoadTexture("text.jpg");
@@ -156,13 +164,14 @@ namespace Fitch
         private void TitleScreenTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             titlescreen = false;
-            Sound.Play(SoundEffect.LevelMusic);
+            AL.SourcePlay(levelMusic.ID);
             titleScreenTimer.Stop();
         }
 
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             window.Dispose();
+            AL.DeleteSource(levelMusic.ID);
         }
 
         void Window_UpdateFrame(object sender, FrameEventArgs e)

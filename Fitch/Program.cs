@@ -3,6 +3,7 @@ using System.IO;
 using OpenTK;
 using IniParser;
 using IniParser.Model;
+using System.Windows.Forms;
 
 namespace Fitch
 {
@@ -10,10 +11,12 @@ namespace Fitch
     {
         
         public static IniData data;
+
+        [STAThread]
         public static void Main()
         {
-            string screenWwidth = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width.ToString();
-            string screenHeight = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height.ToString();
+            string screenWwidth = Screen.PrimaryScreen.Bounds.Width.ToString();
+            string screenHeight = Screen.PrimaryScreen.Bounds.Height.ToString();
 
             if (!File.Exists("config.ini"))
             {

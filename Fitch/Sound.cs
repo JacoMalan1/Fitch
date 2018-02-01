@@ -1,43 +1,38 @@
 ﻿using System.Media;
 using System.IO;
+using OpenTK.Audio.OpenAL;
 
 namespace Fitch
 {
-    public enum SoundEffect
+
+    public class Sound
     {
 
-        LevelMusic,
-        Jump
-
-    }
-
-    class Sound
-    {
-
-        public static void Play(SoundEffect effect)
+        public static unsafe void Init()
         {
 
-            string fileName = "";
-
-            switch (effect)
-            {
-                case SoundEffect.LevelMusic:
-                    fileName = "levelMusic.wav";
-                    break;
-
-                default:
-                    break;
-            }
-
-            fileName = "Content/" + fileName;
-
-            if (!File.Exists(fileName))
-                return;
-
-            SoundPlayer s = new SoundPlayer(fileName);
-            s.PlayLooping();
+            var device = Alc.OpenDevice(null);
+            var context = Alc.CreateContext(device, (int*)null);
+            Alc.MakeContextCurrent(context);
 
         }
 
     }
+
+    public struct SoundSource
+    {
+
+        private int id;
+
+        public int ID { get { return id; } set { id = value; } }
+
+        public SoundSource(int id)
+        {
+
+            this.id = id;
+
+        }
+        
+    }
+
 }

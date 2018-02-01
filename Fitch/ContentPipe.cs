@@ -1,7 +1,11 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System.Drawing;
+using System;
 using System.Drawing.Imaging;
 using System.IO;
+using OpenTK.Audio.OpenAL;
+using NAudio;
+using NAudio.Wave;
 
 namespace Fitch
 {
@@ -40,5 +44,33 @@ namespace Fitch
 
             return new Texture2D(id, width, height);
         }
+
+        public static SoundSource LoadSound(string filePath, bool loop = false)
+        {
+
+            filePath = "Content/" + filePath;
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException();
+
+            int sampleFreq = 44100;
+            double dt = 2 * Math.PI / sampleFreq;
+
+            WaveFileReader reader = new WaveFileReader(filePath);
+
+            byte[] data = new byte[reader.Length];
+            reader.Read(data, 0, data.Length);
+
+            int id = AL.GenSource();
+            int buffer = AL.GenBuffer();
+
+            AL.BufferData(buffer, ALFormat.Stereo16, data, data.Length, sampleFreq);
+            AL.Source(id, ALSourcei.Buffer, buffer);
+            AL.Source(id, ALSourceb.Looping, loop);
+            AL.Source(id, ALSourcef.Gain, 0.3f);
+
+            return new SoundSource(id);
+
+        }
+
     }
 }
