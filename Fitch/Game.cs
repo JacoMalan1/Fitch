@@ -164,7 +164,14 @@ namespace Fitch
         private void TitleScreenTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             titlescreen = false;
-            AL.SourcePlay(levelMusic.ID);
+            try
+            {
+                AL.SourcePlay(levelMusic.ID);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             titleScreenTimer.Stop();
         }
 
