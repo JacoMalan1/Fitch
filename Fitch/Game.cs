@@ -171,7 +171,8 @@ namespace Fitch
             titlescreen = false;
             try
             {
-                AL.SourcePlay(levelMusic.ID);
+                if (MainClass.data.GetKey("Sound") == "on")
+                    AL.SourcePlay(levelMusic.ID);
             }
             catch(Exception ex)
             {
@@ -210,6 +211,7 @@ namespace Fitch
 
                 Save.Write(new Save(save.FileName, new SaveData(levelCounter, player.Lives)));
 
+                //Add a rectangle to be rendered to the RectBuffer
                 rectBuffer.Add(new RectBufferF(new RectangleF((window.Width / 2) - (saveText.Width / 2), window.Height - saveText.Height, saveText.Width, saveText.Height), saveText, (Int32.Parse(fps) * 2)));
                 
             }
@@ -447,6 +449,7 @@ namespace Fitch
 
                 }
 
+                //Render all the RectBufferF objects
                 for (int k = 0; k < rectBuffer.Count; k++)
                 {
 
