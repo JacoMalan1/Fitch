@@ -8,6 +8,7 @@ using OpenTK.Audio.OpenAL;
 
 namespace Fitch
 {
+
     public class Game
     {
 
@@ -24,6 +25,7 @@ namespace Fitch
         Texture2D logoTex;
         Texture2D font;
         Texture2D gameOverTex;
+        Texture2D saveText;
         SoundSource levelMusic;
 
         public static Texture2D playerTexture;
@@ -57,6 +59,8 @@ namespace Fitch
         public static Timer goalTimer = new Timer();
         public static Timer titleScreenTimer = new Timer();
         public static Timer gameOverTimer = new Timer();
+
+        public static List<RectBufferF> rectBuffer = new List<RectBufferF>();
 
 #endregion
 
@@ -125,6 +129,7 @@ namespace Fitch
 
             //Load misc textures
             textureLife = ContentPipe.LoadTexture("lives.png");
+            saveText = ContentPipe.LoadTexture("savingText.png");
 
             titlescreen = true;
 
@@ -202,7 +207,11 @@ namespace Fitch
             //Save
             if (Input.KeyPress(OpenTK.Input.Key.F5))
             {
+
                 Save.Write(new Save(save.FileName, new SaveData(levelCounter, player.Lives)));
+
+                rectBuffer.Add(new RectBufferF(new RectangleF((window.Width / 2) - (saveText.Width / 2), window.Height - saveText.Height, saveText.Width, saveText.Height), saveText, (Int32.Parse(fps) * 2)));
+                
             }
 
             //Load
@@ -437,7 +446,22 @@ namespace Fitch
                     SpriteBatch.DrawRect(textureLife, new Rectangle(window.Width - playerIdleTex.Width * k, 0, playerIdleTex.Width, playerIdleTex.Height));
 
                 }
-                                
+
+                for (int k = 0; k < rectBuffer.Count; k++)
+                {
+
+                    rectBuffer[k].Frames--;
+
+                    SpriteBatch.DrawRect(rectBuffer[k].Texture, rectBuffer[k].Rectangle);
+
+                    if (rectBuffer[k].Frames <= 0)
+                    {
+                        rectBuffer.RemoveAt(k);
+                        break;
+                    }
+
+                }
+
             }
 
             window.SwapBuffers();

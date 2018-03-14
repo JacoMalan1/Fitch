@@ -31,24 +31,24 @@ namespace Fitch
                 {
                     player.isStanding = true;
                     player.isJumping = false;
-                    Console.WriteLine("Standing");
+                   // Console.WriteLine("Standing");
                 }
                 else if (level[mX, lY].isSolid && player.Velocity.Y >= 0)
                 {
                     player.isStanding = true;
                     player.isJumping = false;
-                    Console.WriteLine("Standing");
+                   // Console.WriteLine("Standing");
                 }
                 else if (level[xX, lY].isSolid && player.Velocity.Y >= 0)
                 {
                     player.isStanding = true;
                     player.isJumping = false;
-                    Console.WriteLine("Standing");
+                    //Console.WriteLine("Standing");
                 }
                 else
                 {
                     player.isStanding = false;
-                    Console.WriteLine("Not Standing");
+                    //Console.WriteLine("Not Standing");
                 }
             }
             catch (IndexOutOfRangeException e)

@@ -152,6 +152,9 @@
     <Content Include="Content\player.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Content\savingText.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Content\solid.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

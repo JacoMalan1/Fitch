@@ -5,6 +5,29 @@ using System.Drawing;
 
 namespace Fitch
 {
+
+    public class RectBufferF
+    {
+
+        private RectangleF rect;
+        private Texture2D texture;
+        private int frames;
+
+        public RectangleF Rectangle { get { return rect; } set { rect = value; } }
+        public Texture2D Texture { get { return texture; } set { texture = value; } }
+        public int Frames { get { return frames; } set { frames = value; } }
+
+        public RectBufferF(RectangleF rect, Texture2D texture, int frames)
+        {
+
+            this.rect = rect;
+            this.texture = texture;
+            this.frames = frames;
+
+        }
+
+    }
+
     public class SpriteBatch
     {
         public static Texture2D textureSolid = ContentPipe.LoadTexture("solid.png");
