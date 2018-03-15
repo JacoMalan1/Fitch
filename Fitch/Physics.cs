@@ -55,6 +55,8 @@ namespace Fitch
             {
                 Game.playerDeath(ref player);
                 Console.WriteLine(e.StackTrace);
+
+                Game.logStrings.Add(DateTime.Now.ToLongTimeString() + ": Player went out of range.\n" + e.StackTrace);
             }
 
             try
@@ -200,6 +202,8 @@ namespace Fitch
                 //Write error to command line.
                 Console.WriteLine("Error in update physics.X or Y");
                 Console.WriteLine(e.StackTrace);
+
+                Game.logStrings.Add(DateTime.Now.ToLongTimeString() + ": Error in update physics.\n" + e.StackTrace);
             
             }
 

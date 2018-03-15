@@ -5,6 +5,7 @@ using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using System.Timers;
 using OpenTK.Audio.OpenAL;
+using System.IO;
 
 namespace Fitch
 {
@@ -46,6 +47,7 @@ namespace Fitch
         public static int i;
         public static string fps;
         public static string levelName;
+        public static List<string> logStrings = new List<string>();
 
         List<Block> blocks;
         Block[,] level;
@@ -61,6 +63,8 @@ namespace Fitch
         public static Timer gameOverTimer = new Timer();
 
         public static List<RectBufferF> rectBuffer = new List<RectBufferF>();
+
+        public static List<Trigger> TriggerBuffer = new List<Trigger>();
 
 #endregion
 
@@ -177,14 +181,35 @@ namespace Fitch
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                logStrings.Add(DateTime.Now.ToLongTimeString() + ": " + ex.Message);
             }
             titleScreenTimer.Stop();
         }
 
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+
             window.Dispose();
             AL.DeleteSource(levelMusic.ID);
+
+            //Write log to a file.
+            string fileName = @"logs\fitch";
+            int logNum = 1;
+
+            if (!Directory.Exists("logs"))
+                Directory.CreateDirectory("logs");
+
+            while (File.Exists(fileName + logNum.ToString() + ".log"))
+            {
+
+                logNum++;
+
+            }
+
+            fileName = fileName + logNum.ToString() + ".log";
+
+            File.WriteAllLines(fileName, logStrings);
+
         }
 
         void Window_UpdateFrame(object sender, FrameEventArgs e)

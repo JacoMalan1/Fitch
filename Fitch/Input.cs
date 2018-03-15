@@ -42,7 +42,7 @@ namespace Fitch
 
             if (keysDownLast.Contains(Key.Space))
             {
-                Console.WriteLine("input");
+                //Console.WriteLine("input");
             }
 
         }

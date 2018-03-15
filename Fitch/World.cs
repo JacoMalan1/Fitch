@@ -6,8 +6,51 @@ using System.Collections.Generic;
 namespace Fitch
 {
 
+    public enum TriggerType
+    {
+
+        text
+
+    }
+
+    public class Trigger
+    {
+
+        private TriggerType type;
+        private bool vertSpesific;
+        private int xPos;
+        private int yPos;
+        private object data;
+
+        public TriggerType Type { get { return type; } }
+        public bool VertSpec { get { return vertSpesific; } }
+        public Vector2 Position { get { return new Vector2(xPos, yPos); } }
+        public object Data { get { return data; } set { data = value; } }
+
+        /// <summary>
+        ///Creates a new Trigger object. 
+        /// </summary>
+        /// <param name="type">The type of trigger.</param>
+        /// <param name="data">The data for the trigger, e.g. some text for text trigger.</param>
+        /// <param name="xPos">The X-Position of the trigger.</param>
+        /// <param name="vertSpesific">Wether the trigger has a Y-Position</param>
+        /// <param name="yPos">The Y-Position for the trigger. Only needed when vertSpecific is true.</param>
+        public Trigger(TriggerType type, object data, int xPos, bool vertSpesific, int yPos = 0)
+        {
+
+            this.type = type;
+            this.vertSpesific = vertSpesific;
+            this.xPos = xPos;
+            this.yPos = yPos;
+            this.data = data;
+
+        }
+
+    }
+
     public class World
     {
+
         private float BlockSize;
         private Vector2 WorldSize;
 
@@ -31,7 +74,7 @@ namespace Fitch
         /// <returns></returns>
         public static List<Block> LoadFromFile(float blockSize, string filePath)
         {
-
+            string triggerFile = filePath + "t";
             filePath = "Content/" + filePath;
             if (!File.Exists(filePath))
             {
@@ -94,6 +137,39 @@ namespace Fitch
 
                     Game.powerups.Add(new Powerup(PowerupType.UPOne, new Vector2(blockSize, blockSize), new Vector2(x, y)));
                 }
+            }
+
+            try
+            {
+                lines = File.ReadAllLines(triggerFile);
+
+                foreach (string line in lines)
+                {
+
+                    pos = line.IndexOf(',');
+                    type = line.Substring(0, pos);
+                    temp = line.Substring(pos + 1, line.Length - pos - 1);
+                    string data = line.Substring(0, pos);
+                    temp = line.Substring(pos + 1, line.Length - pos - 1);
+                    xCoord = temp.Substring(0, pos);
+                    yCoord = temp.Substring(pos + 1, temp.Length - pos - 1);
+
+                    if (type == "text")
+                    {
+
+                        Game.TriggerBuffer.Add(new Trigger(TriggerType.text, data, Int32.Parse(xCoord), false));
+
+                    }
+
+                }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Error loading " + triggerFile + ", assuming no triggers.");
+
+                //Construct a log string.
+                Game.logStrings.Add(DateTime.Now.ToLongTimeString() + ": " + ex.Message + "\nError loading " + triggerFile + ", assuming no triggers.");
             }
 
             return blocks;
