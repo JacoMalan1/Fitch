@@ -29,6 +29,11 @@ namespace Fitch
             ContentPipe.LoadTexture("penguin_die03.png"),
             ContentPipe.LoadTexture("penguin_die04.png")
         };
+        public static Texture2D[] slideAnimFrames = new Texture2D[2]
+        {
+            ContentPipe.LoadTexture("penguin_slide01.png"),
+            ContentPipe.LoadTexture("penguin_slide02.png")
+        };
         
         /// <summary>
         /// Initialize everything for animating the player.
@@ -46,10 +51,10 @@ namespace Fitch
         public static void Update(ref Player player)
         {
             frameCounter++;
-            if ((player.isRunning || Math.Abs(player.Velocity.X) > 0.1) && !player.isJumping && !player.isDead && player.isStanding && !Game.goal)
+            if (!player.isSliding && (player.isRunning || Math.Abs(player.Velocity.X) > 0.1) && !player.isJumping && !player.isDead && player.isStanding && !Game.goal)
             {
 
-                if (frameCounter % 4 == 0)
+                if (frameCounter % Math.Ceiling(Game.TVELOCITY / Math.Abs(player.Velocity.X)) == 0)
                     animCounter++;
                 if (animCounter > 3)
                     animCounter = 0;
@@ -86,6 +91,18 @@ namespace Fitch
             {
 
                 Game.playerTexture = jumpingAnimFrames[2];
+
+            }
+
+            else if (player.isSliding && player.isStanding && !player.isJumping && !(player.Velocity.X == 0))
+            {
+
+                if (frameCounter % 20 == 0)
+                    animCounter++;
+                if (animCounter > 1)
+                    animCounter = 1;
+
+                Game.playerTexture = slideAnimFrames[animCounter];
 
             }
 

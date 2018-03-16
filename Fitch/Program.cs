@@ -24,7 +24,7 @@ namespace Fitch
                 {
                     "Resolution=" + screenWwidth + "x" + screenHeight,
                     "Fullscreen=true",
-                    "FSAA_Samples=8",
+                    "FSAA_Samples=4",
                     "VSync=true",
                     "Sound=on"
                 };

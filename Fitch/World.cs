@@ -9,7 +9,9 @@ namespace Fitch
     public enum TriggerType
     {
 
-        text
+        text,
+        move,
+        rotate
 
     }
 
@@ -21,11 +23,15 @@ namespace Fitch
         private int xPos;
         private int yPos;
         private object data;
+        private int timer;
+        private int index;
 
         public TriggerType Type { get { return type; } }
         public bool VertSpec { get { return vertSpesific; } }
         public Vector2 Position { get { return new Vector2(xPos, yPos); } }
         public object Data { get { return data; } set { data = value; } }
+        public int Timer { get { return timer; } set { timer = value; } }
+        public int Index { get { return index; } set { index = value; } }
 
         /// <summary>
         ///Creates a new Trigger object. 
@@ -35,7 +41,7 @@ namespace Fitch
         /// <param name="xPos">The X-Position of the trigger.</param>
         /// <param name="vertSpesific">Wether the trigger has a Y-Position</param>
         /// <param name="yPos">The Y-Position for the trigger. Only needed when vertSpecific is true.</param>
-        public Trigger(TriggerType type, object data, int xPos, bool vertSpesific, int yPos = 0)
+        public Trigger(TriggerType type, object data, int xPos, bool vertSpesific, int yPos = 0, int timer = 1000, int index = 0)
         {
 
             this.type = type;
@@ -43,6 +49,8 @@ namespace Fitch
             this.xPos = xPos;
             this.yPos = yPos;
             this.data = data;
+            this.timer = timer;
+            this.index = index;
 
         }
 
@@ -74,7 +82,7 @@ namespace Fitch
         /// <returns></returns>
         public static List<Block> LoadFromFile(float blockSize, string filePath)
         {
-            string triggerFile = filePath + "t";
+            string triggerFile = "Content/" + filePath + "t";
             filePath = "Content/" + filePath;
             if (!File.Exists(filePath))
             {
@@ -149,10 +157,15 @@ namespace Fitch
                     pos = line.IndexOf(',');
                     type = line.Substring(0, pos);
                     temp = line.Substring(pos + 1, line.Length - pos - 1);
-                    string data = line.Substring(0, pos);
-                    temp = line.Substring(pos + 1, line.Length - pos - 1);
+                    pos = temp.IndexOf(',');
+                    string data = temp.Substring(0, pos);
+                    temp = temp.Substring(pos + 1, temp.Length - pos - 1);
+                    pos = temp.IndexOf(',');
                     xCoord = temp.Substring(0, pos);
-                    yCoord = temp.Substring(pos + 1, temp.Length - pos - 1);
+                    temp = temp.Substring(pos + 1, temp.Length - pos - 1);
+                    pos = temp.IndexOf(',');
+                    yCoord = temp.Substring(0, pos);
+                    int timer = Int32.Parse(temp.Substring(pos + 1, temp.Length - pos - 1));
 
                     if (type == "text")
                     {
@@ -160,7 +173,12 @@ namespace Fitch
                         Game.TriggerBuffer.Add(new Trigger(TriggerType.text, data, Int32.Parse(xCoord), false));
 
                     }
+                    else if (type == "move")
+                    {
 
+                        Game.TriggerBuffer.Add(new Trigger(TriggerType.move, data, Int32.Parse(xCoord), true, Int32.Parse(yCoord), timer));
+
+                    }
                 }
             }
             catch (IOException ex)

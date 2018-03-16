@@ -28,6 +28,7 @@ namespace Fitch
         Texture2D gameOverTex;
         Texture2D saveText;
         SoundSource levelMusic;
+        Texture2D textureLoading;
 
         public static Texture2D playerTexture;
         public static Texture2D playerIdleTex;
@@ -36,7 +37,8 @@ namespace Fitch
 
         public static Save save = new Save("fitch", new SaveData(1, 3));
 
-        public const double TVELOCITY = 8;
+        public static double TVELOCITY = 8;
+        public static double SVELOCITY = 12;
 
         public static bool running = false;
         public static bool titlescreen;
@@ -111,6 +113,7 @@ namespace Fitch
             blocks = World.LoadFromFile(world.blockSize, levelName);
             level = World.LoadFromFile(world, levelName);
             background = ContentPipe.LoadTexture("background.png");
+            textureLoading = ContentPipe.LoadTexture("loading.png");
 
             //Initialize player
             playerTexture = ContentPipe.LoadTexture("player.png");
@@ -217,10 +220,15 @@ namespace Fitch
             //Increment tick counter
             i++;
 
+            TVELOCITY = (Input.KeyDown(OpenTK.Input.Key.ShiftLeft) && !player.isJumping) ? 12 : 8;
+
             //Check if player is at the goal
             if (player.Position.X >= GoalBlock.ScreenPos.X && player.Position.X <= GoalBlock.ScreenPos.X + GoalBlock.Size && !goalTimer.Enabled)
             {
                 goal = true;
+
+                rectBuffer.Add(new RectBufferF(new RectangleF(0, 0, window.Width, window.Height), textureLoading, (int)(Int32.Parse(fps) * goalTimer.Interval / 1000)));
+
                 goalTimer.Start();
             }
 
@@ -335,7 +343,7 @@ namespace Fitch
 
                 player.Facing = Direction.Right;
 
-                if (!(player.Velocity.X >= TVELOCITY))
+                if (!(player.Velocity.X >= TVELOCITY) || player.Velocity.X < 0)
                     player.Velocity += new Vector2(0.3f, 0);
 
                 player.isRunning = true;
@@ -345,7 +353,7 @@ namespace Fitch
             if (Input.KeyDown(OpenTK.Input.Key.A))
             {
 
-                if (!(Math.Abs(player.Velocity.X) >= TVELOCITY) || Input.KeyDown(OpenTK.Input.Key.D))
+                if (!(Math.Abs(player.Velocity.X) >= TVELOCITY) || player.Velocity.X >= 0)
                 {
                     player.Velocity += new Vector2(-0.3f, 0);
                     player.Facing = Direction.Left;

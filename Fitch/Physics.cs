@@ -207,6 +207,55 @@ namespace Fitch
             
             }
 
+            #region HandleTriggers
+
+            for (int i = 0;i < Game.TriggerBuffer.Count - 1;i++)
+            {
+
+                if (Game.TriggerBuffer[i].Type == TriggerType.move)
+                {
+
+                    if (Game.TriggerBuffer[i].Timer <= 0)
+                    {
+
+                        Game.TriggerBuffer.Remove(Game.TriggerBuffer[i]);
+                        continue;
+
+                    }
+
+                    //Get all the data.
+                    string data = Game.TriggerBuffer[i].Data.ToString();
+
+                    Vector2 originalPos = new Vector2(0, 0);
+                    Vector2 translate = new Vector2(0, 0);
+
+                    int posOpen = data.IndexOf('(');
+                    int posClose = data.IndexOf(')');
+
+                    string orig = data.Substring(posOpen + 1, posClose - 1);
+                    data = data.Substring(posClose + 1, data.Length - posClose - 1);
+
+                    posOpen = data.IndexOf('(');
+                    posClose = data.IndexOf(')');
+
+                    string move = data.Substring(posOpen + 1, posClose - 1);
+
+                    int pos = orig.IndexOf('#');
+                    originalPos = new Vector2(Int32.Parse(orig.Substring(0, pos)), Int32.Parse(orig.Substring(pos + 1, orig.Length - pos - 1)));
+                    pos = move.IndexOf('#');
+                    translate = new Vector2(Int32.Parse(move.Substring(0, pos)), Int32.Parse(orig.Substring(pos + 1, move.Length - pos - 1)));
+
+                    //Start handling the trigger.
+                    Game.TriggerBuffer[i].Timer--;
+                    translate += originalPos;
+                    Game.TriggerBuffer[i].Index = (Game.TriggerBuffer[i].Index == 0) ? (int)Math.Floor((decimal)(Int32.Parse(Game.fps) / Game.TriggerBuffer[i].Timer)) : 2;
+
+                }
+
+            }
+
+            #endregion
+
             //Prevent player from breaking physics :)
             if (player.Position.X < 0)
             {
@@ -216,6 +265,11 @@ namespace Fitch
             {
                 player.Position = new Vector2(player.Position.X, 0);
             }
+
+            if (Game.SVELOCITY - Math.Abs(player.Velocity.X) < 1)
+                player.isSliding = true;
+            else
+                player.isSliding = false;
 
             //Velocity
             player.Position += player.Velocity;
