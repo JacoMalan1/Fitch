@@ -88,6 +88,29 @@ namespace Fitch
 
         }
 
+        private static void GameClose()
+        {
+
+			//Write log to a file.
+			string fileName = "logs/fitch";
+			int logNum = 1;
+
+			if (!Directory.Exists("logs"))
+				Directory.CreateDirectory("logs");
+
+			while (File.Exists(fileName + logNum.ToString() + ".log"))
+			{
+
+				logNum++;
+
+			}
+
+			fileName = fileName + logNum.ToString() + ".log";
+
+			File.WriteAllLines(fileName, logStrings);
+
+        }
+
         void Window_Load(object sender, EventArgs e)
         {
 
@@ -194,24 +217,6 @@ namespace Fitch
 
             window.Dispose();
             AL.DeleteSource(levelMusic.ID);
-
-            //Write log to a file.
-            string fileName = @"logs\fitch";
-            int logNum = 1;
-
-            if (!Directory.Exists("logs"))
-                Directory.CreateDirectory("logs");
-
-            while (File.Exists(fileName + logNum.ToString() + ".log"))
-            {
-
-                logNum++;
-
-            }
-
-            fileName = fileName + logNum.ToString() + ".log";
-
-            File.WriteAllLines(fileName, logStrings);
 
         }
 
@@ -365,6 +370,7 @@ namespace Fitch
             if (Input.KeyDown(OpenTK.Input.Key.Escape))
             {
                 window.Close();
+                GameClose();
             }
 
             Input.Update();
@@ -453,7 +459,7 @@ namespace Fitch
 
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
 
 

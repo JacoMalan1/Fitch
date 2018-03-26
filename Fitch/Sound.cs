@@ -1,6 +1,4 @@
-﻿using System.Media;
-using System.IO;
-using System;
+﻿using System;
 using OpenTK.Audio.OpenAL;
 
 namespace Fitch
@@ -9,19 +7,21 @@ namespace Fitch
     public class Sound
     {
 
-        public static unsafe void Init()
+        public static void Init()
         {
 
             try
             {
                 var device = Alc.OpenDevice(null);
-                var context = Alc.CreateContext(device, (int*)null);
+                int[] attrList = null;
+                var context = Alc.CreateContext(device, attrList);
                 Alc.MakeContextCurrent(context);
             }
-            catch
+            catch (Exception ex)
             {
 
                 Console.WriteLine("Error opening device.");
+                Game.logStrings.Add(DateTime.Now.ToLongTimeString() + ": Error opening audio device.\n" + ex.GetType() + " " + ex.Message);
 
             }
 

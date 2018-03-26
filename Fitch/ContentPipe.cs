@@ -69,12 +69,18 @@ namespace Fitch
                 AL.Source(id, ALSourcei.Buffer, buffer);
                 AL.Source(id, ALSourceb.Looping, loop);
                 AL.Source(id, ALSourcef.Gain, 0.3f);
+
                 return new SoundSource(id);
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+
+                Console.WriteLine(ex.GetType() + ": " + ex.Message);
+                Game.logStrings.Add(DateTime.Now.ToLongTimeString() + ": Error loading SoundSource. " + ex.GetType() + ": " + ex.Message);
+
             }
+
             return new SoundSource(1);
 
         }

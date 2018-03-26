@@ -9,12 +9,12 @@ namespace Fitch
     {
 
         /// <summary>
-        /// 
+        /// Updates the player coords by checking the physics engine.
         /// </summary>
-        /// <param name="player">Needed to change the players coords.</param>
-        /// <param name="blocks">Needed to itterate through all the blocks to check collision.</param>
-        /// <param name="world">Needed to check the block size.</param>
-        /// <param name="level">Used cuz i'm lazy JK xD.</param>
+        /// <param name="player">Player.</param>
+        /// <param name="blocks">Blocks.</param>
+        /// <param name="world">World.</param>
+        /// <param name="level">Level.</param>
         public static void updatePhysics(ref Player player, List<Block> blocks, World world, Block[,] level)
         {
 
