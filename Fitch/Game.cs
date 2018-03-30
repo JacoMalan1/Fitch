@@ -37,8 +37,8 @@ namespace Fitch
 
         public static Save save = new Save("fitch", new SaveData(1, 3));
 
-        public static double TVELOCITY = 8;
-        public static double SVELOCITY = 12;
+        public static double TVELOCITY = 5;
+        public static double SVELOCITY = 11;
 
         public static bool running = false;
         public static bool titlescreen;
@@ -67,6 +67,8 @@ namespace Fitch
         public static List<RectBufferF> rectBuffer = new List<RectBufferF>();
 
         public static List<Trigger> TriggerBuffer = new List<Trigger>();
+
+        public static RectangleF screenRect;
 
 #endregion
 
@@ -422,6 +424,8 @@ namespace Fitch
             else
             {
 
+                #region Render
+
                 Matrix4 projMat = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadMatrix(ref projMat);
@@ -429,9 +433,26 @@ namespace Fitch
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                 //Draw background
-                SpriteBatch.DrawRect(background, new RectangleF(0, 0, window.Width, window.Height));
+                Matrix4 bTransform = Camera.BackgroundTransform(ref player, window);
+                GL.MultMatrix(ref bTransform);
 
+                //Calculate the amount of loops for entire level.
+                int xStretch = (int)Math.Ceiling(world.worldSize.X * world.blockSize / background.Width / 2);
+                int offset = 0;
+
+                for (int j = -1; j < xStretch; j++)
+                {
+
+                    offset = j * background.Width;
+                    SpriteBatch.DrawRect(background, new RectangleF(offset, 0, window.Width, window.Height));
+
+                }
+
+                GL.LoadMatrix(ref projMat);
                 Matrix4 transform = Camera.ApplyTransform(ref player, window);
+
+                //float blockBuffer = world.blockSize * 5;
+                screenRect = new RectangleF((player.Position.X + player.Width / 2 - window.Width / 2), (player.Position.Y - window.Height / 2), window.Width, window.Height);
 
                 foreach (Block block in blocks)
                 {
@@ -480,8 +501,8 @@ namespace Fitch
                     SpriteBatch.DrawRect(new Rectangle(0, 0, window.Width, window.Height), Color.FromArgb(128, 255, 0, 0));
                 if (goal)
                     SpriteBatch.DrawRect(new Rectangle(0, 0, window.Width, window.Height), Color.FromArgb(128, 0, 255, 0));
-                
-                for (int k = 0;k < player.Lives;k++)
+
+                for (int k = 0; k < player.Lives; k++)
                 {
 
                     SpriteBatch.DrawRect(textureLife, new Rectangle(window.Width - playerIdleTex.Width * k, 0, playerIdleTex.Width, playerIdleTex.Height));
@@ -507,6 +528,8 @@ namespace Fitch
             }
 
             window.SwapBuffers();
+
+            #endregion
 
         }
 

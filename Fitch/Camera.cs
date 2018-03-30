@@ -18,5 +18,14 @@ namespace Fitch
 
         }
 
+        public static Matrix4 BackgroundTransform(ref Player player, GameWindow window)
+        {
+
+            Matrix4 transform = Matrix4.Identity;
+            transform = Matrix4.Mult(transform, Matrix4.CreateTranslation(((-player.Position.X + window.Width / 2) - player.Width) / 2, 0, 0));
+
+            return transform;
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using OpenTK.Audio.OpenAL;
 
 namespace Fitch
@@ -12,10 +13,12 @@ namespace Fitch
 
             try
             {
+                
                 var device = Alc.OpenDevice(null);
                 int[] attrList = null;
                 var context = Alc.CreateContext(device, attrList);
                 Alc.MakeContextCurrent(context);
+            
             }
             catch (Exception ex)
             {
