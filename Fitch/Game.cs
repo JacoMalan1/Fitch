@@ -218,9 +218,17 @@ namespace Fitch
         {
 
             window.Dispose();
-            AL.DeleteSource(levelMusic.ID);
 
-        }
+            try
+            {
+                AL.DeleteSource(levelMusic.ID);
+            }
+            catch
+            {
+                
+            }
+
+            }
 
         void Window_UpdateFrame(object sender, FrameEventArgs e)
         {
