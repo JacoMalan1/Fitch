@@ -184,10 +184,6 @@
     <Content Include="OpenTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Shaders\test.vert">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\test.frag" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

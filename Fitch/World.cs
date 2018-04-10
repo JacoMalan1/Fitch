@@ -62,7 +62,7 @@ namespace Fitch
         private float BlockSize;
         private Vector2 WorldSize;
 
-        public Vector2 worldSize { get { return WorldSize; }}
+        public Vector2 worldSize { get { return WorldSize; } set { WorldSize = value; } }
 
         public float blockSize { get { return BlockSize; }}
 
@@ -199,7 +199,7 @@ namespace Fitch
         /// <param name="world"></param>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static Block[,] LoadFromFile(World world, string filePath)
+        public static Block[,] LoadFromFile(ref World world, string filePath)
         {
 
             filePath = "Content/" + filePath;
@@ -207,6 +207,16 @@ namespace Fitch
                 throw new FileNotFoundException();
 
             string[] lines = File.ReadAllLines(filePath);
+
+            int width, height;
+
+            if (Int32.TryParse(lines[0], out width) && Int32.TryParse(lines[1], out height))
+            {
+
+                world.worldSize = new Vector2(width, height);
+                Array.Copy(lines, 2, lines, 0, lines.Length - 2);
+
+            }
 
             Block[,] blocks = new Block[(int)world.WorldSize.X, (int)world.WorldSize.Y];
 

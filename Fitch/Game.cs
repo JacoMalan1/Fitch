@@ -136,7 +136,7 @@ namespace Fitch
             levelName = "level" + levelCounter.ToString() + ".fl";
             world = new World(50, new Vector2(200, 50));
             blocks = World.LoadFromFile(world.blockSize, levelName);
-            level = World.LoadFromFile(world, levelName);
+            level = World.LoadFromFile(ref world, levelName);
             background = ContentPipe.LoadTexture("background.png");
             textureLoading = ContentPipe.LoadTexture("loading.png");
 
@@ -275,7 +275,7 @@ namespace Fitch
                 levelName = "level" + levelCounter.ToString() + ".fl";
                 world = new World(50, new Vector2(200, 50));
                 blocks = World.LoadFromFile(world.blockSize, levelName);
-                level = World.LoadFromFile(world, levelName);
+                level = World.LoadFromFile(ref world, levelName);
 
                 player = Player.Reset(player, playerStart);
 
@@ -617,7 +617,7 @@ namespace Fitch
             levelCounter++;
             levelName = "level" + levelCounter.ToString() + ".fl";
             blocks = World.LoadFromFile(world.blockSize, levelName);
-            level = World.LoadFromFile(world, levelName);
+            level = World.LoadFromFile(ref world, levelName);
             player = Player.Reset(player, playerStart);
             goal = false;
             goalTimer.Stop();
@@ -635,7 +635,7 @@ namespace Fitch
             levelName = "level" + levelCounter.ToString() + ".fl";
             world = new World(50, new Vector2(200, 50));
             blocks = World.LoadFromFile(world.blockSize, levelName);
-            level = World.LoadFromFile(world, levelName);
+            level = World.LoadFromFile(ref world, levelName);
 
             gameOverTimer.Stop();
 
