@@ -275,7 +275,10 @@ namespace Fitch
             player.Position += player.Velocity;
             if (!Input.KeyDown(OpenTK.Input.Key.D) && !Input.KeyDown(OpenTK.Input.Key.A))
             {
-                player.Velocity = new Vector2(player.Velocity.X / 1.5f, player.Velocity.Y);
+                if (!player.isJumping)
+                    player.Velocity = new Vector2(player.Velocity.X / Game.DECELRATE, player.Velocity.Y);
+                else
+                    player.Velocity = new Vector2(player.Velocity.X / Game.AIRFRICTION, player.Velocity.Y);
             }
 
             //Gravity

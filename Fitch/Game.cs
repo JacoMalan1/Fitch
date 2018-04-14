@@ -37,8 +37,12 @@ namespace Fitch
 
         public static Save save = new Save("fitch", new SaveData(1, 3));
 
+        //Constants
         public static double TVELOCITY = 5;
         public static double SVELOCITY = 11;
+        public const float ACCELRATE = 0.7f;
+        public const float DECELRATE = 2f;
+        public const float AIRFRICTION = 1.01f;
 
         public static bool running = false;
         public static bool titlescreen;
@@ -304,6 +308,13 @@ namespace Fitch
 
             }
 
+            if (Input.KeyPress(OpenTK.Input.Key.F9))
+            {
+
+                AL.SourceStop(levelMusic.ID);
+
+            }
+
             if (Input.KeyPress(OpenTK.Input.Key.F11))
             {
 
@@ -358,8 +369,13 @@ namespace Fitch
 
                 player.Facing = Direction.Right;
 
-                if (!(player.Velocity.X >= TVELOCITY) || player.Velocity.X < 0)
-                    player.Velocity += new Vector2(0.3f, 0);
+                if (!(Math.Abs(player.Velocity.X) >= TVELOCITY) || player.Velocity.X < 0)
+                {
+                    if (!player.isJumping)
+                        player.Velocity += new Vector2(ACCELRATE, 0);
+                    else
+                        player.Velocity += new Vector2(ACCELRATE * 0.5f, 0);
+                }
 
                 player.isRunning = true;
 
@@ -370,7 +386,11 @@ namespace Fitch
 
                 if (!(Math.Abs(player.Velocity.X) >= TVELOCITY) || player.Velocity.X >= 0)
                 {
-                    player.Velocity += new Vector2(-0.3f, 0);
+                    if (!player.isJumping)
+                        player.Velocity -= new Vector2(ACCELRATE, 0);
+                    else
+                        player.Velocity -= new Vector2(ACCELRATE * 0.5f, 0);
+
                     player.Facing = Direction.Left;
                 }
 

@@ -91,6 +91,15 @@ namespace Fitch
 
             string[] lines = File.ReadAllLines(filePath);
 
+            int width, height;
+
+            if (Int32.TryParse(lines[0], out width) && Int32.TryParse(lines[1], out height))
+            {
+
+                Array.Copy(lines, 2, lines, 0, lines.Length - 2);
+
+            }
+
             List<Block> blocks = new List<Block>();
             string type;
             string xCoord;
@@ -102,17 +111,27 @@ namespace Fitch
 
             foreach (string line in lines)
             {
+
+                try
+                {
+
+                    if (line[0] == '#' || line == "")
+                    {
+                        continue;
+                    }
+
+                }
+                catch
+                {
+                    continue;
+                }
+
                 pos = line.IndexOf(',');
                 type = line.Substring(0, pos);
                 temp = line.Substring(pos + 1, line.Length - pos - 1);
                 pos = temp.IndexOf(',');
                 xCoord = temp.Substring(0, pos);
                 yCoord = temp.Substring(pos + 1, temp.Length - pos - 1);
-
-                if (line[0] == '#')
-                {
-                    continue;
-                }
                 
                 if (type == "solid")
                 {

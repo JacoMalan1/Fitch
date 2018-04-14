@@ -8,6 +8,7 @@ namespace Fitch
         public static int frameCounter;
         public static int animCounter;
         public static Texture2D playerStanding = ContentPipe.LoadTexture("player.png");
+        public static float AnimScale = 1.2f;
 
         public static Texture2D[] runningAnimFrames = new Texture2D[4]
         {
@@ -54,7 +55,7 @@ namespace Fitch
             if (!player.isSliding && (player.isRunning || Math.Abs(player.Velocity.X) > 0.1) && !player.isJumping && !player.isDead && player.isStanding && !Game.goal)
             {
 
-                if (frameCounter % Math.Ceiling(Game.TVELOCITY / Math.Abs(player.Velocity.X / 1.6)) == 0)
+                if (frameCounter % Math.Ceiling(Game.TVELOCITY / Math.Abs(player.Velocity.X / 1.7 * AnimScale)) == 0)
                     animCounter++;
                 if (animCounter > 3)
                     animCounter = 0;
