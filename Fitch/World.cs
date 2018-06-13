@@ -102,10 +102,19 @@ namespace Fitch
 
             List<Block> blocks = new List<Block>();
             string type;
-            string xCoord;
-            string yCoord;
+            string xCoord = "";
+            string yCoord = "";
             int pos;
             string temp;
+
+            //moving blocks
+            string fromX = "";
+            string fromY = "";
+            string triggerY = "";
+            string triggerX = "";
+            string tempDir = "";
+            string moveAmt = "0";
+            Direction direction = Direction.Right;
 
             Game.powerups.Clear();
 
@@ -128,10 +137,70 @@ namespace Fitch
 
                 pos = line.IndexOf(',');
                 type = line.Substring(0, pos);
-                temp = line.Substring(pos + 1, line.Length - pos - 1);
-                pos = temp.IndexOf(',');
-                xCoord = temp.Substring(0, pos);
-                yCoord = temp.Substring(pos + 1, temp.Length - pos - 1);
+                if (type == "move")
+                {
+
+                    //Get fromX
+                    temp = line.Substring(pos + 1, line.Length - pos - 1);
+                    pos = temp.IndexOf(',');
+                    fromX = temp.Substring(0, pos);
+
+                    //Get fromY
+                    temp = temp.Substring(pos + 1, temp.Length - pos - 1);
+                    pos = temp.IndexOf(',');
+                    fromY = temp.Substring(0, pos);
+
+                    //Get direction
+                    temp = temp.Substring(pos + 1, temp.Length - pos - 1);
+                    pos = temp.IndexOf(',');
+                    tempDir = temp.Substring(0, pos);
+
+                    //Get moveAmt
+                    temp = temp.Substring(pos + 1, temp.Length - pos - 1);
+                    pos = temp.IndexOf(',');
+                    moveAmt = temp.Substring(0, pos);
+
+                    //Get triggerX
+                    temp = temp.Substring(pos + 1, temp.Length - pos - 1);
+                    pos = temp.IndexOf(',');
+                    triggerX = temp.Substring(0, pos);
+
+                    //Get triggerY
+                    temp = temp.Substring(pos + 1, temp.Length - pos - 1);
+                    pos = temp.IndexOf(',');
+                    triggerY = temp.Substring(0, pos);
+
+                    switch (tempDir)
+                    {
+
+                        case "u":
+                            direction = Direction.Up;
+                            break;
+                        case "d":
+                            direction = Direction.Down;
+                            break;
+                        case "l":
+                            direction = Direction.Left;
+                            break;
+                        case "r":
+                            direction = Direction.Right;
+                            break;
+
+                        default:
+                            direction = Direction.Right;
+                            break;
+
+                    }
+
+                }
+
+                else
+                {
+                    temp = line.Substring(pos + 1, line.Length - pos - 1);
+                    pos = temp.IndexOf(',');
+                    xCoord = temp.Substring(0, pos);
+                    yCoord = temp.Substring(pos + 1, temp.Length - pos - 1);
+                }
                 
                 if (type == "solid")
                 {
@@ -164,6 +233,39 @@ namespace Fitch
 
                     Game.powerups.Add(new Powerup(PowerupType.UPOne, new Vector2(blockSize, blockSize), new Vector2(x, y)));
                 }
+                else if (type == "move")
+                {
+
+                    Vector2 toPos;
+
+                    switch (direction)
+                    {
+
+                        case Direction.Left:
+                            toPos = new Vector2(Int32.Parse(fromX) - Int32.Parse(moveAmt), Int32.Parse(fromY));
+                            break;
+                        case Direction.Right:
+                            toPos = new Vector2(Int32.Parse(fromX) + Int32.Parse(moveAmt), Int32.Parse(fromY));
+                            break;
+                        case Direction.Up:
+                            toPos = new Vector2(Int32.Parse(fromX), Int32.Parse(fromY) - Int32.Parse(moveAmt));
+                            break;
+                        case Direction.Down:
+                            toPos = new Vector2(Int32.Parse(fromX), Int32.Parse(fromY) + Int32.Parse(moveAmt));
+                            break;
+                        default:
+                            toPos = new Vector2(Int32.Parse(fromX) + Int32.Parse(moveAmt), Int32.Parse(fromY));
+                            break;
+
+                    }
+
+                    int x = Int32.Parse(xCoord);
+                    int y = Int32.Parse(yCoord);
+
+                    BlockMove move = new BlockMove(direction, new Vector2(Int32.Parse(fromX), Int32.Parse(fromY)), new Vector2(Int32.Parse(triggerX), Int32.Parse(triggerY)), new Vector2(x, y));
+
+                }
+
             }
 
             try

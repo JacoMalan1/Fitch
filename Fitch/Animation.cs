@@ -5,32 +5,34 @@ namespace Fitch
     class Animation
     {
 
-        public static int frameCounter;
+        private static int frameCounter;
         public static int animCounter;
-        public static Texture2D playerStanding = ContentPipe.LoadTexture("player.png");
-        public static float AnimScale = 1.2f;
+        private static Texture2D playerStanding = ContentPipe.LoadTexture("player.png");
 
-        public static Texture2D[] runningAnimFrames = new Texture2D[4]
+        //Animation speed scale
+        public static float AnimScale = 2.04f;
+
+        private static Texture2D[] runningAnimFrames = new Texture2D[4]
         {
             ContentPipe.LoadTexture("penguin_walk01.png"),
             ContentPipe.LoadTexture("penguin_walk02.png"),
             ContentPipe.LoadTexture("penguin_walk03.png"),
             ContentPipe.LoadTexture("penguin_walk04.png")
         };
-        public static Texture2D[] jumpingAnimFrames = new Texture2D[3]
+        private static Texture2D[] jumpingAnimFrames = new Texture2D[3]
         {
             ContentPipe.LoadTexture("penguin_jump01.png"),
             ContentPipe.LoadTexture("penguin_jump02.png"),
             ContentPipe.LoadTexture("penguin_jump03.png")
         };
-        public static Texture2D[] deathAnimFrames = new Texture2D[4]
+        private static Texture2D[] deathAnimFrames = new Texture2D[4]
         {
             ContentPipe.LoadTexture("penguin_die01.png"),
             ContentPipe.LoadTexture("penguin_die02.png"),
             ContentPipe.LoadTexture("penguin_die03.png"),
             ContentPipe.LoadTexture("penguin_die04.png")
         };
-        public static Texture2D[] slideAnimFrames = new Texture2D[2]
+        private static Texture2D[] slideAnimFrames = new Texture2D[2]
         {
             ContentPipe.LoadTexture("penguin_slide01.png"),
             ContentPipe.LoadTexture("penguin_slide02.png")
@@ -55,7 +57,7 @@ namespace Fitch
             if (!player.isSliding && (player.isRunning || Math.Abs(player.Velocity.X) > 0.1) && !player.isJumping && !player.isDead && player.isStanding && !Game.goal)
             {
 
-                if (frameCounter % Math.Ceiling(Game.TVELOCITY / Math.Abs(player.Velocity.X / 1.7 * AnimScale)) == 0)
+                if (frameCounter % Math.Ceiling(Game.TVELOCITY / Math.Abs(player.Velocity.X / AnimScale)) == 0)
                     animCounter++;
                 if (animCounter > 3)
                     animCounter = 0;

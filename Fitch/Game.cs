@@ -21,7 +21,7 @@ namespace Fitch
         World world;
         public static Player player;
 
-        Vector2 removePos = new Vector2(int.MaxValue, int.MaxValue);
+        public static Vector2 removePos = new Vector2(int.MaxValue, int.MaxValue);
 
         Texture2D logoTex;
         Texture2D font;
@@ -56,7 +56,7 @@ namespace Fitch
         public static List<string> logStrings = new List<string>();
 
         List<Block> blocks;
-        Block[,] level;
+        public static Block[,] level;
         public static Block playerStart;
         public static Block GoalBlock;
 
@@ -416,6 +416,8 @@ namespace Fitch
                 player.Lives = 5;
             }
 
+            //Block.Update(ref blocks, ref player);
+
             Animation.Update(ref player);
 
         }
@@ -484,7 +486,8 @@ namespace Fitch
 
                 foreach (Block block in blocks)
                 {
-
+                    if (block.Type == BlockType.Air)
+                        continue;
                     if (block.Type == BlockType.PlayerStart)
                     {
                         player.Position = new Vector2(block.ScreenPos.X + player.Width, block.ScreenPos.Y - player.Height);
@@ -578,7 +581,7 @@ namespace Fitch
         /// </summary>
         /// <param name="block"></param>
         /// <returns></returns>
-        bool blockSearch(Block block)
+        public static bool blockSearch(Block block)
         {
 
             if (block.Position == removePos)

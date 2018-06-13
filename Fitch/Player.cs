@@ -5,7 +5,9 @@ namespace Fitch
     public enum Direction
     {
         Right,
-        Left
+        Left,
+        Up,
+        Down
     }
 
     public class Player
