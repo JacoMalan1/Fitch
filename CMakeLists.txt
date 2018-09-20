@@ -6,7 +6,7 @@ set(OpenGL_GL_PREFERENCE "GLVND")
 
 add_executable(Fitch main.h graphics/Renderable.cpp game/Player.cpp physics/PhysicsBody.cpp physics/Rectangle2D.cpp physics/Physics.h physics/Physics.cpp physics/RigidBody.cpp tools.cpp main.cpp graphics/Texture2D.cpp graphics/Shader.cpp graphics/Shader.h graphics/VAO.cpp graphics/VAO.h graphics/VBO.cpp graphics/VBO.h)
 
-find_package(glfw3 3.2 REQUIRED)
+find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
 target_link_libraries(Fitch GLEW)
