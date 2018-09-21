@@ -2,26 +2,30 @@
 // Created by jacom on 2018/08/22.
 //
 
-#include <iostream>
+#include<iostream>
 #include "Player.h"
 #include "../tools.h"
 #include "../main.h"
 
-Rectangle2D Player::getCBox() {
-    return { this->position.x, this->position.y, this->width, this->height };
-}
-Player::Player() : position(0, 0), velocity(0, 0), acceleration(0, 0), width(0), height(0) {
-    collisionList = new std::vector<RigidBody*>();
-}
-Player::Player(glm::vec2 position, float width, float height) : acceleration(0, 0), velocity(0, 0), position(position), width(width), height(height), isRunning(false), isStanding(false) {
-    collisionList = new std::vector<RigidBody*>();
+Player::Player(const Player& other) : position(other.position), velocity(other.velocity), acceleration(other.acceleration),
+            width(other.width), height(other.height), texture(other.texture), shader(other.shader), vertexArray(other.vertexArray),
+            buffer(other.buffer)
+{
+
+    //std::printf("Other pointer: %p\n", other.collisionList);
+
+    this->collisionList = new std::vector<RigidBody*>();
+    *this->collisionList = *other.collisionList;
+
+    //std::printf("This pointer: %p\n", this->collisionList);
+
 }
 
-glm::vec2 Player::getPosition() { return position; }
-glm::vec2 Player::getVelocity() { return velocity; }
-
-void Player::setVelocity(glm::vec2 velocity) { this->velocity = velocity; }
-void Player::setPosition(glm::vec2 position) { this->position = position; }
+Player::Player(glm::vec2 position, float width, float height) : position(position), width(width), height(height) {
+    this->collisionList = new std::vector<RigidBody*>();
+    this->velocity = glm::vec2(0, 0);
+    this->acceleration = glm::vec2(0, 0);
+}
 
 void Player::initBuffer() {
 
@@ -41,7 +45,7 @@ void Player::initBuffer() {
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_DYNAMIC_DRAW);
 
-    texture = fitchio::loadBMP("content/player.bmp");
+    // this->texture = fitchio::loadBMP("player.bmp");
 
 }
 

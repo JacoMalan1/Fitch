@@ -9,7 +9,7 @@
 #include "../graphics/VAO.h"
 #include "../graphics/VBO.h"
 
-class Player : PhysicsBody, Renderable {
+class Player :  Renderable {
 
     // TODO: Add a texture system.
 
@@ -38,16 +38,12 @@ public:
 
     Player(glm::vec2 position, float width, float height);
     Player();
+    Player(const Player& other);
     ~Player();
 
-    Rectangle2D getCBox() override;
-    glm::vec2 getPosition() override;
-    glm::vec2 getVelocity() override;
-    void setPosition(glm::vec2 position) override;
-    void setVelocity(glm::vec2 velocity) override;
     void render() override;
     void render(const glm::mat4& projMat);
-    void update() override;
+    void update();
     void initBuffer() override;
     void resendBuffer() override;
     void initShaders() override;

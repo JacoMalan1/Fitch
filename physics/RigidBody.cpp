@@ -7,12 +7,21 @@
 #include "../main.h"
 
 RigidBody::RigidBody(float x, float y, float width, float height, float mass, CollisionType collisionType)
-    : position(glm::vec2(x, y)), width(width), height(height), mass(mass) {
+    : position(glm::vec2(x, y)), width(width), height(height), mass(mass)
+{
 
     this->collisionType = collisionType;
-    if (this->collisionType == All || this->collisionType == Specific) {
-        this->collisionList = new std::vector<RigidBody>();
-    }
+    this->collisionList = new std::vector<RigidBody>();
+
+}
+
+RigidBody::RigidBody(const RigidBody &other)
+    : velocity(other.velocity), acceleration(other.acceleration), position(other.position), width(other.width), height(other.height),
+      mass(other.mass), collisionBox(other.collisionBox), collisionType(other.collisionType), shader(other.shader), buffer(other.buffer),vertexArray(other.vertexArray)
+{
+
+    this->collisionList = new std::vector<RigidBody>();
+    *this->collisionList = *other.collisionList;
 
 }
 

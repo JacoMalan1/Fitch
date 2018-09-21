@@ -34,6 +34,7 @@ private:
 
 public:
     RigidBody(float x, float y, float width, float height, float mass, CollisionType collisionType);
+    RigidBody(const RigidBody& other);
     ~RigidBody();
 
     glm::vec2 getVelocity() override;
