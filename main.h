@@ -7,4 +7,10 @@
 
 #define DEBUG_MODE true
 
+namespace fitch {
+
+    void renderFrame();
+
+}
+
 #endif //FITCH_MAIN_H

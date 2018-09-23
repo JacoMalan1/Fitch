@@ -45,7 +45,7 @@ void Player::initBuffer() {
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_DYNAMIC_DRAW);
 
-    // this->texture = fitchio::loadBMP("player.bmp");
+    this->texture = fitchio::loadBMP("content/player.png");
 
 }
 
@@ -55,10 +55,10 @@ void Player::resendBuffer() {
 
     float vertices[] = {
 
-            position.x, position.y, 0, 0,
-            position.x + width, position.y, 1, 0,
-            position.x, position.y + height, 0, 1,
-            position.x + width, position.y + height, 1, 1
+            position.x, position.y, 0.0f, 0.0f,
+            position.x + width, position.y, 1.0f, 0.0f,
+            position.x, position.y + height, 0.0f, 1.0f,
+            position.x + width, position.y + height, 1.0f, 1.0f
 
     };
 
@@ -109,6 +109,7 @@ void Player::update() {
     fitch::limitVector_lin(velocity, T_VELOCITY);
 
     position += velocity;
+    velocity *= 0.9f;
     acceleration = glm::vec2(0, 0);
     applyForce(gravity);
 
@@ -151,7 +152,7 @@ void Player::render(const glm::mat4& projMat) {
     glEnableVertexArrayAttrib(this->vertexArray.id, 1);
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_TRUE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -168,6 +169,8 @@ void Player::handleInput(GLFWwindow* const window) {
         this->applyForce(glm::vec2(1.0f, 0));
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         this->applyForce(glm::vec2(-1.0f, 0));
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        this->applyForce(glm::vec2(0, -10.0f));
 
 }
 

@@ -10,7 +10,8 @@ using namespace glm;
 namespace fitch {
 
     GLFWwindow* window;
-    Player player = Player(vec2(0, 0), 200, 400);
+    Player player = Player(vec2(0, 0), 50, 100);
+    RigidBody floor = RigidBody(0, 500, 800, 50, 1.0f, All);
 
     void GLAPIENTRY glCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam ) {
 
@@ -25,6 +26,10 @@ namespace fitch {
 
         player.initShaders();
         player.initBuffer();
+        player.collideWith(&floor);
+        floor.registerRenderer();
+        floor.initShaders();
+        floor.initBuffer();
 
         Player p = player;
 
@@ -40,6 +45,8 @@ namespace fitch {
 
         player.handleInput(window);
         player.update();
+        floor.update();
+        floor.resendBuffer();
         player.resendBuffer();
 
     }
@@ -47,11 +54,15 @@ namespace fitch {
     // Renders the current frame
     void renderFrame() {
 
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0, 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT);
         mat4 projMat = ortho(0.0f, 800.0f, 600.0f, 0.0f);
 
+        glBindTexture(GL_TEXTURE_2D, player.texture.ID);
         player.render(projMat);
+        floor.render(projMat);
+
+        glfwSwapBuffers(window);
 
     }
 
@@ -80,11 +91,23 @@ namespace fitch {
 
         loadWindow();
 
+        double lastTime = 0;
+        double fps = 60;
+        double maxPeriod = 1 / fps;
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
         while (!glfwWindowShouldClose(window) && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS) {
 
-            updateFrame();
-            renderFrame();
+            double time = glfwGetTime();
+            double deltaTime = time - lastTime;
+
+            if (deltaTime <= maxPeriod) {
+
+                updateFrame();
+                renderFrame();
+
+            }
+
+            lastTime = time;
 
             glfwPollEvents();
 
