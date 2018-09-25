@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O9 -Wall")
 set(CMAKE_CXX_STANDARD 14)
 set(OpenGL_GL_PREFERENCE "GLVND")
 
-add_executable(Fitch lodepng.h lodepng.cpp main.h graphics/Renderable.cpp game/Player.cpp physics/PhysicsBody.cpp physics/Rectangle2D.cpp physics/Physics.h physics/Physics.cpp physics/RigidBody.cpp tools.cpp main.cpp graphics/Texture2D.cpp graphics/Shader.cpp graphics/Shader.h graphics/VAO.cpp graphics/VAO.h graphics/VBO.cpp graphics/VBO.h)
+add_executable(Fitch physics/StaticBody.h physics/StaticBody.cpp game/Block.h game/Block.cpp lodepng.h lodepng.cpp main.h graphics/Renderable.cpp game/Player.cpp physics/PhysicsBody.cpp physics/Rectangle2D.cpp physics/Physics.h physics/Physics.cpp physics/RigidBody.cpp tools.cpp main.cpp graphics/Texture2D.cpp graphics/Shader.cpp graphics/Shader.h graphics/VAO.cpp graphics/VAO.h graphics/VBO.cpp graphics/VBO.h)
 
 find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)

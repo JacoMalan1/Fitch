@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "game/Block.h"
 #include "game/Player.h"
 
 using namespace glm;
@@ -12,6 +13,7 @@ namespace fitch {
     GLFWwindow* window;
     Player* player;
     RigidBody* floor;
+    Block* testBlock;
 
     int width, height;
 
@@ -36,12 +38,16 @@ namespace fitch {
 
         player = new Player(vec2(0, 0), "content/player.png");
         floor = new RigidBody(0, 500, 800, 50, 1.0f, All);
+        testBlock = new Block(floor->getPosition() - vec2(0, 50), Solid);
 
         player->initAll();
         player->collideWith(floor);
+        player->collideWith(testBlock->asRBody());
         floor->registerRenderer();
         floor->initShaders();
         floor->initBuffer();
+        testBlock->initBuffer();
+        testBlock->initShaders();
 
     }
 
@@ -57,7 +63,7 @@ namespace fitch {
         player->update(true);
         floor->update();
         floor->resendBuffer();
-
+        testBlock->resendBuffer();
     }
 
     // Renders the current frame
@@ -70,6 +76,7 @@ namespace fitch {
         glBindTexture(GL_TEXTURE_2D, player->texture.ID);
         player->render(projMat);
         floor->render(projMat);
+        testBlock->render(projMat);
 
         glfwSwapBuffers(window);
 

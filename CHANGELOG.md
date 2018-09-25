@@ -38,3 +38,9 @@ v0.1.3 -- 2018-09-18
 
 * Optimized memory allocation for PhysicsBodys.
 * Optimized drawing routines.
+
+v0.1.4 -- 2018-09-25
+
+* Added Block class.
+* Added StaticBody class.
+* Updated Physics system.
