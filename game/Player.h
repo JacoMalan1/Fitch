@@ -10,7 +10,7 @@
 #include "../graphics/VBO.h"
 #include "../main.h"
 
-class Player :  Renderable {
+class Player : Renderable {
 
     // TODO: Add a texture system.
 
@@ -22,8 +22,8 @@ private:
     glm::vec2 velocity;
     glm::vec2 acceleration;
     const glm::vec2 gravity = glm::vec2(0, 0.8f);
-    bool isRunning;
-    bool isStanding;
+    bool isRunning = false;
+    bool isStanding = false;
     float width;
     float height;
 
@@ -38,6 +38,7 @@ private:
 public:
 
     Player(glm::vec2 position, float width, float height);
+    Player(glm::vec2 position, const char* texture_path);
     Player() = default;
     Player(const Player& other);
     ~Player();
@@ -45,6 +46,8 @@ public:
     void render() override;
     void render(const glm::mat4& projMat);
     void update();
+    void update(bool sendBufferData);
+    void initAll();
     void initBuffer() override;
     void resendBuffer() override;
     void initShaders() override;

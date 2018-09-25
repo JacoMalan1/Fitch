@@ -12,19 +12,30 @@ Player::Player(const Player& other) : position(other.position), velocity(other.v
             buffer(other.buffer)
 {
 
-    //std::printf("Other pointer: %p\n", other.collisionList);
-
     this->collisionList = new std::vector<RigidBody*>();
     *this->collisionList = *other.collisionList;
 
-    //std::printf("This pointer: %p\n", this->collisionList);
+}
 
+void Player::initAll() {
+    this->initShaders();
+    this->initBuffer();
+}
+
+Player::Player(glm::vec2 position, const char *texture_path) : position(position) {
+    this->collisionList = new std::vector<RigidBody*>();
+    this->velocity = glm::vec2(0, 0);
+    this->acceleration = glm::vec2(0, 0);
+    this->texture = fitchio::loadBMP(texture_path);
+    this->width = this->texture.width;
+    this->height = this->texture.height;
 }
 
 Player::Player(glm::vec2 position, float width, float height) : position(position), width(width), height(height) {
     this->collisionList = new std::vector<RigidBody*>();
     this->velocity = glm::vec2(0, 0);
     this->acceleration = glm::vec2(0, 0);
+    this->texture = { 0, 0, 0 };
 }
 
 void Player::initBuffer() {
@@ -45,8 +56,16 @@ void Player::initBuffer() {
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_DYNAMIC_DRAW);
 
-    this->texture = fitchio::loadBMP("content/player.png");
+    if (this->texture.ID == 0) {
+        std::cout << "No texture" << std::endl;
+        this->texture = fitchio::loadBMP("content/player.png");
+    }
 
+}
+
+void Player::update(bool sendBufferData) {
+    this->update();
+    this->resendBuffer();
 }
 
 void Player::resendBuffer() {

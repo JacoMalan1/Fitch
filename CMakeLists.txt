@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(Fitch)
+set(CMAKE_BUILD_TYPE Debug)
 
+set(CMAKE_CXX_FLAGS_DEBUG "-Og")
+set(CMAKE_CXX_FLAGS_RELEASE "-O9 -Wall")
 set(CMAKE_CXX_STANDARD 14)
 set(OpenGL_GL_PREFERENCE "GLVND")
 

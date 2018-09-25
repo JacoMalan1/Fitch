@@ -15,8 +15,6 @@ public:
     virtual Rectangle2D getCBox() = 0;
     virtual glm::vec2 getPosition() = 0;
     virtual void setPosition(glm::vec2 position) = 0;
-    virtual void setVelocity(glm::vec2 velocity) = 0;
-    virtual glm::vec2 getVelocity() = 0;
     virtual void update() = 0;
 
 };

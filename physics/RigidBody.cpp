@@ -26,13 +26,12 @@ RigidBody::RigidBody(const RigidBody &other)
 }
 
 glm::vec2 RigidBody::getPosition() { return position; }
+glm::vec2 RigidBody::getVelocity() { return velocity; }
+
+void RigidBody::setVelocity(glm::vec2 velocity) { this->velocity = velocity; }
 
 void RigidBody::setPosition(glm::vec2 position) {
     this->position = position;
-}
-
-void RigidBody::setVelocity(glm::vec2 velocity) {
-    this->velocity = velocity;
 }
 
 void RigidBody::addCollider(RigidBody& collider) {
@@ -42,8 +41,6 @@ void RigidBody::addCollider(RigidBody& collider) {
 std::vector<RigidBody>* RigidBody::getCollisionList() {
     return this->collisionList;
 }
-
-glm::vec2 RigidBody::getVelocity() { return velocity; }
 
 float RigidBody::getMass() {
     return mass;

@@ -37,15 +37,15 @@ public:
     RigidBody(const RigidBody& other);
     ~RigidBody();
 
-    glm::vec2 getVelocity() override;
     glm::vec2 getPosition() override;
     void setPosition(glm::vec2 position) override;
-    void setVelocity(glm::vec2 velocity) override;
     float getMass();
     Rectangle2D getCBox() override;
     void addCollider(RigidBody& collider);
     void update() override;
     std::vector<RigidBody>* getCollisionList();
+    void setVelocity(glm::vec2 velocity);
+    glm::vec2 getVelocity();
 
     void initBuffer() override;
     void resendBuffer() override;
