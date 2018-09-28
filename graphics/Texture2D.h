@@ -16,6 +16,8 @@ struct Texture2D {
     Texture2D();
     Texture2D(GLuint ID, int width, int height);
 
+    void bind();
+
 };
 
 

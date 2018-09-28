@@ -7,6 +7,7 @@
 #include "../graphics/VAO.h"
 #include "../graphics/VBO.h"
 #include "../graphics/Shader.h"
+#include "../graphics/Texture2D.h"
 
 enum BlockType {
     Solid,
@@ -18,6 +19,7 @@ class Block : Renderable {
 private:
     glm::vec2 position;
     BlockType type;
+    Texture2D texture;
 
     VAO vertexArray;
     VBO buffer;
@@ -25,6 +27,7 @@ private:
 
 public:
     Block(glm::vec2 position, BlockType type);
+    Block(glm::vec2 position, BlockType type, const char* texture_path);
 
     RigidBody* asRBody();
     static int getSize();

@@ -10,24 +10,30 @@
 #include "../graphics/VBO.h"
 #include "../main.h"
 
+enum Direction {
+    Left,
+    Right
+};
+
 class Player : Renderable {
 
     // TODO: Add a texture system.
 
 private:
 
-    const float T_VELOCITY = 10.0f;
+    const float T_VELOCITY = 50.0f;
 
     glm::vec2 position;
     glm::vec2 velocity;
     glm::vec2 acceleration;
-    const glm::vec2 gravity = glm::vec2(0, 0.8f);
+    const glm::vec2 gravity = glm::vec2(0, 0.9f);
     bool isRunning = false;
     bool isStanding = false;
     float width;
     float height;
 
     Texture2D texture;
+    Direction direction = Right;
 
     Shader shader;
     VAO vertexArray;

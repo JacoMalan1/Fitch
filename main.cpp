@@ -12,8 +12,7 @@ namespace fitch {
 
     GLFWwindow* window;
     Player* player;
-    RigidBody* floor;
-    Block* testBlock;
+    Block* block;
 
     int width, height;
 
@@ -30,6 +29,8 @@ namespace fitch {
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_BLEND_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
 
         if (DEBUG_MODE) {
             glEnable(GL_DEBUG_OUTPUT);
@@ -37,17 +38,12 @@ namespace fitch {
         }
 
         player = new Player(vec2(0, 0), "content/player.png");
-        floor = new RigidBody(0, 500, 800, 50, 1.0f, All);
-        testBlock = new Block(floor->getPosition() - vec2(0, 50), Solid);
+        block = new Block(vec2(BLOCK_SIZE, height - BLOCK_SIZE * 2), Solid, "content/solid.png");
 
         player->initAll();
-        player->collideWith(floor);
-        player->collideWith(testBlock->asRBody());
-        floor->registerRenderer();
-        floor->initShaders();
-        floor->initBuffer();
-        testBlock->initBuffer();
-        testBlock->initShaders();
+        player->collideWith(block->asRBody());
+        block->initBuffer();
+        block->initShaders();
 
     }
 
@@ -61,22 +57,19 @@ namespace fitch {
 
         player->handleInput(window);
         player->update(true);
-        floor->update();
-        floor->resendBuffer();
-        testBlock->resendBuffer();
     }
 
     // Renders the current frame
     void renderFrame() {
 
-        glClearColor(0, 0, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(100.0f / 255, 149.0f / 255, 237.0f / 255, 1.0f);
+        glClearDepth(1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mat4 projMat = ortho(0.0f, 800.0f, 600.0f, 0.0f);
 
         glBindTexture(GL_TEXTURE_2D, player->texture.ID);
         player->render(projMat);
-        floor->render(projMat);
-        testBlock->render(projMat);
+        block->render(projMat);
 
         glfwSwapBuffers(window);
 
@@ -109,7 +102,7 @@ namespace fitch {
 
         loadWindow();
 
-        double lastTime = 0;
+        double lastTime = glfwGetTime();
         double fps = 60;
         double maxPeriod = 1 / fps;
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -118,14 +111,14 @@ namespace fitch {
             double time = glfwGetTime();
             double deltaTime = time - lastTime;
 
-            if (deltaTime <= maxPeriod) {
+            if (deltaTime >= maxPeriod) {
 
                 updateFrame();
                 renderFrame();
 
-            }
+                lastTime = time;
 
-            lastTime = time;
+            }
 
             glfwPollEvents();
 

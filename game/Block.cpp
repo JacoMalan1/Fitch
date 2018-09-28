@@ -1,4 +1,5 @@
 #include "Block.h"
+#include "../tools.h"
 
 Block::Block(glm::vec2 position, BlockType type) : position(position), type(type) {}
 
@@ -6,6 +7,12 @@ RigidBody* Block::asRBody() {
 
     auto rb = new RigidBody(position.x, position.y, BLOCK_SIZE, BLOCK_SIZE, 1.0f, All);
     return rb;
+
+}
+
+Block::Block(glm::vec2 position, BlockType type, const char* texture_path) : position(position), type(type) {
+
+    texture = fitchio::loadBMP(texture_path);
 
 }
 
@@ -23,10 +30,10 @@ void Block::initBuffer() {
     this->buffer.bind();
 
     float vertices[] = {
-            this->position.x, this->position.y, 0.0f, 1.0f, 1.0f, 1.0f,
-            this->position.x + BLOCK_SIZE, this->position.y, 0.0f, 1.0f, 1.0f, 1.0f,
-            this->position.x, this->position.y + BLOCK_SIZE, 0.0f, 1.0f, 1.0f, 1.0f,
-            this->position.x + BLOCK_SIZE, this->position.y + BLOCK_SIZE, 0.0f, 1.0f, 1.0f, 1.0f
+            this->position.x, this->position.y, 0.0f, 0.0f,
+            this->position.x + BLOCK_SIZE, this->position.y, 1.0f, 0.0f,
+            this->position.x, this->position.y + BLOCK_SIZE, 0.0f, 1.0f,
+            this->position.x + BLOCK_SIZE, this->position.y + BLOCK_SIZE, 1.0f, 1.0f
     };
 
     glBufferData(this->buffer.type, sizeof(vertices), &vertices, GL_DYNAMIC_DRAW);
@@ -35,7 +42,7 @@ void Block::initBuffer() {
 
 void Block::initShaders() {
 
-    this->shader = Shader("shaders/vshader.glsl", "shaders/fshader.glsl");
+    this->shader = Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
     this->shader.compile();
 
 }
@@ -44,13 +51,14 @@ void Block::render() {
 
     this->vertexArray.bind();
     this->buffer.bind();
+    this->texture.bind();
     glUseProgram(this->shader.getID());
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
     glDrawArrays(GL_QUADS, 0, 4);
 
@@ -63,6 +71,7 @@ void Block::render(const glm::mat4& projMat) {
 
     this->vertexArray.bind();
     this->buffer.bind();
+    this->texture.bind();
     glUseProgram(this->shader.getID());
 
     GLint MatrixID = glGetUniformLocation(this->shader.getID(), "projMat");
@@ -71,8 +80,8 @@ void Block::render(const glm::mat4& projMat) {
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -87,10 +96,10 @@ void Block::resendBuffer() {
     this->buffer.bind();
 
     float vertices[] = {
-            this->position.x, this->position.y, 0.0f, 1.0f, 1.0f, 1.0f,
-            this->position.x + BLOCK_SIZE, this->position.y, 0.0f, 1.0f, 1.0f, 1.0f,
-            this->position.x, this->position.y + BLOCK_SIZE, 0.0f, 1.0f, 1.0f, 1.0f,
-            this->position.x + BLOCK_SIZE, this->position.y + BLOCK_SIZE, 0.0f, 1.0f, 1.0f, 1.0f
+            this->position.x, this->position.y, 0.0f, 0.0f,
+            this->position.x + BLOCK_SIZE, this->position.y, 1.0f, 0.0f,
+            this->position.x, this->position.y + BLOCK_SIZE, 0.0f, 1.0f,
+            this->position.x + BLOCK_SIZE, this->position.y + BLOCK_SIZE, 1.0f, 1.0f
     };
 
     glBufferSubData(this->buffer.type, 0, sizeof(vertices), &vertices);

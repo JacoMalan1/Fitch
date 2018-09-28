@@ -72,16 +72,30 @@ void Player::resendBuffer() {
 
     this->buffer.bind();
 
-    float vertices[] = {
+    float* vertices;
 
-            position.x, position.y, 0.0f, 0.0f,
-            position.x + width, position.y, 1.0f, 0.0f,
-            position.x, position.y + height, 0.0f, 1.0f,
-            position.x + width, position.y + height, 1.0f, 1.0f
+    if (this->direction == Right) {
+        vertices = new float[4 * 4] {
 
-    };
+                position.x, position.y, 0.0f, 0.0f,
+                position.x + width, position.y, 1.0f, 0.0f,
+                position.x, position.y + height, 0.0f, 1.0f,
+                position.x + width, position.y + height, 1.0f, 1.0f
 
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), &vertices);
+        };
+    } else {
+        vertices = new float[4 * 4] {
+
+                position.x, position.y, 1.0f, 0.0f,
+                position.x + width, position.y, 0.0f, 0.0f,
+                position.x, position.y + height, 1.0f, 1.0f,
+                position.x + width, position.y + height, 0.0f, 1.0f
+
+        };
+    }
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 16 * sizeof(float), vertices);
+    delete[] vertices;
 
 }
 
@@ -137,9 +151,13 @@ void Player::update() {
 
     for (RigidBody* body : *checkList) {
 
+        float oldY = this->position.y;
+
         RigidBody* oldBody = this->asPBody();
         fitch::makeCollide(*oldBody, *body);
         this->position = oldBody->getPosition();
+        if (this->position.y < oldY)
+            isStanding = true;
         this->velocity = oldBody->getVelocity();
 
         delete oldBody;
@@ -162,6 +180,7 @@ void Player::render(const glm::mat4& projMat) {
 
     this->vertexArray.bind();
     this->buffer.bind();
+    this->texture.bind();
     glUseProgram(this->shader.getID());
 
     GLint MatrixID = glGetUniformLocation(this->shader.getID(), "projMat");
@@ -184,12 +203,18 @@ void Player::render(const glm::mat4& projMat) {
 
 void Player::handleInput(GLFWwindow* const window) {
 
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         this->applyForce(glm::vec2(1.0f, 0));
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        this->direction = Right;
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
         this->applyForce(glm::vec2(-1.0f, 0));
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        this->applyForce(glm::vec2(0, -10.0f));
+        this->direction = Left;
+    }
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && this->isStanding) {
+        this->applyForce(glm::vec2(0, -20.0f));
+        this->isStanding = false;
+    }
 
 }
 
