@@ -37,6 +37,8 @@ public:
     void render(const glm::mat4& projMat);
     void initShaders() override;
 
+    void setTexture(Texture2D texture);
+
 };
 
 #endif // BLOCK_H

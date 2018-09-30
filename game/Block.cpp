@@ -67,6 +67,10 @@ void Block::render() {
 
 }
 
+void Block::setTexture(Texture2D texture) {
+    this->texture = texture;
+}
+
 void Block::render(const glm::mat4& projMat) {
 
     this->vertexArray.bind();

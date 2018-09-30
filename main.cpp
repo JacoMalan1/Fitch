@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "game/Block.h"
 #include "game/Player.h"
+#include "tools.h"
 
 using namespace glm;
 
@@ -12,7 +13,8 @@ namespace fitch {
 
     GLFWwindow* window;
     Player* player;
-    Block* block;
+    Block*** level = nullptr;
+    Texture2D tSolid;
 
     int width, height;
 
@@ -37,13 +39,23 @@ namespace fitch {
             glDebugMessageCallback(glCallback, nullptr);
         }
 
+        tSolid = fitchio::loadBMP("content/solid.png");
+
         player = new Player(vec2(0, 0), "content/player.png");
-        block = new Block(vec2(BLOCK_SIZE, height - BLOCK_SIZE * 2), Solid, "content/solid.png");
+        level = fitchio::loadLevel("content/level1.fl");
+
+        for (int x = 0; x < LEVEL_SIZE_X; x++) {
+            for (int y = 0; y < LEVEL_SIZE_Y; y++) {
+
+                level[x][y]->initBuffer();
+                level[x][y]->initShaders();
+                level[x][y]->setTexture(tSolid);
+                player->collideWith(level[x][y]->asRBody());
+
+            }
+        }
 
         player->initAll();
-        player->collideWith(block->asRBody());
-        block->initBuffer();
-        block->initShaders();
 
     }
 
@@ -57,6 +69,7 @@ namespace fitch {
 
         player->handleInput(window);
         player->update(true);
+
     }
 
     // Renders the current frame
@@ -69,7 +82,12 @@ namespace fitch {
 
         glBindTexture(GL_TEXTURE_2D, player->texture.ID);
         player->render(projMat);
-        block->render(projMat);
+
+        for (int x = 0; x < LEVEL_SIZE_X; x++) {
+            for (int y = 0; y < LEVEL_SIZE_Y; y++) {
+                level[x][y]->render(projMat);
+            }
+        }
 
         glfwSwapBuffers(window);
 

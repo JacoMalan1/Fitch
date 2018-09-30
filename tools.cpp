@@ -3,6 +3,8 @@
 #include <fstream>
 #include "tools.h"
 #include "lodepng.h"
+#include "game/Block.h"
+#include "main.h"
 #include <vector>
 #include <iostream>
 
@@ -57,6 +59,83 @@ namespace fitchio {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
         return { textureID, (int)width, (int)height };
+
+    }
+
+    vector<string> splitString(const string& str, char delim) {
+
+        vector<string> result = vector<string>();
+        string temp = "";
+
+        for (char c : str) {
+
+            if (c != delim) {
+                temp += c;
+            } else {
+                result.emplace_back(temp);
+                temp = "";
+            }
+
+        }
+        result.emplace_back(temp);
+
+        return result;
+
+    }
+
+    Block*** loadLevel(const char* file_path) {
+
+        const char* contents = loadFile(file_path);
+        std::string s_contents = contents;
+        vector<string> lines = splitString(s_contents, '\n');
+
+        auto blocks = new Block**[LEVEL_SIZE_X];
+        for (int i = 0; i < LEVEL_SIZE_X; i++) {
+            blocks[i] = new Block*[LEVEL_SIZE_Y];
+        }
+
+        for (int i = 0; i < LEVEL_SIZE_X; i++) {
+            for (int j = 0; j < LEVEL_SIZE_Y; j++) {
+                blocks[i][j] = new Block(glm::vec2(i * BLOCK_SIZE, j * BLOCK_SIZE), Air);
+            }
+        }
+
+        for (const string& line : lines) {
+
+            vector<string> params = splitString(line, ',');
+
+            BlockType type;
+            const char* tPath;
+
+            if (params[0] == "solid") {
+                type = Solid;
+                tPath = "content/solid.png";
+            } else {
+                type = Air;
+                tPath = "";
+            }
+
+            int x = 0;
+            int y = 0;
+
+            std::cout << params[1] << std::endl;
+
+            stringstream stream(params[1]);
+            stream >> x;
+            stream = stringstream(params[2]);
+            stream >> y;
+
+            if (type != Air) {
+
+                Block* clPtr = blocks[x][y];
+                blocks[x][y] = new Block(glm::vec2(x * BLOCK_SIZE, y * BLOCK_SIZE), type);
+                delete clPtr;
+
+            }
+
+        }
+
+        return blocks;
 
     }
 

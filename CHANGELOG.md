@@ -44,3 +44,8 @@ v0.1.4 -- 2018-09-25
 * Added Block class.
 * Added StaticBody class.
 * Updated Physics system.
+
+v0.1.5 -- 2018-09-30
+
+* Added level system.
+* Added function for loading levels.

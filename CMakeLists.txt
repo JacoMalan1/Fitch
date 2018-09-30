@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(Fitch)
-set(CMAKE_BUILD_TYPE Debug)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-Og")
-set(CMAKE_CXX_FLAGS_RELEASE "-O9 -Wall")
 set(CMAKE_CXX_STANDARD 17)
 set(OpenGL_GL_PREFERENCE "GLVND")
 
@@ -24,3 +21,4 @@ configure_file(shaders/tvshader.glsl shaders/tvshader.glsl COPYONLY)
 configure_file(shaders/tfshader.glsl shaders/tfshader.glsl COPYONLY)
 configure_file(content/player.png content/player.png COPYONLY)
 configure_file(content/solid.png content/solid.png COPYONLY)
+configure_file(content/level1.fl content/level1.fl COPYONLY)

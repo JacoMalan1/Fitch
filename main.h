@@ -6,6 +6,8 @@
 #define FITCH_MAIN_H
 
 #define DEBUG_MODE true
+#define LEVEL_SIZE_X 250
+#define LEVEL_SIZE_Y 50
 
 namespace fitch {
 
