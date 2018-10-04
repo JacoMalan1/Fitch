@@ -22,12 +22,19 @@ int Block::getSize() {
 
 }
 
+BlockType Block::getType() {
+    return this->type;
+}
+
 void Block::initBuffer() {
 
     this->vertexArray = VAO::create();
     this->vertexArray.bind();
     this->buffer = VBO::create(GL_ARRAY_BUFFER);
     this->buffer.bind();
+
+    this->position.x *= this->getSize();
+    this->position.y *= this->getSize();
 
     float vertices[] = {
             this->position.x, this->position.y, 0.0f, 0.0f,
@@ -45,6 +52,14 @@ void Block::initShaders() {
     this->shader = Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
     this->shader.compile();
 
+}
+
+bool Block::isRenderable() {
+    return !(this->type == Air || this->type == Start);
+}
+
+glm::vec2 Block::getPos() {
+    return this->position;
 }
 
 void Block::render() {

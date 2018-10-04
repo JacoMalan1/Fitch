@@ -96,7 +96,7 @@ namespace fitchio {
 
         for (int i = 0; i < LEVEL_SIZE_X; i++) {
             for (int j = 0; j < LEVEL_SIZE_Y; j++) {
-                blocks[i][j] = new Block(glm::vec2(i * BLOCK_SIZE, j * BLOCK_SIZE), Air);
+                blocks[i][j] = new Block(glm::vec2(i, j), Air);
             }
         }
 
@@ -109,7 +109,9 @@ namespace fitchio {
 
             if (params[0] == "solid") {
                 type = Solid;
-                tPath = "content/solid.png";
+            } else if (params[0] == "start") {
+                type = Start;
+                tPath = "";
             } else {
                 type = Air;
                 tPath = "";
@@ -117,8 +119,6 @@ namespace fitchio {
 
             int x = 0;
             int y = 0;
-
-            std::cout << params[1] << std::endl;
 
             stringstream stream(params[1]);
             stream >> x;
@@ -128,7 +128,7 @@ namespace fitchio {
             if (type != Air) {
 
                 Block* clPtr = blocks[x][y];
-                blocks[x][y] = new Block(glm::vec2(x * BLOCK_SIZE, y * BLOCK_SIZE), type);
+                blocks[x][y] = new Block(glm::vec2(x, y), type);
                 delete clPtr;
 
             }

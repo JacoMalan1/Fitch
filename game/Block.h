@@ -11,7 +11,8 @@
 
 enum BlockType {
     Solid,
-    Air
+    Air,
+    Start
 };
 
 class Block : Renderable {
@@ -36,8 +37,11 @@ public:
     void render() override;
     void render(const glm::mat4& projMat);
     void initShaders() override;
+    bool isRenderable();
+    glm::vec2 getPos();
 
     void setTexture(Texture2D texture);
+    BlockType getType();
 
 };
 

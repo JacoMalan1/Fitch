@@ -17,8 +17,6 @@ enum Direction {
 
 class Player : Renderable {
 
-    // TODO: Add a texture system.
-
 private:
 
     const float T_VELOCITY = 50.0f;
@@ -61,6 +59,8 @@ public:
     void handleInput(GLFWwindow* window);
     void collideWith(RigidBody* body);
     RigidBody* asPBody();
+    void setPos(glm::vec2 pos);
+    glm::vec2 getPos();
 
     friend void fitch::renderFrame();
 

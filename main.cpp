@@ -14,7 +14,7 @@ namespace fitch {
     GLFWwindow* window;
     Player* player;
     Block*** level = nullptr;
-    Texture2D tSolid;
+    Texture2D TEXTURE_SOLID;
 
     int width, height;
 
@@ -39,18 +39,27 @@ namespace fitch {
             glDebugMessageCallback(glCallback, nullptr);
         }
 
-        tSolid = fitchio::loadBMP("content/solid.png");
-
         player = new Player(vec2(0, 0), "content/player.png");
         level = fitchio::loadLevel("content/level1.fl");
+
+        TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
 
         for (int x = 0; x < LEVEL_SIZE_X; x++) {
             for (int y = 0; y < LEVEL_SIZE_Y; y++) {
 
-                level[x][y]->initBuffer();
-                level[x][y]->initShaders();
-                level[x][y]->setTexture(tSolid);
-                player->collideWith(level[x][y]->asRBody());
+                if (level[x][y]->isRenderable()) {
+
+                    level[x][y]->initShaders();
+                    level[x][y]->initBuffer();
+                    level[x][y]->setTexture(TEXTURE_SOLID);
+                    player->collideWith(level[x][y]->asRBody());
+
+                }
+
+//                if (level[x][y]->getType() == Start) {
+//                    player->setPos(glm::vec2(x * BLOCK_SIZE, y * BLOCK_SIZE));
+//                    std::cout << "STARTBLOCK" << std::endl;
+//                }
 
             }
         }
@@ -78,14 +87,19 @@ namespace fitch {
         glClearColor(100.0f / 255, 149.0f / 255, 237.0f / 255, 1.0f);
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        mat4 projMat = ortho(0.0f, 800.0f, 600.0f, 0.0f);
+        mat4 projMat = ortho(0.0f, (float)width, (float)height, 0.0f);
+        mat4 modelMat(1);
+        mat4 viewMat(1); // TODO: Make camera follow player.
+        mat4 mvp = projMat * viewMat * modelMat;
 
         glBindTexture(GL_TEXTURE_2D, player->texture.ID);
-        player->render(projMat);
+        player->render(mvp);
 
         for (int x = 0; x < LEVEL_SIZE_X; x++) {
             for (int y = 0; y < LEVEL_SIZE_Y; y++) {
-                level[x][y]->render(projMat);
+                if (level[x][y]->isRenderable()) {
+                    level[x][y]->render(mvp);
+                }
             }
         }
 

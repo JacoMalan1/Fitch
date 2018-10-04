@@ -68,6 +68,14 @@ void Player::update(bool sendBufferData) {
     this->resendBuffer();
 }
 
+void Player::setPos(glm::vec2 pos) {
+    this->position = pos;
+}
+
+glm::vec2 Player::getPos() {
+    return this->position;
+}
+
 void Player::resendBuffer() {
 
     this->buffer.bind();
