@@ -5,12 +5,17 @@
 #ifndef FITCH_MAIN_H
 #define FITCH_MAIN_H
 
-#define DEBUG_MODE true
 #define LEVEL_SIZE_X 250
 #define LEVEL_SIZE_Y 50
 
+enum DebugMode {
+    Full,
+    Off
+};
+
 namespace fitch {
 
+    DebugMode getDebug();
     void renderFrame();
 
 }

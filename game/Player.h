@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <memory>
 #include "../graphics/Renderable.h"
 #include "../physics/Physics.h"
 #include "../graphics/Texture2D.h"
@@ -37,7 +38,7 @@ private:
     VAO vertexArray;
     VBO buffer;
 
-    std::vector<RigidBody*>* collisionList;
+    std::unique_ptr<std::vector<RigidBody*>> collisionList;
 
 public:
 
@@ -65,6 +66,8 @@ public:
     friend void fitch::renderFrame();
 
     GLuint getVertexArrayName();
+
+    float getWidth() const;
 
 };
 

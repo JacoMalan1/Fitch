@@ -1,12 +1,11 @@
+#include <iostream>
 #include <sstream>
 #include <cstring>
 #include <fstream>
+#include <memory>
 #include "tools.h"
 #include "lodepng.h"
-#include "game/Block.h"
 #include "main.h"
-#include <vector>
-#include <iostream>
 
 using namespace std;
 
@@ -65,7 +64,7 @@ namespace fitchio {
     vector<string> splitString(const string& str, char delim) {
 
         vector<string> result = vector<string>();
-        string temp = "";
+        string temp;
 
         for (char c : str) {
 
@@ -105,16 +104,13 @@ namespace fitchio {
             vector<string> params = splitString(line, ',');
 
             BlockType type;
-            const char* tPath;
 
             if (params[0] == "solid") {
                 type = Solid;
             } else if (params[0] == "start") {
                 type = Start;
-                tPath = "";
             } else {
                 type = Air;
-                tPath = "";
             }
 
             int x = 0;

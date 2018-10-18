@@ -8,11 +8,12 @@
 #include "tools.h"
 
 using namespace glm;
+DebugMode debugMode = Off;
 
 namespace fitch {
 
     GLFWwindow* window;
-    Player* player;
+    std::unique_ptr<Player> player;
     Block*** level = nullptr;
     Texture2D TEXTURE_SOLID;
 
@@ -34,12 +35,12 @@ namespace fitch {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
 
-        if (DEBUG_MODE) {
+        if (getDebug() == Full) {
             glEnable(GL_DEBUG_OUTPUT);
             glDebugMessageCallback(glCallback, nullptr);
         }
 
-        player = new Player(vec2(0, 0), "content/player.png");
+        player = std::make_unique<Player>(vec2(0, 0), "content/player.png");
         level = fitchio::loadLevel("content/level1.fl");
 
         TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
@@ -71,6 +72,12 @@ namespace fitch {
     // Gets run after the main loop stops
     void windowClosing() {
 
+        for (int i = 0; i < LEVEL_SIZE_X; i++) {
+            delete[] level[i];
+        }
+
+        delete[] level;
+
     }
 
     // Gets run before rendering each frame
@@ -88,9 +95,13 @@ namespace fitch {
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mat4 projMat = ortho(0.0f, (float)width, (float)height, 0.0f);
-        mat4 modelMat(1);
-        mat4 viewMat(1); // TODO: Make camera follow player.
-        mat4 mvp = projMat * viewMat * modelMat;
+        mat4 modelMat = mat4(1);
+        mat4 viewMat = mat4(1); // TODO: Make camera follow player.
+        mat4 mvp(1);
+
+        mvp *= projMat;
+        mvp *= viewMat;
+        mvp *= modelMat;
 
         glBindTexture(GL_TEXTURE_2D, player->texture.ID);
         player->render(mvp);
@@ -112,7 +123,7 @@ namespace fitch {
         glewExperimental = GL_TRUE;
 
         if (!glfwInit()) {
-            std::fprintf(stderr, "GLFW initialization failed!");
+            std::fprintf(stderr, "%s\n", "GLFW initialization failed!");
             return -1;
         }
 
@@ -128,7 +139,7 @@ namespace fitch {
         glfwMakeContextCurrent(window);
 
         if (glewInit() != 0) {
-            std::fprintf(stderr, "GLEW initialization failed!");
+            std::fprintf(stderr, "%s\n", "GLEW initialization failed!");
             return -1;
         }
 
@@ -163,6 +174,16 @@ namespace fitch {
 
 }
 
-int main() {
+DebugMode fitch::getDebug() { return debugMode; }
+
+int main(int argc, const char** argv) {
+
+    if (argc > 0 && fitch::getDebug() == Off) {
+        if (strncmp(argv[0], "--debug", strlen(argv[0])) != 0 ||
+            strncmp(argv[0], "-d", strlen(argv[0])) != 0) {
+            debugMode = Full;
+        }
+    }
+
     return fitch::init();
 }

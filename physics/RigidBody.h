@@ -9,6 +9,7 @@
 #include "../graphics/Shader.h"
 #include "../graphics/VBO.h"
 #include "../graphics/VAO.h"
+#include <memory>
 
 enum CollisionType {
     All,
@@ -25,7 +26,7 @@ private:
     float mass;
     bool p = false;
     Rectangle2D collisionBox;
-    std::vector<RigidBody>* collisionList;
+    std::shared_ptr<std::vector<RigidBody>> collisionList;
     CollisionType collisionType;
 
     Shader shader;
@@ -43,7 +44,7 @@ public:
     Rectangle2D getCBox() override;
     void addCollider(RigidBody& collider);
     void update() override;
-    std::vector<RigidBody>* getCollisionList();
+    std::shared_ptr<std::vector<RigidBody>> getCollisionList();
     void setVelocity(glm::vec2 velocity);
     glm::vec2 getVelocity();
 

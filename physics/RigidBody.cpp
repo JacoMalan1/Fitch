@@ -2,6 +2,7 @@
 // Created by jacom on 2018/08/20.
 //
 
+#include <memory>
 #include <iostream>
 #include "RigidBody.h"
 #include "../main.h"
@@ -11,7 +12,7 @@ RigidBody::RigidBody(float x, float y, float width, float height, float mass, Co
 {
 
     this->collisionType = collisionType;
-    this->collisionList = new std::vector<RigidBody>();
+    this->collisionList = std::make_shared<std::vector<RigidBody>>();
 
 }
 
@@ -20,7 +21,7 @@ RigidBody::RigidBody(const RigidBody &other)
       mass(other.mass), collisionBox(other.collisionBox), collisionType(other.collisionType), shader(other.shader), buffer(other.buffer),vertexArray(other.vertexArray)
 {
 
-    this->collisionList = new std::vector<RigidBody>();
+    this->collisionList = std::make_shared<std::vector<RigidBody>>();
     *this->collisionList = *other.collisionList;
 
 }
@@ -38,7 +39,7 @@ void RigidBody::addCollider(RigidBody& collider) {
     this->collisionList->emplace_back(collider);
 }
 
-std::vector<RigidBody>* RigidBody::getCollisionList() {
+std::shared_ptr<std::vector<RigidBody>> RigidBody::getCollisionList() {
     return this->collisionList;
 }
 
@@ -146,5 +147,4 @@ void RigidBody::resendBuffer() {
 }
 
 RigidBody::~RigidBody() {
-    delete collisionList;
 }

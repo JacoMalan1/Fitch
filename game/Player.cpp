@@ -2,7 +2,8 @@
 // Created by jacom on 2018/08/22.
 //
 
-#include<iostream>
+#include <iostream>
+#include <memory>
 #include "Player.h"
 #include "../tools.h"
 #include "../main.h"
@@ -12,7 +13,7 @@ Player::Player(const Player& other) : position(other.position), velocity(other.v
             buffer(other.buffer)
 {
 
-    this->collisionList = new std::vector<RigidBody*>();
+    this->collisionList = std::make_unique<std::vector<RigidBody*>>();
     *this->collisionList = *other.collisionList;
 
 }
@@ -23,7 +24,7 @@ void Player::initAll() {
 }
 
 Player::Player(glm::vec2 position, const char *texture_path) : position(position) {
-    this->collisionList = new std::vector<RigidBody*>();
+    this->collisionList = std::make_unique<std::vector<RigidBody*>>();
     this->velocity = glm::vec2(0, 0);
     this->acceleration = glm::vec2(0, 0);
     this->texture = fitchio::loadBMP(texture_path);
@@ -32,7 +33,7 @@ Player::Player(glm::vec2 position, const char *texture_path) : position(position
 }
 
 Player::Player(glm::vec2 position, float width, float height) : position(position), width(width), height(height) {
-    this->collisionList = new std::vector<RigidBody*>();
+    this->collisionList = std::make_unique<std::vector<RigidBody*>>();
     this->velocity = glm::vec2(0, 0);
     this->acceleration = glm::vec2(0, 0);
     this->texture = { 0, 0, 0 };
@@ -154,10 +155,7 @@ void Player::update() {
     acceleration = glm::vec2(0, 0);
     applyForce(gravity);
 
-    std::vector<RigidBody*>* checkList;
-    checkList = collisionList;
-
-    for (RigidBody* body : *checkList) {
+    for (RigidBody* body : *collisionList) {
 
         float oldY = this->position.y;
 
@@ -227,5 +225,5 @@ void Player::handleInput(GLFWwindow* const window) {
 }
 
 Player::~Player() {
-    delete collisionList;
+
 }
