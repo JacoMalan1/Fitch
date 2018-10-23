@@ -1,6 +1,3 @@
-//
-// Created by jacom on 2018/08/20.
-//
 #include <iostream>
 #include "Physics.h"
 
@@ -70,7 +67,7 @@ namespace fitch {
             dynBody.setVelocity(glm::vec2(dynBody.getVelocity().x, 0));
         } else {
             if (dynBody.getVelocity().x > 0) {
-                dynBody.setPosition(glm::vec2(dynBody.getPosition().x - isect.x - dynBody.getCBox().width, dynBody.getPosition().y));
+                dynBody.setPosition(glm::vec2(dynBody.getPosition().x - isect.x, dynBody.getPosition().y));
 
             } else {
                 dynBody.setPosition(glm::vec2(dynBody.getPosition().x + isect.x, dynBody.getPosition().y));

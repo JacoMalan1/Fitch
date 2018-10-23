@@ -16,6 +16,8 @@ namespace fitch {
     std::unique_ptr<Player> player;
     Block*** level = nullptr;
     Texture2D TEXTURE_SOLID;
+    std::unique_ptr<std::vector<Block*>> levelMesh;
+    Shader blockShader;
 
     int width, height;
 
@@ -40,8 +42,12 @@ namespace fitch {
             glDebugMessageCallback(glCallback, nullptr);
         }
 
+        blockShader = Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
+        blockShader.compile();
+
         player = std::make_unique<Player>(vec2(0, 0), "content/player.png");
         level = fitchio::loadLevel("content/level1.fl");
+        levelMesh = std::make_unique<std::vector<Block*>>();
 
         TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
 
@@ -50,17 +56,18 @@ namespace fitch {
 
                 if (level[x][y]->isRenderable()) {
 
-                    level[x][y]->initShaders();
+                    level[x][y]->setShader(blockShader); // Set shader to pre-compiled shader to save load time.
                     level[x][y]->initBuffer();
                     level[x][y]->setTexture(TEXTURE_SOLID);
                     player->collideWith(level[x][y]->asRBody());
+                    levelMesh->emplace_back(level[x][y]);
 
                 }
 
-//                if (level[x][y]->getType() == Start) {
-//                    player->setPos(glm::vec2(x * BLOCK_SIZE, y * BLOCK_SIZE));
-//                    std::cout << "STARTBLOCK" << std::endl;
-//                }
+                if (level[x][y]->getType() == Start) {
+                    player->setPos(glm::vec2(x * BLOCK_SIZE, y * BLOCK_SIZE));
+                    std::cout << "STARTBLOCK" << std::endl;
+                }
 
             }
         }
@@ -96,7 +103,8 @@ namespace fitch {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mat4 projMat = ortho(0.0f, (float)width, (float)height, 0.0f);
         mat4 modelMat = mat4(1);
-        mat4 viewMat = mat4(1); // TODO: Make camera follow player.
+        projMat = translate(projMat, vec3(-player->getPos() + vec2(width / 2, height / 2) - vec2(player->getWidth() / 2, player->getHeight() / 2), 0.0f));
+        mat4 viewMat(1);
         mat4 mvp(1);
 
         mvp *= projMat;
@@ -106,12 +114,8 @@ namespace fitch {
         glBindTexture(GL_TEXTURE_2D, player->texture.ID);
         player->render(mvp);
 
-        for (int x = 0; x < LEVEL_SIZE_X; x++) {
-            for (int y = 0; y < LEVEL_SIZE_Y; y++) {
-                if (level[x][y]->isRenderable()) {
-                    level[x][y]->render(mvp);
-                }
-            }
+        for (int i = 0; i < (int)levelMesh->size(); i++) {
+            (*levelMesh)[i]->render(mvp);
         }
 
         glfwSwapBuffers(window);

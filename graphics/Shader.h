@@ -19,6 +19,7 @@ private:
 public:
     Shader(const char* vertex_location, const char* fragment_location);
     Shader();
+    ~Shader();
     void compile();
     GLuint getID();
 

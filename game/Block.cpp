@@ -109,6 +109,8 @@ void Block::render(const glm::mat4& projMat) {
 
 }
 
+void Block::setShader(Shader shader) { this->shader = shader; }
+
 void Block::resendBuffer() {
 
     this->vertexArray.bind();

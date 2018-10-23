@@ -151,24 +151,28 @@ void Player::update() {
     fitch::limitVector_lin(velocity, T_VELOCITY);
 
     position += velocity;
-    velocity *= 0.9f;
+    velocity *= 0.95f;
     acceleration = glm::vec2(0, 0);
     applyForce(gravity);
 
+    float beforeY;
     for (RigidBody* body : *collisionList) {
 
-        float oldY = this->position.y;
+        beforeY = this->position.y;
 
         RigidBody* oldBody = this->asPBody();
         fitch::makeCollide(*oldBody, *body);
         this->position = oldBody->getPosition();
-        if (this->position.y < oldY)
-            isStanding = true;
         this->velocity = oldBody->getVelocity();
 
         delete oldBody;
 
     }
+
+    if (this->position.y < beforeY)
+        isStanding = true;
+    else if (this->position.y > beforeY)
+        isStanding = false;
 
 }
 
@@ -210,20 +214,31 @@ void Player::render(const glm::mat4& projMat) {
 void Player::handleInput(GLFWwindow* const window) {
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        this->applyForce(glm::vec2(1.0f, 0));
+        this->applyForce(glm::vec2(0.6f, 0));
         this->direction = Right;
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        this->applyForce(glm::vec2(-1.0f, 0));
+        this->applyForce(glm::vec2(-0.6f, 0));
         this->direction = Left;
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && this->isStanding) {
-        this->applyForce(glm::vec2(0, -20.0f));
+        this->applyForce(glm::vec2(0, -30.0f));
         this->isStanding = false;
     }
 
 }
 
-Player::~Player() {
+float Player::getWidth() const { return this->width; }
+float Player::getHeight() const { return this->height; }
 
+Player::~Player() {
+    delete shader;
+}
+
+int Player::getLiveCount() const {
+    return liveCount;
+}
+
+void Player::setLiveCount(int liveCount) {
+    Player::liveCount = liveCount;
 }

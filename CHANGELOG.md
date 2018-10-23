@@ -49,3 +49,10 @@ v0.1.5 -- 2018-09-30
 
 * Added level system.
 * Added function for loading levels.
+
+v0.1.6 -- 2018-10-22
+
+* Fixed camera not following player.
+* Optimized level and block loading.
+* Optimized block shader usage.
+* Started work on implementation of powerups.

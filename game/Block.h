@@ -12,7 +12,8 @@
 enum BlockType {
     Solid,
     Air,
-    Start
+    Start,
+    Powerup
 };
 
 class Block : Renderable {
@@ -25,6 +26,7 @@ private:
     VAO vertexArray;
     VBO buffer;
     Shader shader;
+    bool collected = false; // TODO: Implement powerups.
 
 public:
     Block(glm::vec2 position, BlockType type);
@@ -41,6 +43,7 @@ public:
     glm::vec2 getPos();
 
     void setTexture(Texture2D texture);
+    void setShader(Shader shader);
     BlockType getType();
 
 };

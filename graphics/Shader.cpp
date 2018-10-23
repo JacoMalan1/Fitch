@@ -39,3 +39,7 @@ void Shader::compile() {
     glDeleteShader(fshader);
 
 }
+
+~Shader::Shader() {
+    glDeleteProgram(this->id);
+}

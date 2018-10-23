@@ -30,6 +30,13 @@ private:
     bool isStanding = false;
     float width;
     float height;
+    int liveCount = 3;
+public:
+    int getLiveCount() const;
+
+    void setLiveCount(int liveCount);
+
+private:
 
     Texture2D texture;
     Direction direction = Right;
@@ -68,6 +75,7 @@ public:
     GLuint getVertexArrayName();
 
     float getWidth() const;
+    float getHeight() const;
 
 };
 
