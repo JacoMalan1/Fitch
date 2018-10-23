@@ -1,7 +1,3 @@
-//
-// Created by jacom on 2018/08/22.
-//
-
 #include <iostream>
 #include <memory>
 #include "Player.h"
@@ -64,9 +60,11 @@ void Player::initBuffer() {
 
 }
 
-void Player::update(bool sendBufferData) {
-    this->update();
-    this->resendBuffer();
+void Player::update(Block*** level, bool sendBufferData) {
+    this->update(level);
+
+    if (sendBufferData)
+        this->resendBuffer();
 }
 
 void Player::setPos(glm::vec2 pos) {
@@ -111,7 +109,7 @@ void Player::resendBuffer() {
 void Player::render() {
 
     glBindVertexArray(this->vertexArray.id);
-    glUseProgram(this->shader.getID());
+    glUseProgram(this->shader->getID());
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -128,8 +126,8 @@ void Player::render() {
 
 void Player::initShaders() {
 
-    shader = Shader("shaders/pvshader.glsl", "shaders/pfshader.glsl");
-    shader.compile();
+    shader = std::make_shared<Shader>("shaders/pvshader.glsl", "shaders/pfshader.glsl");
+    shader->compile();
 
 }
 
@@ -145,7 +143,7 @@ static std::ostream& operator<<(std::ostream& stream, glm::vec2 vector2) {
     return stream;
 }
 
-void Player::update() {
+void Player::update(Block*** level) {
 
     velocity += acceleration;
     fitch::limitVector_lin(velocity, T_VELOCITY);
@@ -169,10 +167,11 @@ void Player::update() {
 
     }
 
-    if (this->position.y < beforeY)
-        isStanding = true;
-    else if (this->position.y > beforeY)
-        isStanding = false;
+    int bYPos = (int)((this->getPos().y + 2) / BLOCK_SIZE);
+    int bXPos = (int(this->getPos().x) / BLOCK_SIZE);
+    isStanding = level[bXPos][bYPos]->getType() == Solid;
+
+    std::cout << isStanding << std::endl;
 
 }
 
@@ -191,9 +190,9 @@ void Player::render(const glm::mat4& projMat) {
     this->vertexArray.bind();
     this->buffer.bind();
     this->texture.bind();
-    glUseProgram(this->shader.getID());
+    glUseProgram(this->shader->getID());
 
-    GLint MatrixID = glGetUniformLocation(this->shader.getID(), "projMat");
+    GLint MatrixID = glGetUniformLocation(this->shader->getID(), "projMat");
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &projMat[0][0]);
 
     glEnableVertexArrayAttrib(this->vertexArray.id, 0);
@@ -231,9 +230,7 @@ void Player::handleInput(GLFWwindow* const window) {
 float Player::getWidth() const { return this->width; }
 float Player::getHeight() const { return this->height; }
 
-Player::~Player() {
-    delete shader;
-}
+Player::~Player() = default;
 
 int Player::getLiveCount() const {
     return liveCount;

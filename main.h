@@ -8,6 +8,8 @@
 #define LEVEL_SIZE_X 250
 #define LEVEL_SIZE_Y 50
 
+#include "game/Block.h"
+
 enum DebugMode {
     Full,
     Off

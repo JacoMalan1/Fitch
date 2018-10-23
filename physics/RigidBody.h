@@ -29,7 +29,7 @@ private:
     std::shared_ptr<std::vector<RigidBody>> collisionList;
     CollisionType collisionType;
 
-    Shader shader;
+    std::shared_ptr<Shader> shader;
     VBO buffer;
     VAO vertexArray;
 

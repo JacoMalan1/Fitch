@@ -25,7 +25,7 @@ private:
 
     VAO vertexArray;
     VBO buffer;
-    Shader shader;
+    Shader* shader;
     bool collected = false; // TODO: Implement powerups.
 
 public:
@@ -43,7 +43,7 @@ public:
     glm::vec2 getPos();
 
     void setTexture(Texture2D texture);
-    void setShader(Shader shader);
+    void setShader(Shader* shader);
     BlockType getType();
 
 };

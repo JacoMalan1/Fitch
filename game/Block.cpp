@@ -49,8 +49,8 @@ void Block::initBuffer() {
 
 void Block::initShaders() {
 
-    this->shader = Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
-    this->shader.compile();
+    this->shader = new Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
+    this->shader->compile();
 
 }
 
@@ -67,7 +67,7 @@ void Block::render() {
     this->vertexArray.bind();
     this->buffer.bind();
     this->texture.bind();
-    glUseProgram(this->shader.getID());
+    glUseProgram(this->shader->getID());
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -91,9 +91,9 @@ void Block::render(const glm::mat4& projMat) {
     this->vertexArray.bind();
     this->buffer.bind();
     this->texture.bind();
-    glUseProgram(this->shader.getID());
+    glUseProgram(this->shader->getID());
 
-    GLint MatrixID = glGetUniformLocation(this->shader.getID(), "projMat");
+    GLint MatrixID = glGetUniformLocation(this->shader->getID(), "projMat");
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &projMat[0][0]);
 
     glEnableVertexAttribArray(0);
@@ -109,7 +109,7 @@ void Block::render(const glm::mat4& projMat) {
 
 }
 
-void Block::setShader(Shader shader) { this->shader = shader; }
+void Block::setShader(Shader* shader) { this->shader = shader; }
 
 void Block::resendBuffer() {
 

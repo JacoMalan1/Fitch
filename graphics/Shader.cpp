@@ -40,6 +40,6 @@ void Shader::compile() {
 
 }
 
-~Shader::Shader() {
+Shader::~Shader() {
     glDeleteProgram(this->id);
 }

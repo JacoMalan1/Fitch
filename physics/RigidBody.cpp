@@ -70,8 +70,8 @@ void RigidBody::registerRenderer() {
 
 void RigidBody::initShaders() {
 
-    this->shader = Shader("shaders/vshader.glsl", "shaders/fshader.glsl");
-    this->shader.compile();
+    this->shader = std::make_shared<Shader>("shaders/vshader.glsl", "shaders/fshader.glsl");
+    this->shader->compile();
 
 }
 
@@ -94,7 +94,7 @@ void RigidBody::initBuffer() {
 void RigidBody::render() {
 
     this->vertexArray.bind();
-    glUseProgram(this->shader.getID());
+    glUseProgram(this->shader->getID());
 
     glEnableVertexArrayAttrib(this->vertexArray.id, 0);
     glEnableVertexArrayAttrib(this->vertexArray.id, 1);
@@ -113,9 +113,9 @@ void RigidBody::render(const glm::mat4& projMat) {
 
     this->vertexArray.bind();
     this->buffer.bind();
-    glUseProgram(this->shader.getID());
+    glUseProgram(this->shader->getID());
 
-    GLint MatrixID = glGetUniformLocation(this->shader.getID(), "projMat");
+    GLint MatrixID = glGetUniformLocation(this->shader->getID(), "projMat");
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &projMat[0][0]);
 
     glEnableVertexAttribArray(0);

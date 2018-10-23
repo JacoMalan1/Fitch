@@ -41,7 +41,7 @@ private:
     Texture2D texture;
     Direction direction = Right;
 
-    Shader shader;
+    std::shared_ptr<Shader> shader;
     VAO vertexArray;
     VBO buffer;
 
@@ -57,8 +57,8 @@ public:
 
     void render() override;
     void render(const glm::mat4& projMat);
-    void update();
-    void update(bool sendBufferData);
+    void update(Block*** level);
+    void update(Block*** level, bool sendBufferData);
     void initAll();
     void initBuffer() override;
     void resendBuffer() override;

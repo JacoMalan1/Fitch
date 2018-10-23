@@ -14,10 +14,10 @@ namespace fitch {
 
     GLFWwindow* window;
     std::unique_ptr<Player> player;
-    Block*** level = nullptr;
+    Block*** level;
     Texture2D TEXTURE_SOLID;
     std::unique_ptr<std::vector<Block*>> levelMesh;
-    Shader blockShader;
+    Shader* blockShader;
 
     int width, height;
 
@@ -42,8 +42,8 @@ namespace fitch {
             glDebugMessageCallback(glCallback, nullptr);
         }
 
-        blockShader = Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
-        blockShader.compile();
+        blockShader = new Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
+        blockShader->compile();
 
         player = std::make_unique<Player>(vec2(0, 0), "content/player.png");
         level = fitchio::loadLevel("content/level1.fl");
@@ -91,7 +91,7 @@ namespace fitch {
     void updateFrame() {
 
         player->handleInput(window);
-        player->update(true);
+        player->update(level, true);
 
     }
 
