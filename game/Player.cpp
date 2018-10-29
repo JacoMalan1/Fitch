@@ -61,10 +61,12 @@ void Player::initBuffer() {
 }
 
 void Player::update(Block*** level, bool sendBufferData) {
+
     this->update(level);
 
     if (sendBufferData)
         this->resendBuffer();
+
 }
 
 void Player::setPos(glm::vec2 pos) {
@@ -167,11 +169,9 @@ void Player::update(Block*** level) {
 
     }
 
-    int bYPos = (int)((this->getPos().y + 2) / BLOCK_SIZE);
-    int bXPos = (int(this->getPos().x) / BLOCK_SIZE);
+    int bYPos = (int)((this->getPos().y + this->getHeight() + 2) / BLOCK_SIZE);
+    int bXPos = (int(this->getPos().x + this->getWidth() / 2) / BLOCK_SIZE);
     isStanding = level[bXPos][bYPos]->getType() == Solid;
-
-    std::cout << isStanding << std::endl;
 
 }
 

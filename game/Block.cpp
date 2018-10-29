@@ -126,3 +126,16 @@ void Block::resendBuffer() {
     glBufferSubData(this->buffer.type, 0, sizeof(vertices), &vertices);
 
 }
+
+std::ostream& operator<<(std::ostream& stream, BlockType type) {
+
+    if (type == Solid)
+        stream << (std::string)"Solid";
+    else if (type == Air)
+        stream << (std::string)"Air";
+    else if (type == Start)
+        stream << (std::string)"Start";
+
+    return stream;
+
+}

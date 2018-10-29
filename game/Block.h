@@ -16,6 +16,8 @@ enum BlockType {
     Powerup
 };
 
+std::ostream& operator<<(std::ostream& stream, BlockType type);
+
 class Block : Renderable {
 
 private:

@@ -58,21 +58,26 @@ namespace fitch {
             return;
 
         glm::vec2 isect = Rectangle2D::intersection(dynBody.getCBox(), statBody.getCBox());
-        if (isect.y < isect.x) {
+        if (isect.y <= isect.x) {
+
             if (dynBody.getVelocity().y > 0) {
                 dynBody.setPosition(glm::vec2(dynBody.getPosition().x, dynBody.getPosition().y - isect.y));
             } else {
                 dynBody.setPosition(glm::vec2(dynBody.getPosition().x, dynBody.getPosition().y + isect.y));
             }
             dynBody.setVelocity(glm::vec2(dynBody.getVelocity().x, 0));
+
         } else {
+
             if (dynBody.getVelocity().x > 0) {
                 dynBody.setPosition(glm::vec2(dynBody.getPosition().x - isect.x, dynBody.getPosition().y));
 
             } else {
                 dynBody.setPosition(glm::vec2(dynBody.getPosition().x + isect.x, dynBody.getPosition().y));
             }
+
             dynBody.setVelocity(glm::vec2(0, dynBody.getVelocity().y));
+
         }
 
     }

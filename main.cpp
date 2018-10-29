@@ -18,6 +18,7 @@ namespace fitch {
     Texture2D TEXTURE_SOLID;
     std::unique_ptr<std::vector<Block*>> levelMesh;
     Shader* blockShader;
+    int levelCount = 1;
 
     int width, height;
 
@@ -46,7 +47,8 @@ namespace fitch {
         blockShader->compile();
 
         player = std::make_unique<Player>(vec2(0, 0), "content/player.png");
-        level = fitchio::loadLevel("content/level1.fl");
+        std::string sLevel = (std::string)"content/level" + std::to_string(levelCount) + (std::string)".fl";
+        level = fitchio::loadLevel(sLevel.c_str());
         levelMesh = std::make_unique<std::vector<Block*>>();
 
         TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
@@ -66,7 +68,7 @@ namespace fitch {
 
                 if (level[x][y]->getType() == Start) {
                     player->setPos(glm::vec2(x * BLOCK_SIZE, y * BLOCK_SIZE));
-                    std::cout << "STARTBLOCK" << std::endl;
+                    // std::cout << "STARTBLOCK" << std::endl;
                 }
 
             }
@@ -84,6 +86,7 @@ namespace fitch {
         }
 
         delete[] level;
+        delete blockShader;
 
     }
 
