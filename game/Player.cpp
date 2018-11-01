@@ -151,14 +151,11 @@ void Player::update(Block*** level) {
     fitch::limitVector_lin(velocity, T_VELOCITY);
 
     position += velocity;
-    velocity *= 0.95f;
+    velocity *= (isStanding) ? 0.85f : 0.95f;
     acceleration = glm::vec2(0, 0);
     applyForce(gravity);
 
-    float beforeY;
     for (RigidBody* body : *collisionList) {
-
-        beforeY = this->position.y;
 
         RigidBody* oldBody = this->asPBody();
         fitch::makeCollide(*oldBody, *body);
@@ -213,11 +210,11 @@ void Player::render(const glm::mat4& projMat) {
 void Player::handleInput(GLFWwindow* const window) {
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        this->applyForce(glm::vec2(0.6f, 0));
+        this->applyForce(glm::vec2((isStanding) ? 1.2f : 0.5f, 0));
         this->direction = Right;
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        this->applyForce(glm::vec2(-0.6f, 0));
+        this->applyForce(glm::vec2((isStanding) ? -1.2f : -0.5f, 0));
         this->direction = Left;
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && this->isStanding) {

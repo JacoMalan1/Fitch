@@ -17,9 +17,8 @@
   <component name="ChangeListManager">
     <list default="true" id="01cb7d4d-2efd-4acc-8819-23191639df92" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/Block.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/game/Block.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/Block.h" beforeDir="false" afterPath="$PROJECT_DIR$/game/Block.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/game/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/game/Player.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/physics/Physics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/physics/Physics.cpp" afterDir="false" />
     </list>
@@ -38,12 +37,13 @@
     <session id="2025059961">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="14" />
+          <entry key="project.closed" value="17" />
           <entry key="project.open.time.11" value="1" />
-          <entry key="project.open.time.15" value="1" />
+          <entry key="project.open.time.15" value="2" />
           <entry key="project.open.time.17" value="1" />
-          <entry key="project.open.time.18" value="1" />
+          <entry key="project.open.time.18" value="2" />
           <entry key="project.open.time.19" value="2" />
+          <entry key="project.open.time.21" value="1" />
           <entry key="project.open.time.22" value="1" />
           <entry key="project.open.time.26" value="1" />
           <entry key="project.open.time.5" value="1" />
@@ -52,17 +52,17 @@
           <entry key="project.open.time.56" value="1" />
           <entry key="project.open.time.6" value="1" />
           <entry key="project.open.time.61" value="1" />
-          <entry key="project.opened" value="14" />
+          <entry key="project.opened" value="17" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="Fitch (disassembly)" value="1" />
-          <entry key="cpp" value="41" />
-          <entry key="fl" value="4" />
+          <entry key="cpp" value="44" />
+          <entry key="fl" value="6" />
           <entry key="gitignore" value="2" />
-          <entry key="glsl" value="16" />
-          <entry key="h" value="35" />
+          <entry key="glsl" value="17" />
+          <entry key="h" value="37" />
           <entry key="inl" value="1" />
           <entry key="md" value="1" />
           <entry key="png" value="4" />
@@ -75,20 +75,20 @@
           <entry key="CMakeCache.txt" value="1" />
           <entry key="CMakeLists.txt" value="3" />
           <entry key="Disassembly" value="1" />
-          <entry key="GLSL shader file" value="16" />
+          <entry key="GLSL shader file" value="17" />
           <entry key="Image" value="4" />
-          <entry key="ObjectiveC" value="77" />
-          <entry key="PLAIN_TEXT" value="7" />
+          <entry key="ObjectiveC" value="82" />
+          <entry key="PLAIN_TEXT" value="9" />
           <entry key="Scratch" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="9678" />
+          <entry key="cpp" value="9968" />
           <entry key="fl" value="2" />
           <entry key="gitignore" value="23" />
           <entry key="glsl" value="111" />
-          <entry key="h" value="1259" />
+          <entry key="h" value="1279" />
           <entry key="md" value="192" />
           <entry key="mm" value="6" />
           <entry key="txt" value="351" />
@@ -98,7 +98,7 @@
         <counts>
           <entry key="CMakeLists.txt" value="351" />
           <entry key="GLSL shader file" value="111" />
-          <entry key="ObjectiveC" value="10943" />
+          <entry key="ObjectiveC" value="11253" />
           <entry key="PLAIN_TEXT" value="217" />
         </counts>
       </usages-collector>
@@ -109,74 +109,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="70" column="22" lean-forward="true" selection-start-line="70" selection-start-column="22" selection-end-line="70" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tools.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="808">
-              <caret line="117" selection-start-line="117" selection-end-line="117" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/game/Player.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="226" lean-forward="true" selection-start-line="226" selection-end-line="226" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/physics/Physics.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="41">
-              <caret line="60" column="22" selection-start-line="60" selection-start-column="22" selection-end-line="60" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/Player.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret line="59" column="13" selection-start-line="59" selection-start-column="13" selection-end-line="59" selection-end-column="13" />
-              <folding>
-                <element signature="e#46#68#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/Block.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-146">
-              <caret line="18" column="63" selection-start-line="18" selection-start-column="63" selection-end-line="18" selection-end-column="63" />
-              <folding>
-                <element signature="e#54#76#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/Block.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="130" selection-start-line="130" selection-end-line="130" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="102">
+              <caret line="55" column="48" lean-forward="true" selection-start-line="55" selection-start-column="48" selection-end-line="55" selection-end-column="48" />
             </state>
           </provider>
         </entry>
@@ -217,12 +154,12 @@
         <option value="$PROJECT_DIR$/physics/RigidBody.h" />
         <option value="$PROJECT_DIR$/physics/RigidBody.cpp" />
         <option value="$PROJECT_DIR$/main.h" />
-        <option value="$PROJECT_DIR$/game/Player.h" />
         <option value="$PROJECT_DIR$/game/Block.h" />
         <option value="$PROJECT_DIR$/game/Block.cpp" />
-        <option value="$PROJECT_DIR$/main.cpp" />
-        <option value="$PROJECT_DIR$/physics/Physics.cpp" />
+        <option value="$PROJECT_DIR$/game/Player.h" />
         <option value="$PROJECT_DIR$/game/Player.cpp" />
+        <option value="$PROJECT_DIR$/physics/Physics.cpp" />
+        <option value="$PROJECT_DIR$/main.cpp" />
       </list>
     </option>
   </component>
@@ -234,9 +171,10 @@
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="y" value="34" />
-    <option name="width" value="1366" />
-    <option name="height" value="734" />
+    <option name="x" value="1198" />
+    <option name="y" value="156" />
+    <option name="width" value="1717" />
+    <option name="height" value="937" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -259,7 +197,7 @@
             <path>
               <item name="Fitch" type="b2602c69:ProjectViewProjectNode" />
               <item name="Fitch" type="462c0819:PsiDirectoryNode" />
-              <item name="game" type="462c0819:PsiDirectoryNode" />
+              <item name="shaders" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -337,11 +275,14 @@
       <workItem from="1540300789781" duration="2641000" />
       <workItem from="1540571597168" duration="1235000" />
       <workItem from="1540573935162" duration="2386000" />
+      <workItem from="1540821417737" duration="1629000" />
+      <workItem from="1540908910085" duration="1961000" />
+      <workItem from="1540928735612" duration="677000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="45206000" />
+    <option name="totallyTimeSpent" value="49473000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -353,11 +294,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="34" width="1366" height="734" extended-state="6" />
+    <frame x="1920" y="34" width="1920" height="1046" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" sideWeight="0.5012285" side_tool="true" weight="0.2725242" />
-      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.4987715" visible="true" weight="0.17878787" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.4987715" visible="true" weight="0.18516542" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="0" weight="0.32890365" />
       <window_info anchor="bottom" id="Event Log" order="1" sideWeight="0.5007576" side_tool="true" weight="0.32231405" />
@@ -365,12 +306,12 @@
       <window_info anchor="bottom" id="CMake" order="3" weight="0.32388222" />
       <window_info anchor="bottom" id="Message" order="4" />
       <window_info anchor="bottom" id="Find" order="5" />
-      <window_info anchor="bottom" id="Run" order="6" weight="0.32066116" />
+      <window_info anchor="bottom" id="Run" order="6" weight="0.32061067" />
       <window_info anchor="bottom" id="Debug" order="7" weight="0.39504132" />
       <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="10" weight="0.3272727" />
-      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.49924242" weight="0.32066116" />
+      <window_info anchor="bottom" id="TODO" order="10" weight="0.32715377" />
+      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.49924242" weight="0.32061067" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection Results" order="13" weight="0.3289256" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -479,13 +420,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/shaders/tfshader.glsl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/content/level3.fl" />
     <entry file="file:///usr/include/glm/ext/matrix_transform.inl">
       <provider selected="true" editor-type-id="text-editor">
@@ -548,13 +482,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/content/level1.fl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="44" column="13" lean-forward="true" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/content/level2.fl">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -599,13 +526,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="21" selection-start-line="21" selection-end-line="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/physics/RigidBody.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="527">
@@ -643,59 +563,74 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/game/Block.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="130" selection-start-line="130" selection-end-line="130" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/Block.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-146">
-          <caret line="18" column="63" selection-start-line="18" selection-start-column="63" selection-end-line="18" selection-end-column="63" />
-          <folding>
-            <element signature="e#54#76#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="2176">
+          <caret line="128" selection-start-line="128" selection-end-line="128" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/Player.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="59" column="13" selection-start-line="59" selection-start-column="13" selection-end-line="59" selection-end-column="13" />
+        <state relative-caret-position="459">
+          <caret line="27" column="46" selection-start-line="27" selection-start-column="46" selection-end-line="27" selection-end-column="46" />
           <folding>
             <element signature="e#46#68#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" selection-start-line="21" selection-end-line="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/shaders/tfshader.glsl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="19" lean-forward="true" selection-start-line="3" selection-start-column="19" selection-end-line="3" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/content/level1.fl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="43" column="13" lean-forward="true" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tools.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="808">
-          <caret line="117" selection-start-line="117" selection-end-line="117" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="70" column="22" lean-forward="true" selection-start-line="70" selection-start-column="22" selection-end-line="70" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/physics/Physics.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="41">
-          <caret line="60" column="22" selection-start-line="60" selection-start-column="22" selection-end-line="60" selection-end-column="22" />
+        <state relative-caret-position="665">
+          <caret line="116" column="22" lean-forward="true" selection-start-line="116" selection-start-column="22" selection-end-line="116" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/Player.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="226" lean-forward="true" selection-start-line="226" selection-end-line="226" />
+        <state relative-caret-position="404">
+          <caret line="160" column="22" selection-start-line="160" selection-start-column="22" selection-end-line="160" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/physics/Physics.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="53" column="11" selection-start-line="53" selection-start-column="11" selection-end-line="53" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/Block.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="31" lean-forward="true" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="55" column="48" lean-forward="true" selection-start-line="55" selection-start-column="48" selection-end-line="55" selection-end-column="48" />
         </state>
       </provider>
     </entry>

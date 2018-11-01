@@ -66,10 +66,8 @@ namespace fitch {
 
                 }
 
-                if (level[x][y]->getType() == Start) {
+                if (level[x][y]->getType() == Start)
                     player->setPos(glm::vec2(x * BLOCK_SIZE, y * BLOCK_SIZE));
-                    // std::cout << "STARTBLOCK" << std::endl;
-                }
 
             }
         }
@@ -139,8 +137,8 @@ namespace fitch {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        width = 800;
-        height = 600;
+        width = 1920;
+        height = 1080;
         window = glfwCreateWindow(width, height, "Fitch", nullptr, nullptr);
 
         glfwMakeContextCurrent(window);
@@ -156,20 +154,22 @@ namespace fitch {
         double fps = 60;
         double maxPeriod = 1 / fps;
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
+        // Start main game loop
         while (!glfwWindowShouldClose(window) && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS) {
 
             double time = glfwGetTime();
             double deltaTime = time - lastTime;
 
+            // Insure that the update function only gets called 60 times per second.
             if (deltaTime >= maxPeriod) {
 
                 updateFrame();
-                renderFrame();
-
                 lastTime = time;
 
             }
 
+            renderFrame();
             glfwPollEvents();
 
         }

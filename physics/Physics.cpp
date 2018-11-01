@@ -3,12 +3,6 @@
 
 namespace fitch {
 
-    void tickPhysics(PhysicsBody &body) {
-
-        body.update();
-
-    }
-
     void limitVector(glm::vec2& vector, float mag) {
 
         float currentMag = 0.0f;
@@ -57,6 +51,7 @@ namespace fitch {
         if (!dynBody.getCBox().intersects(statBody.getCBox()))
             return;
 
+        // TODO: Retain X-velocity if standing.
         glm::vec2 isect = Rectangle2D::intersection(dynBody.getCBox(), statBody.getCBox());
         if (isect.y <= isect.x) {
 

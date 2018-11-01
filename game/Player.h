@@ -20,7 +20,7 @@ class Player : Renderable {
 
 private:
 
-    const float T_VELOCITY = 50.0f;
+    const float T_VELOCITY = 70.0f;
 
     glm::vec2 position;
     glm::vec2 velocity;

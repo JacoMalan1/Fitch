@@ -56,3 +56,7 @@ v0.1.6 -- 2018-10-22
 * Optimized level and block loading.
 * Optimized block shader usage.
 * Started work on implementation of powerups.
+
+v0.1.7 -- 2018-10-22
+
+* Modified physics engine.
