@@ -229,7 +229,7 @@ float Player::getHeight() const { return this->height; }
 
 Player::~Player() = default;
 
-int Player::getLiveCount() const {
+int Player::getLifeCount() const {
     return liveCount;
 }
 

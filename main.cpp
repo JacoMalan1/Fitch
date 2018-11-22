@@ -18,7 +18,7 @@ namespace fitch {
     Texture2D TEXTURE_SOLID;
     std::unique_ptr<std::vector<Block*>> levelMesh;
     Shader* blockShader;
-    int levelCount = 1;
+    int levelCount = 3;
 
     int width, height;
 
@@ -137,8 +137,8 @@ namespace fitch {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        width = 1920;
-        height = 1080;
+        width = 800;
+        height = 600;
         window = glfwCreateWindow(width, height, "Fitch", nullptr, nullptr);
 
         glfwMakeContextCurrent(window);
@@ -151,7 +151,7 @@ namespace fitch {
         loadWindow();
 
         double lastTime = glfwGetTime();
-        double fps = 60;
+        double fps = 120;
         double maxPeriod = 1 / fps;
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 

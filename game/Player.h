@@ -32,7 +32,7 @@ private:
     float height;
     int liveCount = 3;
 public:
-    int getLiveCount() const;
+    int getLifeCount() const;
 
     void setLiveCount(int liveCount);
 
