@@ -8,6 +8,7 @@
 #include "../graphics/VBO.h"
 #include "../graphics/Shader.h"
 #include "../graphics/Texture2D.h"
+#include "../graphics/Drawable.h"
 
 enum BlockType {
     Solid,
@@ -18,16 +19,19 @@ enum BlockType {
 
 std::ostream& operator<<(std::ostream& stream, BlockType type);
 
-class Block : Renderable {
+class Block : Drawable {
 
 private:
     glm::vec2 position;
     BlockType type;
     Texture2D texture;
 
-    VAO vertexArray;
-    VBO buffer;
-    Shader* shader;
+    VAO vao;
+    VBO vbo;
+    std::shared_ptr<Shader> shaderProgram;
+
+    glm::mat4 drawMat;
+
     bool collected = false; // TODO: Implement powerups.
 
 public:
@@ -36,17 +40,18 @@ public:
 
     RigidBody* asRBody();
     static int getSize();
-    void initBuffer() override;
-    void resendBuffer() override;
-    void render() override;
-    void render(const glm::mat4& projMat);
-    void initShaders() override;
     bool isRenderable();
     glm::vec2 getPos();
 
     void setTexture(Texture2D texture);
-    void setShader(Shader* shader);
+    void setShader(std::shared_ptr<Shader> shader);
     BlockType getType();
+
+    void setMatrix(glm::mat4 mat);
+
+    void init() override;
+    void update() override;
+    void draw() override;
 
 };
 

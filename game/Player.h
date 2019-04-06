@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <memory>
-#include "../graphics/Renderable.h"
+#include "../graphics/Drawable.h"
 #include "../physics/Physics.h"
 #include "../graphics/Texture2D.h"
 #include "../graphics/VAO.h"
@@ -16,34 +16,26 @@ enum Direction {
     Right
 };
 
-class Player : Renderable {
+class Player : Drawable {
 
 private:
-
     const float T_VELOCITY = 70.0f;
-
     glm::vec2 position;
     glm::vec2 velocity;
     glm::vec2 acceleration;
     const glm::vec2 gravity = glm::vec2(0, 0.9f);
-    bool isRunning = false;
     bool isStanding = false;
     float width;
     float height;
-    int liveCount = 3;
-public:
-    int getLifeCount() const;
-
-    void setLiveCount(int liveCount);
-
-private:
 
     Texture2D texture;
     Direction direction = Right;
 
-    std::shared_ptr<Shader> shader;
-    VAO vertexArray;
-    VBO buffer;
+    std::shared_ptr<Shader> shaderProgram;
+    VAO vao;
+    VBO vbo;
+
+    glm::mat4 drawMat;
 
     std::unique_ptr<std::vector<RigidBody*>> collisionList;
 
@@ -55,14 +47,6 @@ public:
     Player(const Player& other);
     ~Player();
 
-    void render() override;
-    void render(const glm::mat4& projMat);
-    void update(Block*** level);
-    void update(Block*** level, bool sendBufferData);
-    void initAll();
-    void initBuffer() override;
-    void resendBuffer() override;
-    void initShaders() override;
     void applyForce(glm::vec2 force);
     void handleInput(GLFWwindow* window);
     void collideWith(RigidBody* body);
@@ -72,10 +56,14 @@ public:
 
     friend void fitch::renderFrame();
 
-    GLuint getVertexArrayName();
-
     float getWidth() const;
     float getHeight() const;
+
+    void setMatrix(glm::mat4 mat);
+
+    void init() override;
+    void update() override;
+    void draw() override;
 
 };
 

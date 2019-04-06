@@ -5,7 +5,6 @@
 #include <glm/glm.hpp>
 #include "Rectangle2D.h"
 #include "PhysicsBody.h"
-#include "../graphics/Renderable.h"
 #include "../graphics/Shader.h"
 #include "../graphics/VBO.h"
 #include "../graphics/VAO.h"
@@ -16,7 +15,7 @@ enum CollisionType {
     Specific
 };
 
-class RigidBody : PhysicsBody, Renderable {
+class RigidBody : PhysicsBody {
 
 private:
     glm::vec2 position;
@@ -47,14 +46,6 @@ public:
     std::shared_ptr<std::vector<RigidBody>> getCollisionList();
     void setVelocity(glm::vec2 velocity);
     glm::vec2 getVelocity();
-
-    void initBuffer() override;
-    void resendBuffer() override;
-    void initShaders() override;
-    void render() override;
-    void render(const glm::mat4& projMat);
-
-    void registerRenderer();
 
 };
 

@@ -10,6 +10,10 @@
 
 struct VBO {
 
+private:
+    bool sent = false;
+
+public:
     GLuint id;
     GLenum type;
 
@@ -17,6 +21,7 @@ struct VBO {
     VBO();
     static VBO create(GLenum type);
     void bind();
+    void sendData(float* data, int elems, GLenum drawType);
 
 };
 

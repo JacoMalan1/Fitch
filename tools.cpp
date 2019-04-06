@@ -82,22 +82,14 @@ namespace fitchio {
 
     }
 
-    Block*** loadLevel(const char* file_path) {
+    std::shared_ptr<std::vector<Block>> loadLevel(const char* file_path) {
 
         const char* contents = loadFile(file_path);
         std::string s_contents = contents;
         vector<string> lines = splitString(s_contents, '\n');
 
-        auto blocks = new Block**[LEVEL_SIZE_X];
-        for (int i = 0; i < LEVEL_SIZE_X; i++) {
-            blocks[i] = new Block*[LEVEL_SIZE_Y];
-        }
-
-        for (int i = 0; i < LEVEL_SIZE_X; i++) {
-            for (int j = 0; j < LEVEL_SIZE_Y; j++) {
-                blocks[i][j] = new Block(glm::vec2(i, j), Air);
-            }
-        }
+        auto blocks = std::make_shared<std::vector<Block>>();
+        blocks->reserve(lines.size());
 
         for (const string& line : lines) {
 
@@ -123,9 +115,7 @@ namespace fitchio {
 
             if (type != Air) {
 
-                Block* clPtr = blocks[x][y];
-                blocks[x][y] = new Block(glm::vec2(x, y), type);
-                delete clPtr;
+                blocks->emplace_back(glm::vec2(x, y), type);
 
             }
 

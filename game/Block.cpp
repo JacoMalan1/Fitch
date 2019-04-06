@@ -26,34 +26,6 @@ BlockType Block::getType() {
     return this->type;
 }
 
-void Block::initBuffer() {
-
-    this->vertexArray = VAO::create();
-    this->vertexArray.bind();
-    this->buffer = VBO::create(GL_ARRAY_BUFFER);
-    this->buffer.bind();
-
-    this->position.x *= this->getSize();
-    this->position.y *= this->getSize();
-
-    float vertices[] = {
-            this->position.x, this->position.y, 0.0f, 0.0f,
-            this->position.x + BLOCK_SIZE, this->position.y, 1.0f, 0.0f,
-            this->position.x, this->position.y + BLOCK_SIZE, 0.0f, 1.0f,
-            this->position.x + BLOCK_SIZE, this->position.y + BLOCK_SIZE, 1.0f, 1.0f
-    };
-
-    glBufferData(this->buffer.type, sizeof(vertices), &vertices, GL_DYNAMIC_DRAW);
-
-}
-
-void Block::initShaders() {
-
-    this->shader = new Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
-    this->shader->compile();
-
-}
-
 bool Block::isRenderable() {
     return !(this->type == Air || this->type == Start);
 }
@@ -62,70 +34,13 @@ glm::vec2 Block::getPos() {
     return this->position;
 }
 
-void Block::render() {
-
-    this->vertexArray.bind();
-    this->buffer.bind();
-    this->texture.bind();
-    glUseProgram(this->shader->getID());
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
-    glDrawArrays(GL_QUADS, 0, 4);
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-
-}
-
 void Block::setTexture(Texture2D texture) {
     this->texture = texture;
 }
 
-void Block::render(const glm::mat4& projMat) {
+void Block::setShader(std::shared_ptr<Shader> shader) { this->shaderProgram = shader; }
 
-    this->vertexArray.bind();
-    this->buffer.bind();
-    this->texture.bind();
-    glUseProgram(this->shader->getID());
 
-    GLint MatrixID = glGetUniformLocation(this->shader->getID(), "projMat");
-    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &projMat[0][0]);
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-
-}
-
-void Block::setShader(Shader* shader) { this->shader = shader; }
-
-void Block::resendBuffer() {
-
-    this->vertexArray.bind();
-    this->buffer.bind();
-
-    float vertices[] = {
-            this->position.x, this->position.y, 0.0f, 0.0f,
-            this->position.x + BLOCK_SIZE, this->position.y, 1.0f, 0.0f,
-            this->position.x, this->position.y + BLOCK_SIZE, 0.0f, 1.0f,
-            this->position.x + BLOCK_SIZE, this->position.y + BLOCK_SIZE, 1.0f, 1.0f
-    };
-
-    glBufferSubData(this->buffer.type, 0, sizeof(vertices), &vertices);
-
-}
 
 std::ostream& operator<<(std::ostream& stream, BlockType type) {
 
@@ -137,5 +52,71 @@ std::ostream& operator<<(std::ostream& stream, BlockType type) {
         stream << (std::string)"Start";
 
     return stream;
+
+}
+
+void Block::setMatrix(glm::mat4 mat) { this->drawMat = mat; }
+
+void Block::init() {
+
+    this->vao = VAO::create();
+    this->vbo = VBO::create(GL_ARRAY_BUFFER);
+
+    this->shaderProgram = std::make_shared<Shader>("shaders/tvshader.glsl", "shaders/tfshader.glsl");
+    this->shaderProgram->compile();
+
+    auto vertices = new float[16] {
+
+            position.x, position.y, 0.0f, 0.0f,
+            position.x + BLOCK_SIZE, position.y, 1.0f, 0.0f,
+            position.x, position.y + BLOCK_SIZE, 0.0f, 1.0f,
+            position.x + BLOCK_SIZE, position.y + BLOCK_SIZE, 1.0f, 1.0f
+
+    };
+
+    this->vbo.sendData(vertices, 16, GL_STATIC_DRAW);
+
+    delete[] vertices;
+
+}
+
+void Block::update() {
+
+    auto vertices = new float[16] {
+
+            position.x, position.y, 0.0f, 0.0f,
+            position.x + BLOCK_SIZE, position.y, 1.0f, 0.0f,
+            position.x, position.y + BLOCK_SIZE, 0.0f, 1.0f,
+            position.x + BLOCK_SIZE, position.y + BLOCK_SIZE, 1.0f, 1.0f
+
+    };
+
+    this->vbo.sendData(vertices, 16, GL_STATIC_DRAW);
+
+    delete[] vertices;
+
+}
+
+void Block::draw() {
+
+    this->vao.bind();
+    this->vbo.bind();
+
+    glUseProgram(this->shaderProgram->getID());
+    this->texture.bind();
+
+    GLint MatrixID = glGetUniformLocation(this->shaderProgram->getID(), "projMat");
+    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &drawMat[0][0]);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
 
 }
