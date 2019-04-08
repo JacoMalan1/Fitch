@@ -1,16 +1,14 @@
+#include <utility>
+#include <iostream>
+
 #include "Block.h"
 #include "../tools.h"
 
-Block::Block(glm::vec2 position, BlockType type) : position(position), type(type) {}
+Block::Block(glm::vec2 position, BlockType type) : position(position), type(type), drawMat(glm::mat4(1)),
+    shaderProgram(new Shader(0)) {}
 
-RigidBody* Block::asRBody() {
-
-    auto rb = new RigidBody(position.x, position.y, BLOCK_SIZE, BLOCK_SIZE, 1.0f, All);
-    return rb;
-
-}
-
-Block::Block(glm::vec2 position, BlockType type, const char* texture_path) : position(position), type(type) {
+Block::Block(glm::vec2 position, BlockType type, const char* texture_path) : position(position), type(type), drawMat(glm::mat4(1)),
+    shaderProgram(new Shader(0)) {
 
     texture = fitchio::loadBMP(texture_path);
 
@@ -22,25 +20,23 @@ int Block::getSize() {
 
 }
 
-BlockType Block::getType() {
+BlockType Block::getType() const {
     return this->type;
 }
 
-bool Block::isRenderable() {
+bool Block::isRenderable() const {
     return !(this->type == Air || this->type == Start);
 }
 
-glm::vec2 Block::getPos() {
+glm::vec2 Block::getPos() const {
     return this->position;
 }
 
-void Block::setTexture(Texture2D texture) {
-    this->texture = texture;
+void Block::setTexture(Texture2D tex) {
+    this->texture = tex;
 }
 
-void Block::setShader(std::shared_ptr<Shader> shader) { this->shaderProgram = shader; }
-
-
+void Block::setShader(Shader* shader) { this->shaderProgram = shader; }
 
 std::ostream& operator<<(std::ostream& stream, BlockType type) {
 
@@ -62,9 +58,6 @@ void Block::init() {
     this->vao = VAO::create();
     this->vbo = VBO::create(GL_ARRAY_BUFFER);
 
-    this->shaderProgram = std::make_shared<Shader>("shaders/tvshader.glsl", "shaders/tfshader.glsl");
-    this->shaderProgram->compile();
-
     glm::vec2 screenPos(position.x * BLOCK_SIZE, position.y * BLOCK_SIZE);
 
     auto vertices = new float[16] {
@@ -76,7 +69,7 @@ void Block::init() {
 
     };
 
-    this->vbo.sendData(vertices, 16, GL_STATIC_DRAW);
+    this->vbo.sendData(vertices, 16, GL_DYNAMIC_DRAW);
 
     delete[] vertices;
 
@@ -95,7 +88,7 @@ void Block::update() {
 
     };
 
-    this->vbo.sendData(vertices, 16, GL_STATIC_DRAW);
+    this->vbo.sendData(vertices, 16, GL_DYNAMIC_DRAW);
 
     delete[] vertices;
 
@@ -106,7 +99,7 @@ void Block::draw() {
     this->vao.bind();
     this->vbo.bind();
 
-    glUseProgram(this->shaderProgram->getID());
+    this->shaderProgram->bind();
     this->texture.bind();
 
     GLint MatrixID = glGetUniformLocation(this->shaderProgram->getID(), "projMat");

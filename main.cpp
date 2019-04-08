@@ -56,6 +56,9 @@ namespace fitch {
 
         drawList.push_back((Drawable*)player);
         for (Block& b : *blockList) {
+
+            b.setShader(blockShader);
+
             if (b.getType() == Solid) {
                 b.setTexture(TEXTURE_SOLID);
             } else if (b.getType() == Start) {

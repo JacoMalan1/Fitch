@@ -5,9 +5,10 @@
 #ifndef FITCH_TOOLS_H
 #define FITCH_TOOLS_H
 
+#include <string>
+#include <vector>
 #include "graphics/Texture2D.h"
 #include "game/Block.h"
-#include <string>
 
 namespace fitchio {
 

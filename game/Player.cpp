@@ -4,71 +4,28 @@
 #include "../tools.h"
 #include "../main.h"
 
-Player::Player(const Player& other) : position(other.position), velocity(other.velocity), acceleration(other.acceleration),
-            width(other.width), height(other.height), texture(other.texture), shaderProgram(other.shaderProgram), vao(other.vao),
+Player::Player(const Player& other) : position(other.position), width(other.width), height(other.height),
+    texture(other.texture), shaderProgram(other.shaderProgram), vao(other.vao),
             vbo(other.vbo)
 {
-
-    this->collisionList = std::make_unique<std::vector<RigidBody*>>();
-    *this->collisionList = *other.collisionList;
 
 }
 
 Player::Player(glm::vec2 position, const char *texture_path) : position(position) {
-    this->collisionList = std::make_unique<std::vector<RigidBody*>>();
-    this->velocity = glm::vec2(0, 0);
-    this->acceleration = glm::vec2(0, 0);
     this->texture = fitchio::loadBMP(texture_path);
     this->width = this->texture.width;
     this->height = this->texture.height;
-}
-
-Player::Player(glm::vec2 position, float width, float height) : position(position), width(width), height(height) {
-    this->collisionList = std::make_unique<std::vector<RigidBody*>>();
-    this->velocity = glm::vec2(0, 0);
-    this->acceleration = glm::vec2(0, 0);
-    this->texture = { 0, 0, 0 };
 }
 
 void Player::setPos(glm::vec2 pos) {
     this->position = pos;
 }
 
-glm::vec2 Player::getPos() {
+glm::vec2 Player::getPos() const {
     return this->position;
 }
 
-RigidBody* Player::asPBody() {
-    auto rb = new RigidBody(this->position.x, this->position.y, this->width, this->height, 1.0f, All);
-    rb->setVelocity(this->velocity);
-    return rb;
-
-}
-
-void Player::applyForce(glm::vec2 force) {
-    acceleration += force;
-}
-
-void Player::collideWith(RigidBody* body) {
-    collisionList->emplace_back(body);
-}
-
-void Player::handleInput(GLFWwindow* const window) {
-
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        this->applyForce(glm::vec2((isStanding) ? 1.2f : 0.5f, 0));
-        this->direction = Right;
-    }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        this->applyForce(glm::vec2((isStanding) ? -1.2f : -0.5f, 0));
-        this->direction = Left;
-    }
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && this->isStanding) {
-        this->applyForce(glm::vec2(0, -30.0f));
-        this->isStanding = false;
-    }
-
-}
+void Player::handleInput(GLFWwindow* const window) {}
 
 float Player::getWidth() const { return this->width; }
 float Player::getHeight() const { return this->height; }
@@ -121,7 +78,7 @@ void Player::draw() {
 
     this->vao.bind();
     this->vbo.bind();
-    glUseProgram(this->shaderProgram->getID());
+    this->shaderProgram->bind();
     this->texture.bind();
 
     GLint MatrixID = glGetUniformLocation(this->shaderProgram->getID(), "projMat");

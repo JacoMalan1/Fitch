@@ -1,9 +1,10 @@
 #define BLOCK_SIZE 50
 #ifndef BLOCK_H
 #define BLOCK_H
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "../physics/RigidBody.h"
+#include <memory>
 #include "../graphics/VAO.h"
 #include "../graphics/VBO.h"
 #include "../graphics/Shader.h"
@@ -13,8 +14,7 @@
 enum BlockType {
     Solid,
     Air,
-    Start,
-    Powerup
+    Start
 };
 
 std::ostream& operator<<(std::ostream& stream, BlockType type);
@@ -28,26 +28,22 @@ private:
 
     VAO vao;
     VBO vbo;
-    std::shared_ptr<Shader> shaderProgram;
+    Shader* shaderProgram;
 
     glm::mat4 drawMat;
-
-    bool collected = false; // TODO: Implement powerups.
 
 public:
     Block(glm::vec2 position, BlockType type);
     Block(glm::vec2 position, BlockType type, const char* texture_path);
-
-    RigidBody* asRBody();
     static int getSize();
-    bool isRenderable();
-    glm::vec2 getPos();
+    bool isRenderable() const;
+    glm::vec2 getPos() const;
 
     glm::vec2 screenPos();
 
     void setTexture(Texture2D texture);
-    void setShader(std::shared_ptr<Shader> shader);
-    BlockType getType();
+    void setShader(Shader* shader);
+    BlockType getType() const;
 
     void setMatrix(glm::mat4 mat) override;
 

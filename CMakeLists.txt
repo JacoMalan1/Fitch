@@ -1,17 +1,19 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 project(Fitch)
 
 set(CMAKE_CXX_STANDARD 17)
 set(OpenGL_GL_PREFERENCE "GLVND")
 
-add_executable(Fitch physics/StaticBody.h physics/StaticBody.cpp game/Block.h game/Block.cpp lodepng.h lodepng.cpp main.h game/Player.cpp physics/PhysicsBody.cpp physics/Rectangle2D.cpp physics/Physics.h physics/Physics.cpp physics/RigidBody.cpp tools.cpp main.cpp graphics/Texture2D.cpp graphics/Shader.cpp graphics/Shader.h graphics/VAO.cpp graphics/VAO.h graphics/VBO.cpp graphics/VBO.h graphics/Drawable.h)
+add_executable(Fitch game/Block.h game/Block.cpp lodepng.h lodepng.cpp main.h game/Player.cpp tools.cpp main.cpp graphics/Texture2D.cpp graphics/Shader.cpp graphics/Shader.h graphics/VAO.cpp graphics/VAO.h graphics/VBO.cpp graphics/VBO.h graphics/Drawable.h)
 
 find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(Box2D REQUIRED)
 
 target_link_libraries(Fitch GLEW)
 target_link_libraries(Fitch glfw)
 target_link_libraries(Fitch GL)
+target_link_libraries(Fitch Box2D)
 
 configure_file(shaders/fshader.glsl shaders/fshader.glsl COPYONLY)
 configure_file(shaders/vshader.glsl shaders/vshader.glsl COPYONLY)

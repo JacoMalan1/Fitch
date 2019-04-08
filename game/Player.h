@@ -1,30 +1,25 @@
 #ifndef FITCH_PLAYER_H
 #define FITCH_PLAYER_H
+
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <memory>
 #include "../graphics/Drawable.h"
-#include "../physics/Physics.h"
 #include "../graphics/Texture2D.h"
 #include "../graphics/VAO.h"
 #include "../graphics/VBO.h"
 #include "../main.h"
 
 enum Direction {
-    Left,
-    Right
+    Left = -1,
+    Right = 1
 };
 
 class Player : Drawable {
 
 private:
-    const float T_VELOCITY = 70.0f;
     glm::vec2 position;
-    glm::vec2 velocity;
-    glm::vec2 acceleration;
-    const glm::vec2 gravity = glm::vec2(0, 0.9f);
-    bool isStanding = false;
     float width;
     float height;
 
@@ -35,24 +30,17 @@ private:
     VAO vao;
     VBO vbo;
 
-    glm::mat4 drawMat;
-
-    std::unique_ptr<std::vector<RigidBody*>> collisionList;
+    glm::mat4 drawMat{};
 
 public:
 
-    Player(glm::vec2 position, float width, float height);
     Player(glm::vec2 position, const char* texture_path);
-    Player() = default;
     Player(const Player& other);
     ~Player();
 
-    void applyForce(glm::vec2 force);
     void handleInput(GLFWwindow* window);
-    void collideWith(RigidBody* body);
-    RigidBody* asPBody();
     void setPos(glm::vec2 pos);
-    glm::vec2 getPos();
+    glm::vec2 getPos() const;
 
     friend void fitch::renderFrame();
 
