@@ -65,12 +65,14 @@ void Block::init() {
     this->shaderProgram = std::make_shared<Shader>("shaders/tvshader.glsl", "shaders/tfshader.glsl");
     this->shaderProgram->compile();
 
+    glm::vec2 screenPos(position.x * BLOCK_SIZE, position.y * BLOCK_SIZE);
+
     auto vertices = new float[16] {
 
-            position.x, position.y, 0.0f, 0.0f,
-            position.x + BLOCK_SIZE, position.y, 1.0f, 0.0f,
-            position.x, position.y + BLOCK_SIZE, 0.0f, 1.0f,
-            position.x + BLOCK_SIZE, position.y + BLOCK_SIZE, 1.0f, 1.0f
+            screenPos.x, screenPos.y, 0.0f, 0.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y, 1.0f, 0.0f,
+            screenPos.x, screenPos.y + BLOCK_SIZE, 0.0f, 1.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y + BLOCK_SIZE, 1.0f, 1.0f
 
     };
 
@@ -82,12 +84,14 @@ void Block::init() {
 
 void Block::update() {
 
+    glm::vec2 screenPos(position.x * BLOCK_SIZE, position.y * BLOCK_SIZE);
+
     auto vertices = new float[16] {
 
-            position.x, position.y, 0.0f, 0.0f,
-            position.x + BLOCK_SIZE, position.y, 1.0f, 0.0f,
-            position.x, position.y + BLOCK_SIZE, 0.0f, 1.0f,
-            position.x + BLOCK_SIZE, position.y + BLOCK_SIZE, 1.0f, 1.0f
+            screenPos.x, screenPos.y, 0.0f, 0.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y, 1.0f, 0.0f,
+            screenPos.x, screenPos.y + BLOCK_SIZE, 0.0f, 1.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y + BLOCK_SIZE, 1.0f, 1.0f
 
     };
 
@@ -119,4 +123,8 @@ void Block::draw() {
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
 
+}
+
+glm::vec2 Block::screenPos() {
+    return glm::vec2(position.x * BLOCK_SIZE, position.y * BLOCK_SIZE);
 }

@@ -43,11 +43,13 @@ public:
     bool isRenderable();
     glm::vec2 getPos();
 
+    glm::vec2 screenPos();
+
     void setTexture(Texture2D texture);
     void setShader(std::shared_ptr<Shader> shader);
     BlockType getType();
 
-    void setMatrix(glm::mat4 mat);
+    void setMatrix(glm::mat4 mat) override;
 
     void init() override;
     void update() override;

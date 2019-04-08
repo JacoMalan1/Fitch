@@ -23,7 +23,7 @@ Player::Player(glm::vec2 position, const char *texture_path) : position(position
     this->height = this->texture.height;
 }
 
-Player::Player(glm::vec2 position, float width, float vertexArrayheight) : position(position), width(width), height(height) {
+Player::Player(glm::vec2 position, float width, float height) : position(position), width(width), height(height) {
     this->collisionList = std::make_unique<std::vector<RigidBody*>>();
     this->velocity = glm::vec2(0, 0);
     this->acceleration = glm::vec2(0, 0);

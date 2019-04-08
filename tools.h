@@ -14,7 +14,7 @@ namespace fitchio {
     const char* loadFile(const char* file_path);
     Texture2D loadBMP(const char* image_path);
     std::vector<std::string> splitString(const std::string& str, char delim);
-    std::shared_ptr<std::vector<Block>> loadLevel(const char* file_path);
+    std::vector<Block>* loadLevel(const char* file_path);
 
 }
 

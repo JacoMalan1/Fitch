@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <cstring>
 #include "game/Block.h"
 #include "game/Player.h"
 #include "tools.h"
@@ -13,12 +14,12 @@ DebugMode debugMode = Off;
 namespace fitch {
 
     GLFWwindow* window;
-    std::shared_ptr<Player> player;
-    Texture2D TEXTURE_SOLID = Texture2D();
+    Player* player;
+    Texture2D TEXTURE_SOLID;
     Shader* blockShader;
     int levelCount = 1;
-    std::vector<std::shared_ptr<Drawable>> drawList;
-    std::shared_ptr<std::vector<Block>> blockList;
+    std::vector<Drawable*> drawList;
+    std::vector<Block>* blockList;
 
     int width, height;
 
@@ -47,17 +48,24 @@ namespace fitch {
         blockShader = new Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
         blockShader->compile();
 
-        player = std::make_shared<Player>(vec2(0, 0), "content/player.png");
+        player = new Player(vec2(0, 0), "content/player.png");
         std::string sLevel = (std::string)"content/level" + std::to_string(levelCount) + (std::string)".fl";
         blockList = fitchio::loadLevel(sLevel.c_str());
 
-        drawList.emplace_back(player);
-        for (const Block& b : *blockList)
-            drawList.emplace_back(std::make_shared<Block>(&b));
-
         TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
 
-        for (const std::shared_ptr<Drawable>& drawable : drawList)
+        drawList.push_back((Drawable*)player);
+        for (Block& b : *blockList) {
+            if (b.getType() == Solid) {
+                b.setTexture(TEXTURE_SOLID);
+            } else if (b.getType() == Start) {
+                player->setPos(glm::vec2(b.getPos()));             
+            }
+
+            drawList.emplace_back((Drawable*)&b);
+        }
+
+        for (Drawable* drawable : drawList)
             drawable->init();
 
     }
@@ -65,15 +73,19 @@ namespace fitch {
     // Gets run after the main loop stops
     void windowClosing() {
 
+        delete blockShader;
+        delete blockList;
+        delete player;
+
     }
 
     // Gets run before rendering each frame
     void updateFrame() {
 
-        player->handleInput(window);
-
-        for (const std::shared_ptr<Drawable>& drawable : drawList)
-            drawable->update();
+        // player->handleInput(window);
+        //
+        // for (Drawable* drawable : drawList)
+        //     drawable->update();
 
     }
 
@@ -95,8 +107,10 @@ namespace fitch {
 
         glBindTexture(GL_TEXTURE_2D, player->texture.ID);
 
-        for (const std::shared_ptr<Drawable>& drawable : drawList)
+        for (Drawable* drawable : drawList) {
+            drawable->setMatrix(mvp);
             drawable->draw();
+        }
 
         glfwSwapBuffers(window);
 

@@ -59,7 +59,7 @@ public:
     float getWidth() const;
     float getHeight() const;
 
-    void setMatrix(glm::mat4 mat);
+    void setMatrix(glm::mat4 mat) override;
 
     void init() override;
     void update() override;

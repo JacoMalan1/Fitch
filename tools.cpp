@@ -82,13 +82,13 @@ namespace fitchio {
 
     }
 
-    std::shared_ptr<std::vector<Block>> loadLevel(const char* file_path) {
+    std::vector<Block>* loadLevel(const char* file_path) {
 
         const char* contents = loadFile(file_path);
         std::string s_contents = contents;
         vector<string> lines = splitString(s_contents, '\n');
 
-        auto blocks = std::make_shared<std::vector<Block>>();
+        auto blocks = new std::vector<Block>();
         blocks->reserve(lines.size());
 
         for (const string& line : lines) {
