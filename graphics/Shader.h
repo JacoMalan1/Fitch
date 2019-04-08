@@ -16,6 +16,8 @@ private:
     const char* vertex_location;
     const char* fragment_location;
 
+    bool compiled = false;
+
 public:
     Shader(unsigned int id);
     Shader(const char* vertex_location, const char* fragment_location);
@@ -25,6 +27,7 @@ public:
     void compile();
     void bind() const;
     GLuint getID();
+    bool isCompiled() const;
 
 };
 

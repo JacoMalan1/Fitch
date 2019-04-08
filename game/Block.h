@@ -38,6 +38,7 @@ public:
     static int getSize();
     bool isRenderable() const;
     glm::vec2 getPos() const;
+    float* getVertices() const;
 
     glm::vec2 screenPos();
 

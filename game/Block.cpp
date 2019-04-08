@@ -104,6 +104,8 @@ void Block::draw() {
 
     GLint MatrixID = glGetUniformLocation(this->shaderProgram->getID(), "projMat");
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &drawMat[0][0]);
+    GLint GammaID = glGetUniformLocation(this->shaderProgram->getID(), "gamma");
+    glUniform1f(GammaID, 0.45f);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -115,6 +117,23 @@ void Block::draw() {
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+
+}
+
+float* Block::getVertices() const {
+
+    glm::vec2 screenPos(position.x * BLOCK_SIZE, position.y * BLOCK_SIZE);
+
+    auto vertices = new float[16] {
+
+            screenPos.x, screenPos.y, 0.0f, 0.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y, 1.0f, 0.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y + BLOCK_SIZE, 1.0f, 1.0f,
+            screenPos.x, screenPos.y + BLOCK_SIZE, 0.0f, 1.0f,
+
+    };
+
+    return vertices;
 
 }
 

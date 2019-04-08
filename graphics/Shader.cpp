@@ -69,7 +69,9 @@ void Shader::compile() {
     glDeleteShader(vshader);
     glDeleteShader(fshader);
 
-    std::cout << "Compiled shader: " << this->id << std::endl;
+    compiled = true;
+
+    // std::cout << "Compiled shader: " << this->id << std::endl;
 
 }
 
@@ -80,3 +82,5 @@ Shader::~Shader() {
 void Shader::bind() const {
     glUseProgram(this->id);
 }
+
+bool Shader::isCompiled() const { return compiled; }

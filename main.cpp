@@ -7,6 +7,7 @@
 #include "game/Block.h"
 #include "game/Player.h"
 #include "tools.h"
+#include "graphics/Mesh.h"
 
 using namespace glm;
 DebugMode debugMode = Off;
@@ -20,10 +21,14 @@ namespace fitch {
     int levelCount = 1;
     std::vector<Drawable*> drawList;
     std::vector<Block>* blockList;
+    Mesh* blockMesh;
 
     int width, height;
 
     void GLAPIENTRY glCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam ) {
+
+        if (type == GL_DEBUG_TYPE_OTHER)
+            return;
 
         std::fprintf(type == GL_DEBUG_TYPE_ERROR ? stderr : stdout, "%s: type = 0x%x, severity = 0x%x, message = %s\n",
         (type == GL_DEBUG_TYPE_ERROR ? "ERROR" : type == GL_DEBUG_TYPE_PERFORMANCE ? "PERFORMANCE" : "INFO"),
@@ -35,15 +40,17 @@ namespace fitch {
     void loadWindow() {
 
         glEnable(GL_BLEND);
-        glBlendFunc(GL_BLEND_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_MULTISAMPLE);
+
         glDepthFunc(GL_LEQUAL);
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
         if (getDebug() == Full) {
             glEnable(GL_DEBUG_OUTPUT);
             glDebugMessageCallback(glCallback, nullptr);
         }
+
+        blockMesh = new Mesh();
 
         blockShader = new Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
         blockShader->compile();
@@ -54,7 +61,9 @@ namespace fitch {
 
         TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
 
-        drawList.push_back((Drawable*)player);
+        drawList.reserve(1 + blockList->size());
+
+        drawList.emplace_back((Drawable*)player);
         for (Block& b : *blockList) {
 
             b.setShader(blockShader);
@@ -62,11 +71,18 @@ namespace fitch {
             if (b.getType() == Solid) {
                 b.setTexture(TEXTURE_SOLID);
             } else if (b.getType() == Start) {
-                player->setPos(glm::vec2(b.getPos()));             
+                player->setPos(b.screenPos() - vec2(0, player->getHeight()));
+                continue;
             }
 
-            drawList.emplace_back((Drawable*)&b);
+            blockMesh->addMeshElement(b.getVertices(), 4, 4);
+
+//            drawList.emplace_back((Drawable*)&b);
         }
+
+        blockMesh->setShader(blockShader);
+        blockMesh->setTexture(TEXTURE_SOLID);
+        drawList.emplace_back((Drawable*)blockMesh);
 
         for (Drawable* drawable : drawList)
             drawable->init();
@@ -107,8 +123,6 @@ namespace fitch {
         mvp *= projMat;
         mvp *= viewMat;
         mvp *= modelMat;
-
-        glBindTexture(GL_TEXTURE_2D, player->texture.ID);
 
         for (Drawable* drawable : drawList) {
             drawable->setMatrix(mvp);
