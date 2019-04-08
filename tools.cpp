@@ -54,8 +54,8 @@ namespace fitchio {
         glBindTexture(GL_TEXTURE_2D, textureID);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.data());
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
         return { textureID, (int)width, (int)height };
 
@@ -82,22 +82,14 @@ namespace fitchio {
 
     }
 
-    Block*** loadLevel(const char* file_path) {
+    std::vector<Block>* loadLevel(const char* file_path) {
 
         const char* contents = loadFile(file_path);
         std::string s_contents = contents;
         vector<string> lines = splitString(s_contents, '\n');
 
-        auto blocks = new Block**[LEVEL_SIZE_X];
-        for (int i = 0; i < LEVEL_SIZE_X; i++) {
-            blocks[i] = new Block*[LEVEL_SIZE_Y];
-        }
-
-        for (int i = 0; i < LEVEL_SIZE_X; i++) {
-            for (int j = 0; j < LEVEL_SIZE_Y; j++) {
-                blocks[i][j] = new Block(glm::vec2(i, j), Air);
-            }
-        }
+        auto blocks = new std::vector<Block>();
+        blocks->reserve(lines.size());
 
         for (const string& line : lines) {
 
@@ -123,9 +115,7 @@ namespace fitchio {
 
             if (type != Air) {
 
-                Block* clPtr = blocks[x][y];
-                blocks[x][y] = new Block(glm::vec2(x, y), type);
-                delete clPtr;
+                blocks->emplace_back(glm::vec2(x, y), type);
 
             }
 

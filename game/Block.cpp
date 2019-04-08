@@ -1,16 +1,14 @@
+#include <utility>
+#include <iostream>
+
 #include "Block.h"
 #include "../tools.h"
 
-Block::Block(glm::vec2 position, BlockType type) : position(position), type(type) {}
+Block::Block(glm::vec2 position, BlockType type) : position(position), type(type), drawMat(glm::mat4(1)),
+    shaderProgram(new Shader(0)) {}
 
-RigidBody* Block::asRBody() {
-
-    auto rb = new RigidBody(position.x, position.y, BLOCK_SIZE, BLOCK_SIZE, 1.0f, All);
-    return rb;
-
-}
-
-Block::Block(glm::vec2 position, BlockType type, const char* texture_path) : position(position), type(type) {
+Block::Block(glm::vec2 position, BlockType type, const char* texture_path) : position(position), type(type), drawMat(glm::mat4(1)),
+    shaderProgram(new Shader(0)) {
 
     texture = fitchio::loadBMP(texture_path);
 
@@ -22,79 +20,92 @@ int Block::getSize() {
 
 }
 
-BlockType Block::getType() {
+BlockType Block::getType() const {
     return this->type;
 }
 
-void Block::initBuffer() {
-
-    this->vertexArray = VAO::create();
-    this->vertexArray.bind();
-    this->buffer = VBO::create(GL_ARRAY_BUFFER);
-    this->buffer.bind();
-
-    this->position.x *= this->getSize();
-    this->position.y *= this->getSize();
-
-    float vertices[] = {
-            this->position.x, this->position.y, 0.0f, 0.0f,
-            this->position.x + BLOCK_SIZE, this->position.y, 1.0f, 0.0f,
-            this->position.x, this->position.y + BLOCK_SIZE, 0.0f, 1.0f,
-            this->position.x + BLOCK_SIZE, this->position.y + BLOCK_SIZE, 1.0f, 1.0f
-    };
-
-    glBufferData(this->buffer.type, sizeof(vertices), &vertices, GL_DYNAMIC_DRAW);
-
-}
-
-void Block::initShaders() {
-
-    this->shader = new Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
-    this->shader->compile();
-
-}
-
-bool Block::isRenderable() {
+bool Block::isRenderable() const {
     return !(this->type == Air || this->type == Start);
 }
 
-glm::vec2 Block::getPos() {
+glm::vec2 Block::getPos() const {
     return this->position;
 }
 
-void Block::render() {
+void Block::setTexture(Texture2D tex) {
+    this->texture = tex;
+}
 
-    this->vertexArray.bind();
-    this->buffer.bind();
-    this->texture.bind();
-    glUseProgram(this->shader->getID());
+void Block::setShader(Shader* shader) { this->shaderProgram = shader; }
 
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+std::ostream& operator<<(std::ostream& stream, BlockType type) {
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    if (type == Solid)
+        stream << (std::string)"Solid";
+    else if (type == Air)
+        stream << (std::string)"Air";
+    else if (type == Start)
+        stream << (std::string)"Start";
 
-    glDrawArrays(GL_QUADS, 0, 4);
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
+    return stream;
 
 }
 
-void Block::setTexture(Texture2D texture) {
-    this->texture = texture;
+void Block::setMatrix(glm::mat4 mat) { this->drawMat = mat; }
+
+void Block::init() {
+
+    this->vao = VAO::create();
+    this->vbo = VBO::create(GL_ARRAY_BUFFER);
+
+    glm::vec2 screenPos(position.x * BLOCK_SIZE, position.y * BLOCK_SIZE);
+
+    auto vertices = new float[16] {
+
+            screenPos.x, screenPos.y, 0.0f, 0.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y, 1.0f, 0.0f,
+            screenPos.x, screenPos.y + BLOCK_SIZE, 0.0f, 1.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y + BLOCK_SIZE, 1.0f, 1.0f
+
+    };
+
+    this->vbo.sendData(vertices, 16, GL_DYNAMIC_DRAW);
+
+    delete[] vertices;
+
 }
 
-void Block::render(const glm::mat4& projMat) {
+void Block::update() {
 
-    this->vertexArray.bind();
-    this->buffer.bind();
+    glm::vec2 screenPos(position.x * BLOCK_SIZE, position.y * BLOCK_SIZE);
+
+    auto vertices = new float[16] {
+
+            screenPos.x, screenPos.y, 0.0f, 0.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y, 1.0f, 0.0f,
+            screenPos.x, screenPos.y + BLOCK_SIZE, 0.0f, 1.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y + BLOCK_SIZE, 1.0f, 1.0f
+
+    };
+
+    this->vbo.sendData(vertices, 16, GL_DYNAMIC_DRAW);
+
+    delete[] vertices;
+
+}
+
+void Block::draw() {
+
+    this->vao.bind();
+    this->vbo.bind();
+
+    this->shaderProgram->bind();
     this->texture.bind();
-    glUseProgram(this->shader->getID());
 
-    GLint MatrixID = glGetUniformLocation(this->shader->getID(), "projMat");
-    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &projMat[0][0]);
+    GLint MatrixID = glGetUniformLocation(this->shaderProgram->getID(), "projMat");
+    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &drawMat[0][0]);
+    GLint GammaID = glGetUniformLocation(this->shaderProgram->getID(), "gamma");
+    glUniform1f(GammaID, 0.45f);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -109,33 +120,23 @@ void Block::render(const glm::mat4& projMat) {
 
 }
 
-void Block::setShader(Shader* shader) { this->shader = shader; }
+float* Block::getVertices() const {
 
-void Block::resendBuffer() {
+    glm::vec2 screenPos(position.x * BLOCK_SIZE, position.y * BLOCK_SIZE);
 
-    this->vertexArray.bind();
-    this->buffer.bind();
+    auto vertices = new float[16] {
 
-    float vertices[] = {
-            this->position.x, this->position.y, 0.0f, 0.0f,
-            this->position.x + BLOCK_SIZE, this->position.y, 1.0f, 0.0f,
-            this->position.x, this->position.y + BLOCK_SIZE, 0.0f, 1.0f,
-            this->position.x + BLOCK_SIZE, this->position.y + BLOCK_SIZE, 1.0f, 1.0f
+            screenPos.x, screenPos.y, 0.0f, 0.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y, 1.0f, 0.0f,
+            screenPos.x + BLOCK_SIZE, screenPos.y + BLOCK_SIZE, 1.0f, 1.0f,
+            screenPos.x, screenPos.y + BLOCK_SIZE, 0.0f, 1.0f,
+
     };
 
-    glBufferSubData(this->buffer.type, 0, sizeof(vertices), &vertices);
+    return vertices;
 
 }
 
-std::ostream& operator<<(std::ostream& stream, BlockType type) {
-
-    if (type == Solid)
-        stream << (std::string)"Solid";
-    else if (type == Air)
-        stream << (std::string)"Air";
-    else if (type == Start)
-        stream << (std::string)"Start";
-
-    return stream;
-
+glm::vec2 Block::screenPos() {
+    return glm::vec2(position.x * BLOCK_SIZE, position.y * BLOCK_SIZE);
 }

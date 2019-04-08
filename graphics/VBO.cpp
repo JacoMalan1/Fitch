@@ -19,3 +19,20 @@ VBO VBO::create(GLenum type) {
 void VBO::bind() {
     glBindBuffer(this->type, this->id);
 }
+
+void VBO::sendData(float* data, int elems, GLenum drawType) {
+
+    this->bind();
+
+    if (!sent) {
+
+        glBufferData(this->type, sizeof(float) * elems, data, drawType);
+
+    } else {
+
+        glBufferSubData(this->type, 0, sizeof(float) * elems, data);
+
+    }
+
+
+}

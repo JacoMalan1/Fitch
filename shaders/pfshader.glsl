@@ -9,8 +9,4 @@ void main() {
 
     fragcolor = texture(texSampler, texCoord);
 
-    if (fragcolor.a == 0) {
-        discard;
-    }
-
 }

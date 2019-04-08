@@ -3,9 +3,11 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <cstring>
 #include "game/Block.h"
 #include "game/Player.h"
 #include "tools.h"
+#include "graphics/Mesh.h"
 
 using namespace glm;
 DebugMode debugMode = Off;
@@ -13,16 +15,20 @@ DebugMode debugMode = Off;
 namespace fitch {
 
     GLFWwindow* window;
-    std::unique_ptr<Player> player;
-    Block*** level;
+    Player* player;
     Texture2D TEXTURE_SOLID;
-    std::unique_ptr<std::vector<Block*>> levelMesh;
     Shader* blockShader;
-    int levelCount = 3;
+    int levelCount = 1;
+    std::vector<Drawable*> drawList;
+    std::vector<Block>* blockList;
+    Mesh* blockMesh;
 
     int width, height;
 
     void GLAPIENTRY glCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam ) {
+
+        if (type == GL_DEBUG_TYPE_OTHER)
+            return;
 
         std::fprintf(type == GL_DEBUG_TYPE_ERROR ? stderr : stdout, "%s: type = 0x%x, severity = 0x%x, message = %s\n",
         (type == GL_DEBUG_TYPE_ERROR ? "ERROR" : type == GL_DEBUG_TYPE_PERFORMANCE ? "PERFORMANCE" : "INFO"),
@@ -34,65 +40,71 @@ namespace fitch {
     void loadWindow() {
 
         glEnable(GL_BLEND);
-        glBlendFunc(GL_BLEND_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_DEPTH_TEST);
+
         glDepthFunc(GL_LEQUAL);
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
         if (getDebug() == Full) {
             glEnable(GL_DEBUG_OUTPUT);
             glDebugMessageCallback(glCallback, nullptr);
         }
 
+        blockMesh = new Mesh();
+
         blockShader = new Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
         blockShader->compile();
 
-        player = std::make_unique<Player>(vec2(0, 0), "content/player.png");
+        player = new Player(vec2(0, 0), "content/player.png");
         std::string sLevel = (std::string)"content/level" + std::to_string(levelCount) + (std::string)".fl";
-        level = fitchio::loadLevel(sLevel.c_str());
-        levelMesh = std::make_unique<std::vector<Block*>>();
+        blockList = fitchio::loadLevel(sLevel.c_str());
 
         TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
 
-        for (int x = 0; x < LEVEL_SIZE_X; x++) {
-            for (int y = 0; y < LEVEL_SIZE_Y; y++) {
+        drawList.reserve(1 + blockList->size());
 
-                if (level[x][y]->isRenderable()) {
+        drawList.emplace_back((Drawable*)player);
+        for (Block& b : *blockList) {
 
-                    level[x][y]->setShader(blockShader); // Set shader to pre-compiled shader to save load time.
-                    level[x][y]->initBuffer();
-                    level[x][y]->setTexture(TEXTURE_SOLID);
-                    player->collideWith(level[x][y]->asRBody());
-                    levelMesh->emplace_back(level[x][y]);
+            b.setShader(blockShader);
 
-                }
-
-                if (level[x][y]->getType() == Start)
-                    player->setPos(glm::vec2(x * BLOCK_SIZE, y * BLOCK_SIZE));
-
+            if (b.getType() == Solid) {
+                b.setTexture(TEXTURE_SOLID);
+            } else if (b.getType() == Start) {
+                player->setPos(b.screenPos() - vec2(0, player->getHeight()));
+                continue;
             }
+
+            blockMesh->addMeshElement(b.getVertices(), 4, 4);
+
+//            drawList.emplace_back((Drawable*)&b);
         }
 
-        player->initAll();
+        blockMesh->setShader(blockShader);
+        blockMesh->setTexture(TEXTURE_SOLID);
+        drawList.emplace_back((Drawable*)blockMesh);
+
+        for (Drawable* drawable : drawList)
+            drawable->init();
 
     }
 
     // Gets run after the main loop stops
     void windowClosing() {
 
-        for (int i = 0; i < LEVEL_SIZE_X; i++) {
-            delete[] level[i];
-        }
-
-        delete[] level;
         delete blockShader;
+        delete blockList;
+        delete player;
 
     }
 
     // Gets run before rendering each frame
     void updateFrame() {
 
-        player->handleInput(window);
-        player->update(level, true);
+        // player->handleInput(window);
+        //
+        // for (Drawable* drawable : drawList)
+        //     drawable->update();
 
     }
 
@@ -112,11 +124,9 @@ namespace fitch {
         mvp *= viewMat;
         mvp *= modelMat;
 
-        glBindTexture(GL_TEXTURE_2D, player->texture.ID);
-        player->render(mvp);
-
-        for (int i = 0; i < (int)levelMesh->size(); i++) {
-            (*levelMesh)[i]->render(mvp);
+        for (Drawable* drawable : drawList) {
+            drawable->setMatrix(mvp);
+            drawable->draw();
         }
 
         glfwSwapBuffers(window);
