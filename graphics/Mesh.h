@@ -35,6 +35,7 @@ public:
 
     void setTexture(Texture2D tex);
     void setMatrix(glm::mat4 mat) override;
+    void addMeshElement(std::shared_ptr<float[]> data, int count, int size);
     void addMeshElement(float* data, int count, int size);
     void setShader(Shader* shader);
 

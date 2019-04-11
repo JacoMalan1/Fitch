@@ -1,11 +1,15 @@
 #include "Mesh.h"
 
-Mesh::Mesh() : drawMat(glm::mat4(1)), shaderProgram(new Shader(0)), texture(Texture2D(0, 0, 0)) {
+Mesh::Mesh() : drawMat(glm::mat4(1)), shaderProgram(nullptr), texture(Texture2D(0, 0, 0)) {
 
 }
 
 void Mesh::setTexture(Texture2D tex) {
     this->texture = tex;
+}
+
+void Mesh::addMeshElement(std::shared_ptr<float[]> data, int count, int size) {
+    addMeshElement(&data[0], count, size);
 }
 
 void Mesh::addMeshElement(float* data, int count, int size) {

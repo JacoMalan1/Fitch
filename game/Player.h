@@ -5,10 +5,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <memory>
+#include <Box2D/Dynamics/b2Body.h>
 #include "../graphics/Drawable.h"
 #include "../graphics/Texture2D.h"
 #include "../graphics/VAO.h"
 #include "../graphics/VBO.h"
+#include "PhysicsObject.h"
 #include "../main.h"
 
 enum Direction {
@@ -16,7 +18,7 @@ enum Direction {
     Right = 1
 };
 
-class Player : Drawable {
+class Player : Drawable, PhysicsObject {
 
 private:
     glm::vec2 position;
@@ -32,11 +34,12 @@ private:
 
     glm::mat4 drawMat{};
 
+    b2Body* physicsBody;
+
 public:
 
     Player(glm::vec2 position, const char* texture_path);
     Player(const Player& other);
-    ~Player();
 
     void handleInput(GLFWwindow* window);
     void setPos(glm::vec2 pos);
@@ -48,6 +51,10 @@ public:
     float getHeight() const;
 
     void setMatrix(glm::mat4 mat) override;
+
+    b2Body* getBody() const;
+    void setBody(b2Body* body);
+    void initPhysics(b2World* world) override;
 
     void init() override;
     void update() override;

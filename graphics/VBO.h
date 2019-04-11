@@ -7,6 +7,7 @@
 
 
 #include <GL/glew.h>
+#include <memory>
 
 struct VBO {
 
@@ -21,6 +22,7 @@ public:
     VBO();
     static VBO create(GLenum type);
     void bind();
+    void sendData(std::shared_ptr<float[]> data, int elems, GLenum drawType);
     void sendData(float* data, int elems, GLenum drawType);
 
 };

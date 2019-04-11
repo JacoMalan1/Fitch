@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cstring>
+#include <Box2D/Box2D.h>
 #include "game/Block.h"
 #include "game/Player.h"
 #include "tools.h"
@@ -22,6 +23,8 @@ namespace fitch {
     std::vector<Drawable*> drawList;
     std::vector<Block>* blockList;
     Mesh* blockMesh;
+    b2Vec2 gravity;
+    b2World* world;
 
     int width, height;
 
@@ -51,14 +54,19 @@ namespace fitch {
         }
 
         blockMesh = new Mesh();
+        gravity = b2Vec2(0.0f, -2.0f);
+        world = new b2World(gravity);
 
+        // Load and compile the shader for textured rectangles.
         blockShader = new Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
         blockShader->compile();
 
+        // Initialize player object.
         player = new Player(vec2(0, 0), "content/player.png");
         std::string sLevel = (std::string)"content/level" + std::to_string(levelCount) + (std::string)".fl";
         blockList = fitchio::loadLevel(sLevel.c_str());
 
+        // Pre-load solid.png
         TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
 
         drawList.reserve(1 + blockList->size());
@@ -77,7 +85,6 @@ namespace fitch {
 
             blockMesh->addMeshElement(b.getVertices(), 4, 4);
 
-//            drawList.emplace_back((Drawable*)&b);
         }
 
         blockMesh->setShader(blockShader);

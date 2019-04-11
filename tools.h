@@ -19,4 +19,11 @@ namespace fitchio {
 
 }
 
+namespace fitchtools {
+
+    float pixToWorld(float pix);
+    float worldToPix(float world);
+
+}
+
 #endif //FITCH_TOOLS_H

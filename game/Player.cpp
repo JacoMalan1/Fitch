@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 #include "Player.h"
 #include "../tools.h"
 #include "../main.h"
@@ -34,7 +35,20 @@ void Player::setMatrix(glm::mat4 mat) {
     this->drawMat = mat;
 }
 
-Player::~Player() = default;
+b2Body* Player::getBody() const { return physicsBody; }
+void Player::setBody(b2Body *body) { physicsBody = body; }
+
+void Player::initPhysics(b2World* world) {
+
+    b2BodyDef bodyDef;
+    bodyDef.position.Set(position.x, position.y);
+    physicsBody = world->CreateBody(&bodyDef);
+
+    b2PolygonShape box;
+    box.SetAsBox(this->width, this->height);
+    physicsBody->CreateFixture(&box, 0.0f);
+
+}
 
 void Player::init() {
 
@@ -45,30 +59,32 @@ void Player::init() {
     this->shaderProgram = std::make_shared<Shader>("shaders/pvshader.glsl", "shaders/pfshader.glsl");
     this->shaderProgram->compile();
 
-    auto vertices = new float[16] {
+    std::shared_ptr<float[]> vertices(new float[16] {
 
             position.x, position.y, 0.0f, 0.0f,
             position.x + width, position.y, 1.0f, 0.0f,
             position.x, position.y + height, 0.0f, 1.0f,
             position.x + width, position.y + height, 1.0f, 1.0f
 
-    };
+    });
 
     this->vbo.sendData(vertices, 16, GL_DYNAMIC_DRAW);
-    delete[] vertices;
 
 }
 
 void Player::update() {
 
-    float vertices[] = {
+    b2Vec2 bPos = physicsBody->GetPosition();
+    position = glm::vec2(bPos.x, bPos.y);
+
+    std::shared_ptr<float[]> vertices(new float[16] {
 
             position.x, position.y, 0.0f, 0.0f,
             position.x + width, position.y, 1.0f, 0.0f,
             position.x, position.y + height, 0.0f, 1.0f,
             position.x + width, position.y + height, 1.0f, 1.0f
 
-    };
+    });
 
     this->vbo.sendData(vertices, 16, GL_DYNAMIC_DRAW);
 

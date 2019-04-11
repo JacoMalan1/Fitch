@@ -5,10 +5,10 @@
 #include "../tools.h"
 
 Block::Block(glm::vec2 position, BlockType type) : position(position), type(type), drawMat(glm::mat4(1)),
-    shaderProgram(new Shader(0)) {}
+    shaderProgram(nullptr) {}
 
 Block::Block(glm::vec2 position, BlockType type, const char* texture_path) : position(position), type(type), drawMat(glm::mat4(1)),
-    shaderProgram(new Shader(0)) {
+    shaderProgram(nullptr) {
 
     texture = fitchio::loadBMP(texture_path);
 
@@ -120,18 +120,18 @@ void Block::draw() {
 
 }
 
-float* Block::getVertices() const {
+std::shared_ptr<float[]> Block::getVertices() const {
 
     glm::vec2 screenPos(position.x * BLOCK_SIZE, position.y * BLOCK_SIZE);
 
-    auto vertices = new float[16] {
+    std::shared_ptr<float[]> vertices(new float[16] {
 
             screenPos.x, screenPos.y, 0.0f, 0.0f,
             screenPos.x + BLOCK_SIZE, screenPos.y, 1.0f, 0.0f,
             screenPos.x + BLOCK_SIZE, screenPos.y + BLOCK_SIZE, 1.0f, 1.0f,
             screenPos.x, screenPos.y + BLOCK_SIZE, 0.0f, 1.0f,
 
-    };
+    });
 
     return vertices;
 

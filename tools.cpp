@@ -11,7 +11,7 @@ using namespace std;
 
 namespace fitchio {
 
-    const char * loadFile(const char *file_path) {
+    const char* loadFile(const char *file_path) {
 
         std::ifstream fs(file_path);
 
@@ -86,6 +86,7 @@ namespace fitchio {
 
         const char* contents = loadFile(file_path);
         std::string s_contents = contents;
+        delete[] contents;
         vector<string> lines = splitString(s_contents, '\n');
 
         auto blocks = new std::vector<Block>();
@@ -124,5 +125,17 @@ namespace fitchio {
         return blocks;
 
     }
+
+}
+
+float fitchtools::pixToWorld(float pix) {
+
+
+
+}
+
+float fitchtools::worldToPix(float world) {
+
+
 
 }

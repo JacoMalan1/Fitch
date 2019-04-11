@@ -46,8 +46,8 @@ void Shader::compile() {
     GLuint vshader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
 
-    const char* vss = fitchio::loadFile(this->vertex_location);
-    const char* fss = fitchio::loadFile(this->fragment_location);
+    auto vss = fitchio::loadFile(this->vertex_location);
+    auto fss = fitchio::loadFile(this->fragment_location);
 
     glShaderSource(vshader, 1, &vss, nullptr);
     glShaderSource(fshader, 1, &fss, nullptr);

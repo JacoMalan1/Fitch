@@ -20,6 +20,12 @@ void VBO::bind() {
     glBindBuffer(this->type, this->id);
 }
 
+void VBO::sendData(std::shared_ptr<float[]> data, int elems, GLenum drawType) {
+
+    sendData(&data[0], elems, drawType);
+
+}
+
 void VBO::sendData(float* data, int elems, GLenum drawType) {
 
     this->bind();
