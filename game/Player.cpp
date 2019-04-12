@@ -20,13 +20,18 @@ Player::Player(glm::vec2 position, const char *texture_path) : position(position
 
 void Player::setPos(glm::vec2 pos) {
     this->position = pos;
+    this->physicsBody->SetTransform(fitchtools::pixToWorld(this->position), 0);
 }
 
 glm::vec2 Player::getPos() const {
     return this->position;
 }
 
-void Player::handleInput(GLFWwindow* const window) {}
+void Player::handleInput(GLFWwindow* const window) {
+
+
+
+}
 
 float Player::getWidth() const { return this->width; }
 float Player::getHeight() const { return this->height; }
@@ -40,13 +45,20 @@ void Player::setBody(b2Body *body) { physicsBody = body; }
 
 void Player::initPhysics(b2World* world) {
 
+    using namespace fitchtools;
+
     b2BodyDef bodyDef;
-    bodyDef.position.Set(position.x, position.y);
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position = pixToWorld(this->position);
     physicsBody = world->CreateBody(&bodyDef);
 
     b2PolygonShape box;
-    box.SetAsBox(this->width, this->height);
-    physicsBody->CreateFixture(&box, 0.0f);
+    box.SetAsBox(pixToWorld(this->width), pixToWorld(this->height));
+
+    b2FixtureDef fd;
+    fd.shape = &box;
+    fd.density = 0.1f;
+    physicsBody->CreateFixture(&fd);
 
 }
 
@@ -74,8 +86,10 @@ void Player::init() {
 
 void Player::update() {
 
+    using namespace fitchtools;
+
     b2Vec2 bPos = physicsBody->GetPosition();
-    position = glm::vec2(bPos.x, bPos.y);
+    position = worldToPix(bPos);
 
     std::shared_ptr<float[]> vertices(new float[16] {
 

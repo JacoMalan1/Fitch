@@ -9,6 +9,8 @@
 
 using namespace std;
 
+#define SCALING_FACTOR 10
+
 namespace fitchio {
 
     const char* loadFile(const char *file_path) {
@@ -129,13 +131,17 @@ namespace fitchio {
 }
 
 float fitchtools::pixToWorld(float pix) {
-
-
-
+    return pix / SCALING_FACTOR;
 }
 
 float fitchtools::worldToPix(float world) {
+    return world * SCALING_FACTOR;
+}
 
+b2Vec2 fitchtools::pixToWorld(glm::vec2 pix) {
+    return b2Vec2(fitchtools::pixToWorld(pix.x), fitchtools::pixToWorld(pix.y));
+}
 
-
+glm::vec2 fitchtools::worldToPix(b2Vec2 world) {
+    return glm::vec2(fitchtools::worldToPix(world.x), fitchtools::worldToPix(world.y));
 }

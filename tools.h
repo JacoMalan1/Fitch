@@ -1,12 +1,9 @@
-//
-// Created by jacom on 2018/08/22.
-//
-
 #ifndef FITCH_TOOLS_H
 #define FITCH_TOOLS_H
 
 #include <string>
 #include <vector>
+#include <Box2D/Box2D.h>
 #include "graphics/Texture2D.h"
 #include "game/Block.h"
 
@@ -23,6 +20,8 @@ namespace fitchtools {
 
     float pixToWorld(float pix);
     float worldToPix(float world);
+    glm::vec2 worldToPix(b2Vec2 world);
+    b2Vec2 pixToWorld(glm::vec2 pix);
 
 }
 

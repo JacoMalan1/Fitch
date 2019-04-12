@@ -9,6 +9,9 @@
 #include "game/Player.h"
 #include "tools.h"
 #include "graphics/Mesh.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 using namespace glm;
 DebugMode debugMode = Off;
@@ -25,6 +28,8 @@ namespace fitch {
     Mesh* blockMesh;
     b2Vec2 gravity;
     b2World* world;
+
+    float timeStep = 1.0f / 60.0f;
 
     int width, height;
 
@@ -54,7 +59,7 @@ namespace fitch {
         }
 
         blockMesh = new Mesh();
-        gravity = b2Vec2(0.0f, -2.0f);
+        gravity = b2Vec2(0.0f, 2.0f);
         world = new b2World(gravity);
 
         // Load and compile the shader for textured rectangles.
@@ -63,6 +68,7 @@ namespace fitch {
 
         // Initialize player object.
         player = new Player(vec2(0, 0), "content/player.png");
+        player->initPhysics(world);
         std::string sLevel = (std::string)"content/level" + std::to_string(levelCount) + (std::string)".fl";
         blockList = fitchio::loadLevel(sLevel.c_str());
 
@@ -108,15 +114,34 @@ namespace fitch {
     // Gets run before rendering each frame
     void updateFrame() {
 
-        // player->handleInput(window);
-        //
-        // for (Drawable* drawable : drawList)
-        //     drawable->update();
+        for (Drawable* drawable : drawList)
+            drawable->update();
+
+        world->Step(timeStep, 6, 6);
 
     }
 
     // Renders the current frame
     void renderFrame() {
+
+        ImGui_ImplGlfw_NewFrame();
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui::NewFrame();
+
+        std::string posX = "Player X: " + std::to_string(player->getPos().x);
+        std::string posY = "Player Y: " + std::to_string(player->getPos().y);
+
+
+        ImGui::Begin("", nullptr, ImVec2(400, 400), 0.9f,
+            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBringToFrontOnFocus |
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar);
+
+        ImGui::Text(posX.c_str());
+        ImGui::Text(posY.c_str());
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+        ImGui::End();
 
         glClearColor(100.0f / 255, 149.0f / 255, 237.0f / 255, 1.0f);
         glClearDepth(1.0f);
@@ -126,6 +151,9 @@ namespace fitch {
         projMat = translate(projMat, vec3(-player->getPos() + vec2(width / 2, height / 2) - vec2(player->getWidth() / 2, player->getHeight() / 2), 0.0f));
         mat4 viewMat(1);
         mat4 mvp(1);
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         mvp *= projMat;
         mvp *= viewMat;
@@ -159,6 +187,14 @@ namespace fitch {
         window = glfwCreateWindow(width, height, "Fitch", nullptr, nullptr);
 
         glfwMakeContextCurrent(window);
+        glfwSwapInterval(1);
+
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+        ImGui::StyleColorsDark();
+        ImGui_ImplGlfw_InitForOpenGL(window, false);
+        ImGui_ImplOpenGL3_Init("#version 330");
 
         if (glewInit() != 0) {
             std::fprintf(stderr, "%s\n", "GLEW initialization failed!");
