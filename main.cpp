@@ -73,7 +73,7 @@ namespace fitch {
         blockList = fitchio::loadLevel(sLevel.c_str());
 
         // Pre-load solid.png
-        TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
+        TEXTURE_SOLID = fitchio::loadBMP("cd content/solid.png");
 
         drawList.reserve(1 + blockList->size());
 
@@ -132,12 +132,10 @@ namespace fitch {
         std::string posY = "Player Y: " + std::to_string(player->getPos().y);
 
 
-        ImGui::Begin("", nullptr, ImVec2(400, 400), 0.9f,
-            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBringToFrontOnFocus |
-            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar);
+        ImGui::Begin("Debug", nullptr, ImVec2(400, 400), 0.9f, ImGuiWindowFlags_MenuBar);
 
-        ImGui::Text(posX.c_str());
-        ImGui::Text(posY.c_str());
+        ImGui::Text("%s\n", posX.c_str());
+        ImGui::Text("%s\n", posY.c_str());
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
