@@ -73,7 +73,7 @@ namespace fitch {
         blockList = fitchio::loadLevel(sLevel.c_str());
 
         // Pre-load solid.png
-        TEXTURE_SOLID = fitchio::loadBMP("cd content/solid.png");
+        TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
 
         drawList.reserve(1 + blockList->size());
 
