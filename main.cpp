@@ -124,8 +124,8 @@ namespace fitch {
     // Renders the current frame
     void renderFrame() {
 
+	ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
-        ImGui_ImplOpenGL3_NewFrame();
         ImGui::NewFrame();
 
         std::string posX = "Player X: " + std::to_string(player->getPos().x);
@@ -188,7 +188,7 @@ namespace fitch {
         glfwSwapInterval(1);
 
         ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        ImGuiIO& io = ImGui::GetIO();
 
         ImGui::StyleColorsDark();
         ImGui_ImplGlfw_InitForOpenGL(window, false);
