@@ -24,6 +24,7 @@ namespace fitch {
     Shader* blockShader;
     int levelCount = 1;
     std::vector<Drawable*> drawList;
+    std::vector<PhysicsObject*> physicsList;
     std::vector<Block>* blockList;
     Mesh* blockMesh;
     b2Vec2 gravity;
@@ -32,6 +33,10 @@ namespace fitch {
     float timeStep = 1.0f / 60.0f;
 
     int width, height;
+
+    glm::vec2 getWindowDims() {
+        return glm::vec2(width, height);
+    }
 
     void GLAPIENTRY glCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam ) {
 
@@ -76,6 +81,7 @@ namespace fitch {
         TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
 
         drawList.reserve(1 + blockList->size());
+        physicsList.reserve(1 + blockList->size());
 
         drawList.emplace_back((Drawable*)player);
         for (Block& b : *blockList) {
@@ -85,11 +91,12 @@ namespace fitch {
             if (b.getType() == Solid) {
                 b.setTexture(TEXTURE_SOLID);
             } else if (b.getType() == Start) {
-                player->setPos(b.screenPos() - vec2(0, player->getHeight()));
+                player->setPos(b.screenPos() - vec2(0, player->getHeight() + 100));
                 continue;
             }
 
             blockMesh->addMeshElement(b.getVertices(), 4, 4);
+            physicsList.emplace_back((PhysicsObject*)&b);
 
         }
 
@@ -99,6 +106,9 @@ namespace fitch {
 
         for (Drawable* drawable : drawList)
             drawable->init();
+
+        for (PhysicsObject* body : physicsList)
+            body->initPhysics(world);
 
     }
 
@@ -131,11 +141,15 @@ namespace fitch {
         std::string posX = "Player X: " + std::to_string(player->getPos().x);
         std::string posY = "Player Y: " + std::to_string(player->getPos().y);
 
+        std::string bPosX = "Block X: " + std::to_string((*blockList)[0].screenPos().x);
+        std::string bPosY = "Block Y: " + std::to_string((*blockList)[0].screenPos().y);
 
         ImGui::Begin("Debug", nullptr, ImVec2(400, 400), 0.9f, ImGuiWindowFlags_MenuBar);
 
         ImGui::Text("%s\n", posX.c_str());
         ImGui::Text("%s\n", posY.c_str());
+        ImGui::Text("%s\n", bPosX.c_str());
+        ImGui::Text("%s\n", bPosY.c_str());
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 

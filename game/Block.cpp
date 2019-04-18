@@ -140,3 +140,31 @@ std::shared_ptr<float[]> Block::getVertices() const {
 glm::vec2 Block::screenPos() {
     return glm::vec2(position.x * BLOCK_SIZE, position.y * BLOCK_SIZE);
 }
+
+void Block::initPhysics(b2World* world) {
+
+    using namespace fitchtools;
+
+    glm::vec2 pos = screenPos();
+
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_staticBody;
+    bodyDef.position = pixToWorld(pos + glm::vec2(BLOCK_SIZE / 2, BLOCK_SIZE / 2));
+    physicsBody = world->CreateBody(&bodyDef);
+
+    b2PolygonShape box;
+    box.SetAsBox(pixToWorld(BLOCK_SIZE), pixToWorld(BLOCK_SIZE));
+
+    b2FixtureDef fd;
+    fd.shape = &box;
+    physicsBody->CreateFixture(&fd);
+
+    physicsWorld = world;
+
+}
+
+Block::~Block() {
+
+    physicsWorld->DestroyBody(physicsBody);
+
+}

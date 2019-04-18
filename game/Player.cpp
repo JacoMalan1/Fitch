@@ -49,7 +49,7 @@ void Player::initPhysics(b2World* world) {
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-    bodyDef.position = pixToWorld(this->position);
+    bodyDef.position = pixToWorld(this->position + glm::vec2(this->width / 2, this->height / 2));
     physicsBody = world->CreateBody(&bodyDef);
 
     b2PolygonShape box;
@@ -57,8 +57,10 @@ void Player::initPhysics(b2World* world) {
 
     b2FixtureDef fd;
     fd.shape = &box;
-    fd.density = 0.1f;
+    fd.density = 1.0f;
     physicsBody->CreateFixture(&fd);
+
+    physicsWorld = world;
 
 }
 
@@ -89,7 +91,7 @@ void Player::update() {
     using namespace fitchtools;
 
     b2Vec2 bPos = physicsBody->GetPosition();
-    position = worldToPix(bPos);
+    position = worldToPix(bPos) + glm::vec2(width / 2, height / 2);
 
     std::shared_ptr<float[]> vertices(new float[16] {
 
@@ -124,5 +126,11 @@ void Player::draw() {
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+
+}
+
+Player::~Player() {
+
+    physicsWorld->DestroyBody(physicsBody);
 
 }

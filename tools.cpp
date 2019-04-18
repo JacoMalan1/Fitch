@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define SCALING_FACTOR 10
+#define SCALING_FACTOR 100
 
 namespace fitchio {
 

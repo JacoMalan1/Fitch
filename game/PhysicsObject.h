@@ -5,6 +5,7 @@
 
 class PhysicsObject {
 
+public:
     virtual void initPhysics(b2World* world) = 0;
 
 };

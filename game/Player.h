@@ -35,6 +35,7 @@ private:
     glm::mat4 drawMat{};
 
     b2Body* physicsBody;
+    b2World* physicsWorld;
 
 public:
 
@@ -59,6 +60,8 @@ public:
     void init() override;
     void update() override;
     void draw() override;
+
+    ~Player();
 
 };
 

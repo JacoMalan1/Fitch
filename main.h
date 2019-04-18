@@ -8,6 +8,7 @@
 #define LEVEL_SIZE_X 250
 #define LEVEL_SIZE_Y 50
 
+#include <glm/glm.hpp>
 #include "game/Block.h"
 
 enum DebugMode {
@@ -19,6 +20,7 @@ namespace fitch {
 
     DebugMode getDebug();
     void renderFrame();
+    glm::vec2 getWindowDims();
 
 }
 
