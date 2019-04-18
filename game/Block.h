@@ -1,6 +1,7 @@
-#define BLOCK_SIZE 50
 #ifndef BLOCK_H
 #define BLOCK_H
+
+#define BLOCK_SIZE 50
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -60,8 +61,6 @@ public:
     void init() override;
     void update() override;
     void draw() override;
-
-    ~Block();
 
 };
 

@@ -22,7 +22,7 @@ namespace fitch {
     Player* player;
     Texture2D TEXTURE_SOLID;
     Shader* blockShader;
-    int levelCount = 1;
+    int levelCount = 3;
     std::vector<Drawable*> drawList;
     std::vector<PhysicsObject*> physicsList;
     std::vector<Block>* blockList;
@@ -33,6 +33,8 @@ namespace fitch {
     float timeStep = 1.0f / 60.0f;
 
     int width, height;
+
+    bool showDebugWindow = true;
 
     glm::vec2 getWindowDims() {
         return glm::vec2(width, height);
@@ -121,6 +123,16 @@ namespace fitch {
 
     }
 
+    void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+
+        if (key == GLFW_KEY_F12 && action == GLFW_PRESS) {
+            showDebugWindow = !showDebugWindow;
+        } else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+            player->getBody()->ApplyLinearImpulse(b2Vec2(0, -0.03), player->getBody()->GetWorldCenter(), true);
+        }
+
+    }
+
     // Gets run before rendering each frame
     void updateFrame() {
 
@@ -129,43 +141,53 @@ namespace fitch {
 
         world->Step(timeStep, 6, 6);
 
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        player->getBody()->ApplyForce(b2Vec2(0.5, 0), player->getBody()->GetWorldCenter(), true);
+    } else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        player->getBody()->ApplyForce(b2Vec2(-0.5, 0), player->getBody()->GetWorldCenter(), true);
+    }
+
     }
 
     // Renders the current frame
     void renderFrame() {
 
-	ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        std::string posX = "Player X: " + std::to_string(player->getPos().x);
-        std::string posY = "Player Y: " + std::to_string(player->getPos().y);
-
-        std::string bPosX = "Block X: " + std::to_string((*blockList)[0].screenPos().x);
-        std::string bPosY = "Block Y: " + std::to_string((*blockList)[0].screenPos().y);
-
-        ImGui::Begin("Debug", nullptr, ImVec2(400, 400), 0.9f, ImGuiWindowFlags_MenuBar);
-
-        ImGui::Text("%s\n", posX.c_str());
-        ImGui::Text("%s\n", posY.c_str());
-        ImGui::Text("%s\n", bPosX.c_str());
-        ImGui::Text("%s\n", bPosY.c_str());
-
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
-        ImGui::End();
-
         glClearColor(100.0f / 255, 149.0f / 255, 237.0f / 255, 1.0f);
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        if (showDebugWindow) {
+    	    ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            std::string posX = "Player X: " + std::to_string(player->getPos().x);
+            std::string posY = "Player Y: " + std::to_string(player->getPos().y);
+
+            std::string bPosX = "Velocity X: " + std::to_string(player->getBody()->GetLinearVelocity().x);
+            std::string bPosY = "Velocity Y: " + std::to_string(player->getBody()->GetLinearVelocity().y);
+
+            ImGui::Begin("Debug", nullptr, ImVec2(400, 400), 0.9f, ImGuiWindowFlags_MenuBar);
+
+            ImGui::Text("%s\n", posX.c_str());
+            ImGui::Text("%s\n", posY.c_str());
+            ImGui::Text("%s\n", bPosX.c_str());
+            ImGui::Text("%s\n", bPosY.c_str());
+
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+            ImGui::End();
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        }
+
         mat4 projMat = ortho(0.0f, (float)width, (float)height, 0.0f);
         mat4 modelMat = mat4(1);
         projMat = translate(projMat, vec3(-player->getPos() + vec2(width / 2, height / 2) - vec2(player->getWidth() / 2, player->getHeight() / 2), 0.0f));
         mat4 viewMat(1);
         mat4 mvp(1);
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         mvp *= projMat;
         mvp *= viewMat;
@@ -219,6 +241,7 @@ namespace fitch {
         double fps = 120;
         double maxPeriod = 1 / fps;
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+        glfwSetKeyCallback(window, keyCallback);
 
         // Start main game loop
         while (!glfwWindowShouldClose(window) && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS) {

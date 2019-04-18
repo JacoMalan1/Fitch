@@ -49,15 +49,19 @@ void Player::initPhysics(b2World* world) {
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-    bodyDef.position = pixToWorld(this->position + glm::vec2(this->width / 2, this->height / 2));
+    bodyDef.position = pixToWorld(this->position);
     physicsBody = world->CreateBody(&bodyDef);
+    physicsBody->SetFixedRotation(true);
+    physicsBody->SetSleepingAllowed(false);
 
     b2PolygonShape box;
-    box.SetAsBox(pixToWorld(this->width), pixToWorld(this->height));
+    box.SetAsBox(pixToWorld(this->width / 2), pixToWorld(this->height / 2));
 
     b2FixtureDef fd;
     fd.shape = &box;
     fd.density = 1.0f;
+    fd.friction = 0.1f;
+    fd.restitution = 0.0f;
     physicsBody->CreateFixture(&fd);
 
     physicsWorld = world;
@@ -91,7 +95,11 @@ void Player::update() {
     using namespace fitchtools;
 
     b2Vec2 bPos = physicsBody->GetPosition();
-    position = worldToPix(bPos) + glm::vec2(width / 2, height / 2);
+    position = worldToPix(bPos);
+    float maxVel = 1.0f;
+    b2Vec2 vel = physicsBody->GetLinearVelocity();
+    if (vel.Length() > maxVel)
+        physicsBody->SetLinearVelocity((maxVel / vel.Length()) * vel);
 
     std::shared_ptr<float[]> vertices(new float[16] {
 
@@ -126,11 +134,5 @@ void Player::draw() {
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
-
-}
-
-Player::~Player() {
-
-    physicsWorld->DestroyBody(physicsBody);
 
 }

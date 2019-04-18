@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define SCALING_FACTOR 100
+#define SCALING_FACTOR 400
 
 namespace fitchio {
 
@@ -95,6 +95,9 @@ namespace fitchio {
         blocks->reserve(lines.size());
 
         for (const string& line : lines) {
+
+            if (line == "")
+                continue;
 
             vector<string> params = splitString(line, ',');
 

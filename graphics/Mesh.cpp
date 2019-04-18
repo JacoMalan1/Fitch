@@ -77,7 +77,7 @@ void Mesh::draw() {
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
-    for (int i = 0; i < indexList.size() / 6; i++) {
+    for (int i = 0; i < indexList.size(); i += 6) {
 
         glDrawElements(GL_TRIANGLES, i + 6, GL_UNSIGNED_INT, nullptr);
 

@@ -143,28 +143,27 @@ glm::vec2 Block::screenPos() {
 
 void Block::initPhysics(b2World* world) {
 
+    if (type != Solid)
+        return;
+
     using namespace fitchtools;
 
     glm::vec2 pos = screenPos();
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_staticBody;
-    bodyDef.position = pixToWorld(pos + glm::vec2(BLOCK_SIZE / 2, BLOCK_SIZE / 2));
+    bodyDef.position = pixToWorld(pos);
     physicsBody = world->CreateBody(&bodyDef);
 
     b2PolygonShape box;
-    box.SetAsBox(pixToWorld(BLOCK_SIZE), pixToWorld(BLOCK_SIZE));
+    box.SetAsBox(pixToWorld(BLOCK_SIZE / 2), pixToWorld(BLOCK_SIZE / 2));
 
     b2FixtureDef fd;
     fd.shape = &box;
+    fd.friction = 0.1f;
+    fd.restitution = 0.0f;
     physicsBody->CreateFixture(&fd);
 
     physicsWorld = world;
-
-}
-
-Block::~Block() {
-
-    physicsWorld->DestroyBody(physicsBody);
 
 }

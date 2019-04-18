@@ -61,8 +61,6 @@ public:
     void update() override;
     void draw() override;
 
-    ~Player();
-
 };
 
 
