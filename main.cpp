@@ -167,7 +167,7 @@ namespace fitch {
             std::string bPosX = "Velocity X: " + std::to_string(player->getBody()->GetLinearVelocity().x);
             std::string bPosY = "Velocity Y: " + std::to_string(player->getBody()->GetLinearVelocity().y);
 
-            ImGui::Begin("Debug", nullptr, ImVec2(400, 400), 0.9f, ImGuiWindowFlags_MenuBar);
+            ImGui::Begin("Debug", nullptr, ImVec2(400, 200), 0.9f, ImGuiWindowFlags_MenuBar);
 
             ImGui::Text("%s\n", posX.c_str());
             ImGui::Text("%s\n", posY.c_str());

@@ -68,3 +68,10 @@
 * Added mesh-rendering for the level.
 * Optimized rendering code.
 * Reorganized code.
+
+## v0.3.0 -- 2019-04-18
+
+* Added physics system.
+* Optimized mesh-rendering.
+* Implemented Box2D.
+* Added ImGui debug window.
