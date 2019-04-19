@@ -16,7 +16,7 @@ add_executable(
     imgui/imgui_widgets.cpp imgui/imgui_impl_glfw.h imgui/imgui_impl_glfw.cpp
     imgui/imgui_impl_opengl3.h imgui/imgui_impl_opengl3.cpp
 
-)
+        graphics/Rectangle.cpp graphics/Rectangle.h)
 
 find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -33,8 +33,10 @@ configure_file(shaders/pvshader.glsl shaders/pvshader.glsl COPYONLY)
 configure_file(shaders/pfshader.glsl shaders/pfshader.glsl COPYONLY)
 configure_file(shaders/tvshader.glsl shaders/tvshader.glsl COPYONLY)
 configure_file(shaders/tfshader.glsl shaders/tfshader.glsl COPYONLY)
+configure_file(shaders/bvshader.glsl shaders/bvshader.glsl COPYONLY)
 configure_file(content/player.png content/player.png COPYONLY)
 configure_file(content/solid.png content/solid.png COPYONLY)
+configure_file(content/background.png content/background.png COPYONLY)
 configure_file(content/level1.fl content/level1.fl COPYONLY)
 configure_file(content/level2.fl content/level2.fl COPYONLY)
 configure_file(content/level3.fl content/level3.fl COPYONLY)

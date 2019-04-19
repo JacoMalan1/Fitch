@@ -79,3 +79,9 @@
 ## v0.3.1 -- 2019-04-19
 
 * Added rounded corners on player to minimize ghost collisions.
+
+## v0.3.2 -- 2019-04-19
+
+* Added Rectangle class.
+* Added background.
+* Smoothed physics a bit.

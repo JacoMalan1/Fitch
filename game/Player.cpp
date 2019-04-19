@@ -141,10 +141,6 @@ void Player::update() {
 
     b2Vec2 bPos = physicsBody->GetPosition();
     position = worldToPix(bPos);
-    float maxVel = 1.0f;
-    b2Vec2 vel = physicsBody->GetLinearVelocity();
-    if (vel.Length() > maxVel)
-        physicsBody->SetLinearVelocity((maxVel / vel.Length()) * vel);
 
     std::shared_ptr<float[]> vertices(new float[16] {
 

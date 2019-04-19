@@ -12,6 +12,9 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "graphics/Rectangle.h"
+
+#define T_VELOCITY 1.5f
 
 using namespace glm;
 DebugMode debugMode = Off;
@@ -22,19 +25,21 @@ namespace fitch {
     Player* player;
     Texture2D TEXTURE_SOLID;
     Shader* blockShader;
-    int levelCount = 3;
+    Shader* rectShader;
+    int levelCount = 2;
     std::vector<Drawable*> drawList;
     std::vector<PhysicsObject*> physicsList;
     std::vector<Block>* blockList;
     Mesh* blockMesh;
     b2Vec2 gravity;
     b2World* world;
+    Rectangle* background;
 
     float timeStep = 1.0f / 60.0f;
 
     int width, height;
 
-    bool showDebugWindow = true;
+    bool showDebugWindow = false;
 
     glm::vec2 getWindowDims() {
         return glm::vec2(width, height);
@@ -57,7 +62,7 @@ namespace fitch {
         glEnable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
 
-        glDepthFunc(GL_LEQUAL);
+        glDepthFunc(GL_GEQUAL);
         glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
         if (getDebug() == Full) {
@@ -72,6 +77,8 @@ namespace fitch {
         // Load and compile the shader for textured rectangles.
         blockShader = new Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
         blockShader->compile();
+        rectShader = new Shader("shaders/bvshader.glsl", "shaders/tfshader.glsl");
+        rectShader->compile();
 
         // Initialize player object.
         player = new Player(vec2(0, 0), "content/player.png");
@@ -79,13 +86,21 @@ namespace fitch {
         std::string sLevel = (std::string)"content/level" + std::to_string(levelCount) + (std::string)".fl";
         blockList = fitchio::loadLevel(sLevel.c_str());
 
+        // Initialize background object.
+        glm::vec2 rectPos = player->getPos() - glm::vec2(width / 2, height / 2) + glm::vec2(player->getWidth() / 2, player->getHeight() / 2);
+        background = new Rectangle(rectPos.x, rectPos.y, width, height);
+        background->setShader(rectShader);
+        Texture2D backgroundTex = fitchio::loadBMP("content/background.png");
+        background->setTexture(backgroundTex);
+
         // Pre-load solid.png
         TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
 
-        drawList.reserve(1 + blockList->size());
+        drawList.reserve(2 + blockList->size());
         physicsList.reserve(1 + blockList->size());
 
         drawList.emplace_back((Drawable*)player);
+        drawList.emplace_back((Drawable*)background);
         for (Block& b : *blockList) {
 
             b.setShader(blockShader);
@@ -128,7 +143,7 @@ namespace fitch {
         if (key == GLFW_KEY_F12 && action == GLFW_PRESS) {
             showDebugWindow = !showDebugWindow;
         } else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-            player->getBody()->ApplyLinearImpulse(b2Vec2(0, -0.03), player->getBody()->GetWorldCenter(), true);
+            player->getBody()->ApplyForceToCenter(b2Vec2(0, -3), true);
         }
 
     }
@@ -136,16 +151,20 @@ namespace fitch {
     // Gets run before rendering each frame
     void updateFrame() {
 
+        world->Step(timeStep, 6, 6);
+        background->setPos(player->getPos() - glm::vec2(width / 2, height / 2) + glm::vec2(player->getWidth() / 2, player->getHeight() / 2));
+
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && player->getBody()->GetLinearVelocity().Length() < T_VELOCITY) {
+            player->getBody()->ApplyForceToCenter(b2Vec2(0.1, 0), true);
+        } else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && player->getBody()->GetLinearVelocity().Length() < T_VELOCITY) {
+            player->getBody()->ApplyForceToCenter(b2Vec2(-0.1, 0), true);
+        }
+
         for (Drawable* drawable : drawList)
             drawable->update();
 
-        world->Step(timeStep, 6, 6);
-
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        player->getBody()->ApplyForce(b2Vec2(0.5, 0), player->getBody()->GetWorldCenter(), true);
-    } else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        player->getBody()->ApplyForce(b2Vec2(-0.5, 0), player->getBody()->GetWorldCenter(), true);
-    }
+        background->setPos(player->getPos() - glm::vec2(width / 2, height / 2) + glm::vec2(player->getWidth() / 2, player->getHeight() / 2));
+        background->update();
 
     }
 
@@ -153,11 +172,26 @@ namespace fitch {
     void renderFrame() {
 
         glClearColor(100.0f / 255, 149.0f / 255, 237.0f / 255, 1.0f);
-        glClearDepth(1.0f);
+        glClearDepth(0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        mat4 projMat = ortho(0.0f, (float)width, (float)height, 0.0f);
+        mat4 modelMat = mat4(1);
+        projMat = translate(projMat, vec3(-player->getPos() + vec2(width / 2, height / 2) - vec2(player->getWidth() / 2, player->getHeight() / 2), 0.0f));
+        mat4 viewMat(1);
+        mat4 mvp(1);
+
+        mvp *= projMat;
+        mvp *= viewMat;
+        mvp *= modelMat;
+
+        for (Drawable* drawable : drawList) {
+            drawable->setMatrix(mvp);
+            drawable->draw();
+        }
+
         if (showDebugWindow) {
-    	    ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
@@ -181,21 +215,6 @@ namespace fitch {
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        }
-
-        mat4 projMat = ortho(0.0f, (float)width, (float)height, 0.0f);
-        mat4 modelMat = mat4(1);
-        projMat = translate(projMat, vec3(-player->getPos() + vec2(width / 2, height / 2) - vec2(player->getWidth() / 2, player->getHeight() / 2), 0.0f));
-        mat4 viewMat(1);
-        mat4 mvp(1);
-
-        mvp *= projMat;
-        mvp *= viewMat;
-        mvp *= modelMat;
-
-        for (Drawable* drawable : drawList) {
-            drawable->setMatrix(mvp);
-            drawable->draw();
         }
 
         glfwSwapBuffers(window);
