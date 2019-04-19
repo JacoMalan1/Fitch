@@ -55,7 +55,24 @@ void Player::initPhysics(b2World* world) {
     physicsBody->SetSleepingAllowed(false);
 
     b2PolygonShape box;
-    box.SetAsBox(pixToWorld(this->width / 2), pixToWorld(this->height / 2));
+    box.SetAsBox(pixToWorld(width / 2), pixToWorld(height / 2));
+
+    float bR = pixToWorld(4);
+    b2CircleShape c0;
+    c0.m_p.Set(pixToWorld(-width / 2), pixToWorld(-height / 2));
+    c0.m_radius = bR;
+
+    b2CircleShape c1;
+    c1.m_p.Set(pixToWorld(-width / 2), pixToWorld(height / 2));
+    c1.m_radius = bR;
+
+    b2CircleShape c2;
+    c2.m_p.Set(pixToWorld(width / 2), pixToWorld(-height / 2));
+    c2.m_radius = bR;
+
+    b2CircleShape c3;
+    c3.m_p.Set(pixToWorld(width / 2), pixToWorld(height / 2));
+    c3.m_radius = bR;
 
     b2FixtureDef fd;
     fd.shape = &box;
@@ -63,6 +80,34 @@ void Player::initPhysics(b2World* world) {
     fd.friction = 0.1f;
     fd.restitution = 0.0f;
     physicsBody->CreateFixture(&fd);
+
+    b2FixtureDef fd0;
+    fd0.shape = &c0;
+    fd0.density = 1.0f;
+    fd0.friction = 0.1f;
+    fd0.restitution = 0.0f;
+    physicsBody->CreateFixture(&fd0);
+
+    b2FixtureDef fd1;
+    fd1.shape = &c1;
+    fd1.density = 1.0f;
+    fd1.friction = 0.1f;
+    fd1.restitution = 0.0f;
+    physicsBody->CreateFixture(&fd1);
+
+    b2FixtureDef fd2;
+    fd2.shape = &c2;
+    fd2.density = 1.0f;
+    fd2.friction = 0.1f;
+    fd2.restitution = 0.0f;
+    physicsBody->CreateFixture(&fd2);
+
+    b2FixtureDef fd3;
+    fd3.shape = &c3;
+    fd3.density = 1.0f;
+    fd3.friction = 0.1f;
+    fd3.restitution = 0.0f;
+    physicsBody->CreateFixture(&fd3);
 
     physicsWorld = world;
 

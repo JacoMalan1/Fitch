@@ -75,3 +75,7 @@
 * Optimized mesh-rendering.
 * Implemented Box2D.
 * Added ImGui debug window.
+
+## v0.3.1 -- 2019-04-19
+
+* Added rounded corners on player to minimize ghost collisions.
