@@ -22,7 +22,7 @@ enum BlockType {
 
 std::ostream& operator<<(std::ostream& stream, BlockType type);
 
-class Block : Drawable, PhysicsObject {
+class Block : public Drawable, public PhysicsObject {
 
 private:
     glm::vec2 position;

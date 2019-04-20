@@ -33,6 +33,31 @@ namespace fitchio {
 
     }
 
+    unsigned char* loadImage(const char* image_path, int* w, int* h) {
+
+        std::vector<unsigned char> png;
+        std::vector<unsigned char> image;
+        unsigned width, height;
+
+        unsigned error = lodepng::load_file(png, image_path);
+        if (error) {
+            std::fprintf(stderr, "Error [%d]: %s\n", error, lodepng_error_text(error));
+            return nullptr;
+        }
+
+        error = lodepng::decode(image, width, height, png);
+        if (error) {
+            std::fprintf(stderr, "Error [%d]: %s\n", error, lodepng_error_text(error));
+            return nullptr;
+        }
+
+        *w = width;
+        *h = height;
+
+        return image.data();
+
+    }
+
     Texture2D loadBMP(const char* image_path) {
 
         std::vector<unsigned char> png;

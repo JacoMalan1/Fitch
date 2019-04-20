@@ -85,3 +85,12 @@
 * Added Rectangle class.
 * Added background.
 * Smoothed physics a bit.
+
+## v0.3.3 -- 2019-04-20
+
+* Added logging.
+* Fixed interface casting oversight.
+* Organized global variables.
+* Added Boost.
+* Added fullscreen mode (accessed by pressing F11).
+* Updated to OpenGL 3.3.0 (GLSL 3.30)

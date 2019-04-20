@@ -7,7 +7,7 @@
 #include "VBO.h"
 #include "VAO.h"
 
-class Rectangle : Drawable {
+class Rectangle : public Drawable {
 
 private:
     glm::vec2 m_Pos;

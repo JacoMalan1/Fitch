@@ -1,11 +1,11 @@
-//
-// Created by jacom on 2018/09/16.
-//
-
 #include <iostream>
 #include <cstring>
+#include <boost/format.hpp>
+#include <sstream>
 #include "Shader.h"
+#include "../main.h"
 #include "../tools.h"
+#include "../logging/Logger.h"
 
 Shader::Shader() = default;
 
@@ -30,14 +30,22 @@ static void checkCompile(GLuint shader, GLenum type) {
         char* log = (char*)alloca(logLength * sizeof(char));
         glGetShaderInfoLog(shader, logLength, &logLength, log);
 
-        std::cerr << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
-        std::cerr << log << std::endl;
+        Logger& logger = fitch::getLogger();
+
+        std::stringstream msg;
+        msg << boost::format("Failed to compile %s shader (ID = %d)") % ((type == GL_VERTEX_SHADER) ? "vertex" : "fragment") % shader;
+        std::string sLog = log;
+
+        logger.addString("Shader", msg.str(), ERR);
+        logger.addString("Shader", sLog, ERR);
 
     }
 
 }
 
 void Shader::compile() {
+
+    fitch::getLogger().addString("Shader", (boost::format("Compiling shader %d") % id).str());
 
     // Checks wether source locations were specified.
     if (strcmp(this->vertex_location, "") == 0 || strcmp(this->fragment_location, "") == 0)

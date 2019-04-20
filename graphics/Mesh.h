@@ -13,7 +13,7 @@
 #include "VAO.h"
 #include "Texture2D.h"
 
-class Mesh : Drawable {
+class Mesh : public Drawable {
 
 private:
     std::vector<float> vertexList;

@@ -18,7 +18,7 @@ enum Direction {
     Right = 1
 };
 
-class Player : Drawable, PhysicsObject {
+class Player : public Drawable, public PhysicsObject {
 
 private:
     glm::vec2 position;

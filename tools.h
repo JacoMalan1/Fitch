@@ -13,6 +13,7 @@ namespace fitchio {
     Texture2D loadBMP(const char* image_path);
     std::vector<std::string> splitString(const std::string& str, char delim);
     std::vector<Block>* loadLevel(const char* file_path);
+    unsigned char* loadImage(const char* image_path, int* w, int* h);
 
 }
 

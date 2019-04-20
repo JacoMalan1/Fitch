@@ -16,11 +16,12 @@ add_executable(
     imgui/imgui_widgets.cpp imgui/imgui_impl_glfw.h imgui/imgui_impl_glfw.cpp
     imgui/imgui_impl_opengl3.h imgui/imgui_impl_opengl3.cpp
 
-        graphics/Rectangle.cpp graphics/Rectangle.h)
+        graphics/Rectangle.cpp graphics/Rectangle.h logging/Logger.cpp logging/Logger.h)
 
 find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Box2D REQUIRED)
+find_package(Boost REQUIRED)
 
 target_link_libraries(Fitch GLEW)
 target_link_libraries(Fitch glfw)

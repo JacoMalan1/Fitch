@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <cstring>
 #include <Box2D/Box2D.h>
+#include <boost/format.hpp>
+#include "main.h"
 #include "game/Block.h"
 #include "game/Player.h"
 #include "tools.h"
@@ -14,36 +16,40 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "graphics/Rectangle.h"
 
-#define T_VELOCITY 1.5f
-
 using namespace glm;
 DebugMode debugMode = Off;
 
 namespace fitch {
 
+    // General
     GLFWwindow* window;
-    Player* player;
+    int levelCount = 2;
+    float timeStep = 1.0f / 60.0f;
+    int width, height;
+    bool showDebugWindow = false;
+    Logger logger;
+    bool fullscreen = false;
+
+    // Resources
     Texture2D TEXTURE_SOLID;
     Shader* blockShader;
     Shader* rectShader;
-    int levelCount = 2;
+
+    // Drawables
+    Mesh* blockMesh;
+    Rectangle* background;
+    Player* player;
+
+    // Box2D
+    b2Vec2 gravity;
+    b2World* world;
+
+    // Lists
     std::vector<Drawable*> drawList;
     std::vector<PhysicsObject*> physicsList;
     std::vector<Block>* blockList;
-    Mesh* blockMesh;
-    b2Vec2 gravity;
-    b2World* world;
-    Rectangle* background;
 
-    float timeStep = 1.0f / 60.0f;
-
-    int width, height;
-
-    bool showDebugWindow = false;
-
-    glm::vec2 getWindowDims() {
-        return glm::vec2(width, height);
-    }
+    Logger& getLogger() { return logger; }
 
     void GLAPIENTRY glCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam ) {
 
@@ -58,6 +64,8 @@ namespace fitch {
 
     // Gets run before the main loop starts
     void loadWindow() {
+
+        logger.addString("Main", "Loading window...");
 
         glEnable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
@@ -75,6 +83,7 @@ namespace fitch {
         world = new b2World(gravity);
 
         // Load and compile the shader for textured rectangles.
+        logger.addString("Main", "Compiling shaders...");
         blockShader = new Shader("shaders/tvshader.glsl", "shaders/tfshader.glsl");
         blockShader->compile();
         rectShader = new Shader("shaders/bvshader.glsl", "shaders/tfshader.glsl");
@@ -83,6 +92,9 @@ namespace fitch {
         // Initialize player object.
         player = new Player(vec2(0, 0), "content/player.png");
         player->initPhysics(world);
+
+        // Load level
+        logger.addString("Main", (boost::format("Loading level %d") % levelCount).str());
         std::string sLevel = (std::string)"content/level" + std::to_string(levelCount) + (std::string)".fl";
         blockList = fitchio::loadLevel(sLevel.c_str());
 
@@ -99,8 +111,8 @@ namespace fitch {
         drawList.reserve(2 + blockList->size());
         physicsList.reserve(1 + blockList->size());
 
-        drawList.emplace_back((Drawable*)player);
-        drawList.emplace_back((Drawable*)background);
+        drawList.push_back(player);
+        drawList.push_back(background);
         for (Block& b : *blockList) {
 
             b.setShader(blockShader);
@@ -113,13 +125,13 @@ namespace fitch {
             }
 
             blockMesh->addMeshElement(b.getVertices(), 4, 4);
-            physicsList.emplace_back((PhysicsObject*)&b);
+            physicsList.push_back(&b);
 
         }
 
         blockMesh->setShader(blockShader);
         blockMesh->setTexture(TEXTURE_SOLID);
-        drawList.emplace_back((Drawable*)blockMesh);
+        drawList.push_back(blockMesh);
 
         for (Drawable* drawable : drawList)
             drawable->init();
@@ -136,14 +148,18 @@ namespace fitch {
         delete blockList;
         delete player;
 
+        logger.write("fitch.log");
+
     }
 
-    void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    void keyCallback(GLFWwindow*, int key, int, int action, int) {
 
         if (key == GLFW_KEY_F12 && action == GLFW_PRESS) {
             showDebugWindow = !showDebugWindow;
         } else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
             player->getBody()->ApplyForceToCenter(b2Vec2(0, -3), true);
+        } else if (key == GLFW_KEY_F11 && action == GLFW_PRESS) {
+            glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, width, height, 60);
         }
 
     }
@@ -154,9 +170,9 @@ namespace fitch {
         world->Step(timeStep, 6, 6);
         background->setPos(player->getPos() - glm::vec2(width / 2, height / 2) + glm::vec2(player->getWidth() / 2, player->getHeight() / 2));
 
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && player->getBody()->GetLinearVelocity().Length() < T_VELOCITY) {
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && player->getBody()->GetLinearVelocity().x < T_VELOCITY) {
             player->getBody()->ApplyForceToCenter(b2Vec2(0.1, 0), true);
-        } else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && player->getBody()->GetLinearVelocity().Length() < T_VELOCITY) {
+        } else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && player->getBody()->GetLinearVelocity().x > -T_VELOCITY) {
             player->getBody()->ApplyForceToCenter(b2Vec2(-0.1, 0), true);
         }
 
@@ -232,15 +248,31 @@ namespace fitch {
 
         glfwWindowHint(GLFW_SAMPLES, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        width = 800;
-        height = 600;
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        width = mode->width;
+        height = mode->height;
         window = glfwCreateWindow(width, height, "Fitch", nullptr, nullptr);
+        glfwMaximizeWindow(window);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        glfwSetWindowSizeCallback(window, [](GLFWwindow* win, int x, int y) {
+
+            glfwGetFramebufferSize(win, &width, &height);
+            glViewport(0, 0, width, height);
+
+        });
 
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
+
+        glViewport(0, 0, width, height);
+
+        std::string version = (char*)glGetString(GL_VERSION);
+        std::string glslVersion = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+        logger.addString("Main", (boost::format("OpenGL Version: %s") % version).str());
+        logger.addString("Main", (boost::format("GLSL Version: %s") % glslVersion).str());
 
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
