@@ -292,6 +292,7 @@ namespace fitch {
         double fps = 120;
         double maxPeriod = 1 / fps;
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
         glfwSetKeyCallback(window, keyCallback);
 
         // Start main game loop
