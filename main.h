@@ -14,7 +14,7 @@ enum DebugMode {
 
 namespace fitch {
 
-    DebugMode getDebug();
+    bool getDebug();
     void renderFrame();
     Logger& getLogger();
 

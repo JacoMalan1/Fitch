@@ -14,8 +14,8 @@ Player::Player(const Player& other) : position(other.position), width(other.widt
 
 Player::Player(glm::vec2 position, const char *texture_path) : position(position) {
     this->texture = fitchio::loadBMP(texture_path);
-    this->width = this->texture.width;
-    this->height = this->texture.height;
+    this->width = this->texture->width;
+    this->height = this->texture->height;
 }
 
 void Player::setPos(glm::vec2 pos) {
@@ -160,7 +160,7 @@ void Player::draw() {
     this->vao.bind();
     this->vbo.bind();
     this->shaderProgram->bind();
-    this->texture.bind();
+    this->texture->bind();
 
     GLint MatrixID = glGetUniformLocation(this->shaderProgram->getID(), "projMat");
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &drawMat[0][0]);
@@ -175,5 +175,11 @@ void Player::draw() {
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+
+}
+
+Player::~Player() {
+
+    delete this->texture;
 
 }

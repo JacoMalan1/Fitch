@@ -27,7 +27,7 @@ class Block : public Drawable, public PhysicsObject {
 private:
     glm::vec2 position;
     BlockType type;
-    Texture2D texture;
+    Texture2D* texture;
 
     VAO vao;
     VBO vbo;
@@ -48,7 +48,7 @@ public:
 
     glm::vec2 screenPos();
 
-    void setTexture(Texture2D texture);
+    void setTexture(Texture2D* texture);
     void setShader(Shader* shader);
     BlockType getType() const;
 

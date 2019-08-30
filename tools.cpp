@@ -1,39 +1,34 @@
 #include <iostream>
 #include <sstream>
-#include <cstring>
 #include <fstream>
-#include <memory>
 #include "tools.h"
 #include "lodepng.h"
 #include "main.h"
-
-using namespace std;
 
 #define SCALING_FACTOR 400
 
 namespace fitchio {
 
-    const char* loadFile(const char *file_path) {
+    std::optional<std::string*> loadFile(const char *file_path) {
 
         std::ifstream fs(file_path);
 
         if (!fs.is_open()) {
-            fprintf(stderr, "Error!");
-            return "";
+            fprintf(stderr, "Error: Couldn't open file stream.");
+            return {};
         }
 
-        stringstream sstr;
+        std::stringstream sstr;
         sstr << fs.rdbuf();
-        string contents = sstr.str();
+        auto contents = new std::string(sstr.str());
 
-        auto retVal = new char[contents.length() + 1];
-        strcpy(retVal, contents.c_str());
-
-        return retVal;
+        return contents;
 
     }
 
-    unsigned char* loadImage(const char* image_path, int* w, int* h) {
+    Texture2D* loadBMP(const char* image_path) {
+
+        Texture2D* ret = nullptr;
 
         std::vector<unsigned char> png;
         std::vector<unsigned char> image;
@@ -42,38 +37,13 @@ namespace fitchio {
         unsigned error = lodepng::load_file(png, image_path);
         if (error) {
             std::fprintf(stderr, "Error [%d]: %s\n", error, lodepng_error_text(error));
-            return nullptr;
+            return new Texture2D();
         }
 
         error = lodepng::decode(image, width, height, png);
         if (error) {
             std::fprintf(stderr, "Error [%d]: %s\n", error, lodepng_error_text(error));
-            return nullptr;
-        }
-
-        *w = width;
-        *h = height;
-
-        return image.data();
-
-    }
-
-    Texture2D loadBMP(const char* image_path) {
-
-        std::vector<unsigned char> png;
-        std::vector<unsigned char> image;
-        unsigned width, height;
-
-        unsigned error = lodepng::load_file(png, image_path);
-        if (error) {
-            std::fprintf(stderr, "Error [%d]: %s\n", error, lodepng_error_text(error));
-            return { 0, 0, 0 };
-        }
-
-        error = lodepng::decode(image, width, height, png);
-        if (error) {
-            std::fprintf(stderr, "Error [%d]: %s\n", error, lodepng_error_text(error));
-            return { 0, 0, 0 };
+            return new Texture2D;
         }
 
         GLuint textureID;
@@ -84,14 +54,16 @@ namespace fitchio {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-        return { textureID, (int)width, (int)height };
+        ret = new Texture2D(textureID, (int)width, (int)height);
+
+        return ret;
 
     }
 
-    vector<string> splitString(const string& str, char delim) {
+    std::vector<std::string> splitString(const std::string& str, char delim) {
 
-        vector<string> result = vector<string>();
-        string temp;
+        std::vector<std::string> result = std::vector<std::string>();
+        std::string temp;
 
         for (char c : str) {
 
@@ -111,20 +83,23 @@ namespace fitchio {
 
     std::vector<Block>* loadLevel(const char* file_path) {
 
-        const char* contents = loadFile(file_path);
-        std::string s_contents = contents;
-        delete[] contents;
-        vector<string> lines = splitString(s_contents, '\n');
+        auto data = loadFile(file_path);
+
+        if (!data)
+            return nullptr;
+
+        auto s_contents = *data.value();
+        std::vector<std::string> lines = splitString(s_contents, '\n');
 
         auto blocks = new std::vector<Block>();
         blocks->reserve(lines.size());
 
-        for (const string& line : lines) {
+        for (const std::string& line : lines) {
 
-            if (line == "")
+            if (line.empty())
                 continue;
 
-            vector<string> params = splitString(line, ',');
+            std::vector<std::string> params = splitString(line, ',');
 
             BlockType type;
 
@@ -139,9 +114,9 @@ namespace fitchio {
             int x = 0;
             int y = 0;
 
-            stringstream stream(params[1]);
+            std::stringstream stream(params[1]);
             stream >> x;
-            stream = stringstream(params[2]);
+            stream = std::stringstream(params[2]);
             stream >> y;
 
             if (type != Air) {

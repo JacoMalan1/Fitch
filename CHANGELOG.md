@@ -94,3 +94,8 @@
 * Added Boost.
 * Added fullscreen mode (accessed by pressing F11).
 * Updated to OpenGL 3.3.0 (GLSL 3.30)
+
+## v0.3.4 -- 2019-08-30
+
+* Cleaned up code a bit.
+* Did some optimization.

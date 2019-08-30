@@ -122,3 +122,7 @@ void Rectangle::draw() {
     }
 
 }
+
+Rectangle::~Rectangle() {
+    delete m_Shader;
+}

@@ -26,6 +26,7 @@ private:
 public:
 
     Rectangle(float x, float y, float width, float height);
+    ~Rectangle();
 
     void setColor(glm::vec4 color);
     void setTexture(Texture2D texture);
@@ -39,6 +40,5 @@ public:
     void draw() override;
 
 };
-
 
 #endif //FITCH_RECTANGLE_H

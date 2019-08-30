@@ -54,8 +54,14 @@ void Shader::compile() {
     GLuint vshader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
 
-    auto vss = fitchio::loadFile(this->vertex_location);
-    auto fss = fitchio::loadFile(this->fragment_location);
+    auto vss_opt = fitchio::loadFile(this->vertex_location);
+    auto fss_opt = fitchio::loadFile(this->fragment_location);
+
+    if (!vss_opt || !fss_opt)
+        fitch::getLogger().addString("Shader", "Error loading shader files!", ERR);
+
+    const char* vss = vss_opt.value()->c_str();
+    const char* fss = fss_opt.value()->c_str();
 
     glShaderSource(vshader, 1, &vss, nullptr);
     glShaderSource(fshader, 1, &fss, nullptr);
@@ -71,15 +77,15 @@ void Shader::compile() {
 
     glLinkProgram(this->id);
 
-    delete[] vss;
-    delete[] fss;
+    delete vss_opt.value();
+    delete fss_opt.value();
 
     glDeleteShader(vshader);
     glDeleteShader(fshader);
 
     compiled = true;
 
-    // std::cout << "Compiled shader: " << this->id << std::endl;
+    fitch::getLogger().addString("Shader", (boost::format("Shader %d compiled successfully!") % this->id).str());
 
 }
 

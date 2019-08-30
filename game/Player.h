@@ -25,7 +25,7 @@ private:
     float width;
     float height;
 
-    Texture2D texture;
+    Texture2D* texture;
     Direction direction = Right;
 
     std::shared_ptr<Shader> shaderProgram;
@@ -41,6 +41,7 @@ public:
 
     Player(glm::vec2 position, const char* texture_path);
     Player(const Player& other);
+    ~Player();
 
     void handleInput(GLFWwindow* window);
     void setPos(glm::vec2 pos);

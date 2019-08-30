@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <cstring>
 #include <Box2D/Box2D.h>
 #include <boost/format.hpp>
 #include "main.h"
@@ -11,13 +10,19 @@
 #include "game/Player.h"
 #include "tools.h"
 #include "graphics/Mesh.h"
+#include "graphics/Rectangle.h"
+
+#define DEBUG false
+
+// Optionally import the ImGUI
+// library, only if we are compiling a DEBUG version.
+#if DEBUG == true
+
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-#include "graphics/Rectangle.h"
 
-using namespace glm;
-DebugMode debugMode = Off;
+#endif
 
 namespace fitch {
 
@@ -28,10 +33,10 @@ namespace fitch {
     int width, height;
     bool showDebugWindow = false;
     Logger logger;
-    bool fullscreen = false;
+//    bool fullscreen = false;
 
     // Resources
-    Texture2D TEXTURE_SOLID;
+    Texture2D* TEXTURE_SOLID;
     Shader* blockShader;
     Shader* rectShader;
 
@@ -41,7 +46,7 @@ namespace fitch {
     Player* player;
 
     // Box2D
-    b2Vec2 gravity;
+    b2Vec2* gravity;
     b2World* world;
 
     // Lists
@@ -51,7 +56,7 @@ namespace fitch {
 
     Logger& getLogger() { return logger; }
 
-    void GLAPIENTRY glCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam ) {
+    void GLAPIENTRY glCallback(GLenum, GLenum type, GLuint, GLenum severity, GLsizei, const GLchar* message, const void*) {
 
         if (type == GL_DEBUG_TYPE_OTHER)
             return;
@@ -79,8 +84,8 @@ namespace fitch {
         }
 
         blockMesh = new Mesh();
-        gravity = b2Vec2(0.0f, 2.0f);
-        world = new b2World(gravity);
+        gravity = new b2Vec2(0.0f, 2.0f);
+        world = new b2World(*gravity);
 
         // Load and compile the shader for textured rectangles.
         logger.addString("Main", "Compiling shaders...");
@@ -90,7 +95,7 @@ namespace fitch {
         rectShader->compile();
 
         // Initialize player object.
-        player = new Player(vec2(0, 0), "content/player.png");
+        player = new Player(glm::vec2(0, 0), "content/player.png");
         player->initPhysics(world);
 
         // Load level
@@ -100,10 +105,10 @@ namespace fitch {
 
         // Initialize background object.
         glm::vec2 rectPos = player->getPos() - glm::vec2(width / 2, height / 2) + glm::vec2(player->getWidth() / 2, player->getHeight() / 2);
-        background = new Rectangle(rectPos.x, rectPos.y, width, height);
+        background = new Rectangle(rectPos.x, rectPos.y, (float)width, (float)height);
         background->setShader(rectShader);
-        Texture2D backgroundTex = fitchio::loadBMP("content/background.png");
-        background->setTexture(backgroundTex);
+        Texture2D* backgroundTex = fitchio::loadBMP("content/background.png");
+        background->setTexture(*backgroundTex);
 
         // Pre-load solid.png
         TEXTURE_SOLID = fitchio::loadBMP("content/solid.png");
@@ -120,7 +125,7 @@ namespace fitch {
             if (b.getType() == Solid) {
                 b.setTexture(TEXTURE_SOLID);
             } else if (b.getType() == Start) {
-                player->setPos(b.screenPos() - vec2(0, player->getHeight() + 100));
+                player->setPos(b.screenPos() - glm::vec2(0, player->getHeight() + 100));
                 continue;
             }
 
@@ -130,7 +135,7 @@ namespace fitch {
         }
 
         blockMesh->setShader(blockShader);
-        blockMesh->setTexture(TEXTURE_SOLID);
+        blockMesh->setTexture(*TEXTURE_SOLID);
         drawList.push_back(blockMesh);
 
         for (Drawable* drawable : drawList)
@@ -191,11 +196,11 @@ namespace fitch {
         glClearDepth(0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        mat4 projMat = ortho(0.0f, (float)width, (float)height, 0.0f);
-        mat4 modelMat = mat4(1);
-        projMat = translate(projMat, vec3(-player->getPos() + vec2(width / 2, height / 2) - vec2(player->getWidth() / 2, player->getHeight() / 2), 0.0f));
-        mat4 viewMat(1);
-        mat4 mvp(1);
+        glm::mat4 projMat = glm::ortho(0.0f, (float)width, (float)height, 0.0f);
+        glm::mat4 modelMat = glm::mat4(1);
+        projMat = translate(projMat, glm::vec3(-player->getPos() + glm::vec2(width / 2, height / 2) - glm::vec2(player->getWidth() / 2, player->getHeight() / 2), 0.0f));
+        glm::mat4 viewMat(1);
+        glm::mat4 mvp(1);
 
         mvp *= projMat;
         mvp *= viewMat;
@@ -207,15 +212,18 @@ namespace fitch {
         }
 
         if (showDebugWindow) {
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
+
 
             std::string posX = "Player X: " + std::to_string(player->getPos().x);
             std::string posY = "Player Y: " + std::to_string(player->getPos().y);
 
             std::string bPosX = "Velocity X: " + std::to_string(player->getBody()->GetLinearVelocity().x);
             std::string bPosY = "Velocity Y: " + std::to_string(player->getBody()->GetLinearVelocity().y);
+
+#if DEBUG == true
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
 
             ImGui::Begin("Debug", nullptr, ImVec2(400, 200), 0.9f, ImGuiWindowFlags_MenuBar);
 
@@ -230,6 +238,7 @@ namespace fitch {
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#endif
 
         }
 
@@ -274,12 +283,16 @@ namespace fitch {
         logger.addString("Main", (boost::format("OpenGL Version: %s") % version).str());
         logger.addString("Main", (boost::format("GLSL Version: %s") % glslVersion).str());
 
+#if DEBUG == true
+
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
 
         ImGui::StyleColorsDark();
         ImGui_ImplGlfw_InitForOpenGL(window, false);
         ImGui_ImplOpenGL3_Init("#version 330");
+
+#endif
 
         if (glewInit() != 0) {
             std::fprintf(stderr, "%s\n", "GLEW initialization failed!");
@@ -291,8 +304,9 @@ namespace fitch {
         double lastTime = glfwGetTime();
         double fps = 120;
         double maxPeriod = 1 / fps;
+
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
         glfwSetKeyCallback(window, keyCallback);
 
         // Start main game loop
@@ -321,16 +335,8 @@ namespace fitch {
 
 }
 
-DebugMode fitch::getDebug() { return debugMode; }
+bool fitch::getDebug() { return DEBUG; }
 
 int main(int argc, const char** argv) {
-
-    if (argc > 0 && fitch::getDebug() == Off) {
-        if (strncmp(argv[0], "--debug", strlen(argv[0])) != 0 ||
-            strncmp(argv[0], "-d", strlen(argv[0])) != 0) {
-            debugMode = Full;
-        }
-    }
-
     return fitch::init();
 }

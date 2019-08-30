@@ -32,7 +32,7 @@ glm::vec2 Block::getPos() const {
     return this->position;
 }
 
-void Block::setTexture(Texture2D tex) {
+void Block::setTexture(Texture2D* tex) {
     this->texture = tex;
 }
 
@@ -100,7 +100,7 @@ void Block::draw() {
     this->vbo.bind();
 
     this->shaderProgram->bind();
-    this->texture.bind();
+    this->texture->bind();
 
     GLint MatrixID = glGetUniformLocation(this->shaderProgram->getID(), "projMat");
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &drawMat[0][0]);
